@@ -1,0 +1,36 @@
+{
+  "name": "@portkey/providers",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "homepage": "https://portkey.finance/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Portkey-Wallet/portkey-providers.git",
+    "directory": "packages/providers"
+  },
+  "type": "commonjs",
+  "types": "./src/index.ts",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prebuild": "yarn clean",
+    "lint": "eslint --ext .js,.ts .",
+    "lint:fix": "eslint --fix --ext .js,.ts .",
+    "format": "prettier --write '**/*'",
+    "start": "tsc --watch"
+  },
+  "dependencies": {
+    "@portkey/chain": "0.0.1"
+  }
+}
