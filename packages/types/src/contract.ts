@@ -1,3 +1,5 @@
+import { ChainId, ChainType, IChainProvider } from './chain';
+
 export type SendOptions = {
   from?: string;
   gasPrice?: string;
@@ -29,4 +31,12 @@ export interface IContract {
     paramsOption?: any,
     sendOptions?: SendOptions,
   ): Promise<SendResult<T>>;
+}
+
+export interface BaseContractOptions {
+  chainId: ChainId;
+  chainProvider: IChainProvider;
+  // contractABI?: AbiItem[];
+  contractAddress: string;
+  type: ChainType;
 }

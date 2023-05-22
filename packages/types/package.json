@@ -1,5 +1,5 @@
 {
-  "name": "@portkey/providers",
+  "name": "@portkey/provider-types",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -15,23 +15,22 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Portkey-Wallet/portkey-providers.git",
-    "directory": "packages/providers"
+    "directory": "packages/types"
   },
   "type": "commonjs",
   "types": "./src/index.ts",
   "main": "./src/index.ts",
   "exports": "./src/index.ts",
   "scripts": {
-    "build": "tsc",
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
+    "build": "tsc",
     "lint": "eslint --ext .js,.ts .",
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier --write '**/*'",
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/chain": "0.0.1",
-    "@portkey/provider-types": "0.0.1"
+    "@types/elliptic": "^6.4.14"
   }
 }

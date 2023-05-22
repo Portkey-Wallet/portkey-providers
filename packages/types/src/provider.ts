@@ -2,7 +2,7 @@ import { DappEvents, EventId, EventResponse } from './event';
 import { IDappRequestArguments, IDappRequestResponse } from './request';
 import type { Duplex } from 'stream';
 import { DappInteractionStream } from './stream';
-import { ChainId, IChain } from '@portkey/chain';
+import { ChainId, IChain } from './chain';
 
 export interface IStreamBehavior {
   setupStream: (companionStream: Duplex) => void;

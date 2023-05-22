@@ -1,14 +1,19 @@
 import { EventEmitter } from 'events';
-import { BaseProviderOptions, ConsoleLike, DappInteractionStream, IProvider } from './types';
-import { DappEvents, EventId, EventResponse } from './types';
 import {
+  EventId,
+  IProvider,
+  DappEvents,
+  RPCMethods,
+  ConsoleLike,
+  ResponseCode,
+  EventResponse,
+  RPCMethodsBase,
+  BaseProviderOptions,
+  DappInteractionStream,
   IDappRequestArguments,
   IDappRequestResponse,
-  ResponseCode,
-  RPCMethods,
-  RPCMethodsBase,
   RPCMethodsUnimplemented,
-} from './types';
+} from '@portkey/provider-types';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: DappInteractionStream;
