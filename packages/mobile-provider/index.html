@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <script src="./dist/index.js"></script>
+  <script>
+    // VConsole will be exported to `window.VConsole` by default.
+    var vConsole = new window.VConsole();
+    console.log('window');
+    const chain = window.portkey.getChain('AELF');
+    const tokenContract = chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE');
+    // LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy
+    (async () => {
+      const height = await chain.getBlockHeight();
+      const balance = await tokenContract.callViewMethod('GetBalance', {
+        symbol: 'ELF',
+        owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+      });
+      console.log(balance, 'balance');
+      const aa = await tokenContract.callSendMethod('GetBalance', {
+        symbol: 'ELF',
+        owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+      });
+      console.log(aa, 'aa=tokenContract');
+    })();
+  </script>
+  <body>
+    test
+  </body>
+</html>

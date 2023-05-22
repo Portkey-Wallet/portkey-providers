@@ -13,7 +13,6 @@ if (shouldInject()) {
  */
 async function start() {
   await domIsReady();
-  window._metamaskSetupProvider();
 }
 
 /**

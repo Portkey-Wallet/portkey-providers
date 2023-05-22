@@ -21,6 +21,8 @@ export abstract class BaseContract {
   protected _request: BaseContractOptions['request'];
   constructor(options: BaseContractOptions) {
     Object.assign(this, options);
+    this.address = options.contractAddress;
+    this._request = options.request;
   }
 }
 export class Contract extends BaseContract implements IContract {

@@ -15,6 +15,7 @@ export abstract class BaseChain {
     this.rpcUrl = rpcUrl;
     this._request = request;
     this.chainId = chainId;
+    this.type = chainType;
   }
 }
 
