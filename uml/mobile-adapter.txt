@@ -2,18 +2,18 @@
 
 abstract class Operator {
     # constructor(stream : DappInteractionStream) : this
-    - _streams : DappInteractionStream
-    - setUpStreams(stream : DappInteractionStream) : void
-    # handleRequestMessage(data : String) : void
-    - {abstract} handleRequest(request : IDappRequestWrapper) : void
-    # {abstract} publishEvents(eventMessage : EventMessage) : void
+    - _stream : DappInteractionStream
+    # handleRequestMessage(data : String) : Promise<void>
+    # {abstract} handleRequest(request : IDappRequestWrapper) : Promise<any>
+    + publishEvent(eventMessage : EventMessage) : void
 }
 
 class MobileAdapter extends Operator {
+    - {static} _ins : this
+    + getIns() : this?
     + constructor(stream : MobileInteractionStream) : this
-    + handleReactNativeRequest(event : NativeEvent) : Promise<any>
-    # handleRequest(request : IDappRequestWrapper) : void
-    # publishEvents(eventMessage : EventMessage) : void
+    + handleReactNativeRequest(event : NativeEvent) : void
+    - handleRequest(request : IDappRequestWrapper) : Promise<any>
 }
 
 abstract class DappInteractionStream {
@@ -24,6 +24,10 @@ class MobileInteractionStream extends DappInteractionStream {
     - webViewRef : WebView
     + constructor(webViewRef : WebView) : this
     + _write(chunk : any, encoding : string, callback : Function) : void
+}
+
+class AdapterFactory {
+    + static createOrGetAdapter(webViewRef? : WebView) : MobileAdapter?
 }
 
 class WebView {
@@ -38,6 +42,7 @@ interface EventMessage {
 
 interface IDappRequestWrapper {
     + eventId : string
+    + metaData : any
     + params : IDappRequestArguments
 }
 
@@ -46,12 +51,16 @@ interface IDappRequestArguments {
     + payload : any
 }
 
-note bottom of WebView
-    const adapter:MobileAdapter = useRef<MobileAdapter>(new MobileAdapter(new MobileInteractionStream(webViewRef)));
+object DappWebView{
+    Functional Component
+}
+
+note right of DappWebView
+    const adapter:MobileAdapter = useRef<MobileAdapter>(AdapterFactory.createAdapter(webViewRef));
     WebView.onMessage={adapter.current.handleReactNativeRequest}
 end note
 
-note left of MobileInteractionStream
+note right of MobileInteractionStream
     _write=(chunk, encoding, callback)=>{
         webViewRef.injectJavaScript(JSON.stringify(chunk));
         callback();
@@ -66,12 +75,14 @@ note right of Operator
     }
 end note
 
-WebView "1" --> "1" MobileAdapter
-MobileAdapter "1" --> "1" MobileInteractionStream
-Operator --> EventMessage
-MobileInteractionStream "1" --> "1" WebView
-Operator "1" --> "1" DappInteractionStream
-IDappRequestWrapper "1" --> "1" IDappRequestArguments
-Operator --> IDappRequestWrapper
+WebView --> DappWebView
+AdapterFactory --> DappWebView
+MobileAdapter --> AdapterFactory
+MobileInteractionStream "1" --> "1" MobileAdapter
+EventMessage --> Operator
+WebView "1" --> "1" MobileInteractionStream
+DappInteractionStream "1" --> "1" Operator
+IDappRequestArguments "1" --> "1" IDappRequestWrapper
+IDappRequestWrapper --> Operator
 
 @enduml

@@ -1,10 +1,16 @@
 export interface IDappRequestArguments {
   method: RPCMethods;
+  metaData?: any;
   payload?: any;
 }
 export interface IDappRequestWrapper {
   eventId: string;
   params: IDappRequestArguments;
+}
+
+export interface IDappResoponseWrapper {
+  eventId: string;
+  params: IDappRequestResponse;
 }
 
 export interface IDappRequestResponse {

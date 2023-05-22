@@ -7,6 +7,11 @@ export enum CentralEthereumEvents {
   ERROR = 'error',
 }
 
+export interface EventMessage {
+  event: CentralEthereumEvents;
+  params: any;
+}
+
 export type DappEvents = CentralEthereumEvents;
 
 export type EventId = string;
