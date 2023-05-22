@@ -6,7 +6,7 @@ export abstract class DappInteractionStream extends Duplex {
     super();
   }
 
-  createSubStream = (name: String) => {};
+  createSubStream = (_name: String) => {};
   /**
    * this method is abstract, so it must be implemented by the subclass.
    * @example in React Native, you can override this method like this:

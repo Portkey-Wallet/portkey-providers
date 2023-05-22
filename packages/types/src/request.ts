@@ -30,6 +30,7 @@ export enum RPCMethodsBase {
   DECRYPT = 'decrypt',
   CHAIN_ID = 'chainId',
   GET_PUBLIC_KEY = 'getEncryptionPublicKey',
+  SEND_TRANSACTION = 'sendTransaction',
 }
 
 export enum RPCMethodsUnimplemented {

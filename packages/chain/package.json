@@ -18,9 +18,9 @@
     "directory": "packages/chain"
   },
   "type": "commonjs",
-  "types": "./src/index.ts",
-  "main": "./src/index.ts",
-  "exports": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
