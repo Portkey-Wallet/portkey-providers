@@ -1,4 +1,5 @@
 import { ChainId, ChainType, IChainProvider } from './chain';
+import { IProvider } from './provider';
 
 export type SendOptions = {
   from?: string;
@@ -39,4 +40,5 @@ export interface BaseContractOptions {
   // contractABI?: AbiItem[];
   contractAddress: string;
   type: ChainType;
+  request: IProvider['request'];
 }

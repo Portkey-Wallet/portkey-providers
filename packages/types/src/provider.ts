@@ -1,5 +1,5 @@
 import { DappEvents, EventId, EventResponse } from './event';
-import { IDappRequestArguments, IDappRequestResponse } from './request';
+import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './request';
 import type { Duplex } from 'stream';
 import { DappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
@@ -10,12 +10,23 @@ export interface IStreamBehavior {
 }
 
 export interface IProvider extends IStreamBehavior {
-  on: (event: DappEvents, listener: (...args: any[]) => void) => this;
-  once: (event: DappEvents, listener: (...args: any[]) => void) => this;
-  emit: (event: DappEvents | EventId, response: IDappRequestResponse | EventResponse) => boolean;
-  addListener: (event: DappEvents, listener: (...args: any[]) => void) => this;
-  removeListener: (event: DappEvents, listener: (...args: any[]) => void) => this;
-  request: (params: IDappRequestArguments) => Promise<IDappRequestResponse>;
+  on(event: DappEvents, listener: (...args: any[]) => void): this;
+  once(event: DappEvents, listener: (...args: any[]) => void): this;
+  emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean;
+  addListener(event: DappEvents, listener: (...args: any[]) => void): this;
+  removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
+  request(params: IDappRequestArguments): Promise<IDappRequestResponse>;
+  request(params: {
+    method: RPCMethodsBase.SEND_TRANSACTION;
+    payload?: SendTransactionParams;
+  }): Promise<IDappRequestResponse>;
+}
+
+export interface SendTransactionParams {
+  chainId: ChainId;
+  contractAddress: string;
+  method: string;
+  params?: readonly unknown[] | object;
 }
 
 export interface IWeb3Provider extends IProvider {
