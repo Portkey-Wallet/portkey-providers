@@ -1,0 +1,88 @@
+@startuml Adapter
+
+abstract class Operator {
+    # constructor(stream : DappInteractionStream) : this
+    - _stream : DappInteractionStream
+    # handleRequestMessage(data : String) : Promise<void>
+    # {abstract} handleRequest(request : IDappRequestWrapper) : Promise<any>
+    + publishEvent(eventMessage : EventMessage) : void
+}
+
+class MobileAdapter extends Operator {
+    - {static} _ins : this
+    + getIns() : this?
+    + constructor(stream : MobileInteractionStream) : this
+    + handleReactNativeRequest(event : NativeEvent) : void
+    - handleRequest(request : IDappRequestWrapper) : Promise<any>
+}
+
+abstract class DappInteractionStream {
+    + {abstract} _write(chunk : any, encoding : string, callback : Function) : void
+}
+
+class MobileInteractionStream extends DappInteractionStream {
+    - webViewRef : WebView
+    + constructor(webViewRef : WebView) : this
+    + _write(chunk : any, encoding : string, callback : Function) : void
+}
+
+class AdapterFactory {
+    + static createOrGetAdapter(webViewRef? : WebView) : MobileAdapter?
+}
+
+class WebView {
+    + injectJavaScript(script : string) : void
+    + onMessage(event : NativeEvent) : Promise<any>
+}
+
+interface EventMessage {
+    + eventName : string
+    + params : any
+}
+
+interface IDappRequestWrapper {
+    + eventId : string
+    + metaData : any
+    + params : IDappRequestArguments
+}
+
+interface IDappRequestArguments {
+    + method : string
+    + payload : any
+}
+
+object DappWebView{
+    Functional Component
+}
+
+note right of DappWebView
+    const adapter:MobileAdapter = useRef<MobileAdapter>(AdapterFactory.createAdapter(webViewRef));
+    WebView.onMessage={adapter.current.handleReactNativeRequest}
+end note
+
+note right of MobileInteractionStream
+    _write=(chunk, encoding, callback)=>{
+        webViewRef.injectJavaScript(JSON.stringify(chunk));
+        callback();
+    }
+end note
+
+note right of Operator
+    handleRequestMessage=(data)=>{
+        ...
+        const result=this.handleRequest(request);
+        this._streams.push(result);
+    }
+end note
+
+WebView --> DappWebView
+AdapterFactory --> DappWebView
+MobileAdapter --> AdapterFactory
+MobileInteractionStream "1" --> "1" MobileAdapter
+EventMessage --> Operator
+WebView "1" --> "1" MobileInteractionStream
+DappInteractionStream "1" --> "1" Operator
+IDappRequestArguments "1" --> "1" IDappRequestWrapper
+IDappRequestWrapper --> Operator
+
+@enduml
