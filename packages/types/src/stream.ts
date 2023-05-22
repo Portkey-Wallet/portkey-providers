@@ -10,7 +10,7 @@ export abstract class DappInteractionStream extends Duplex {
   /**
    * this method is not implemented yet.
    */
-  createSubStream = (name: String) => {};
+  createSubStream = (_name: String) => {};
 
   /**
    *
