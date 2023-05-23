@@ -1,3 +1,5 @@
+import { RPCMethodsBase, RPCMethodsUnimplemented } from '@portkey/provider-types';
+
 /**
  * get page's host name
  * @param url page url like ```https://www.portkey.finance/mock?name=portkey&age=1```
@@ -9,7 +11,6 @@ export const getHostName = (url: string): string => {
     ? regex.exec(url)?.reduce((acc, cur, index) => acc + (index === 1 || index === 2 ? cur : ''), '') ?? 'unknown'
     : 'unknown';
 };
-import { RPCMethodsBase, RPCMethodsUnimplemented } from '@portkey/provider-types';
 
 export function isRPCMethodsBase(method: string): method is RPCMethodsBase {
   return Object.values(RPCMethodsBase).indexOf(method as any) !== -1;
