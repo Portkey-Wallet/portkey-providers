@@ -10,7 +10,7 @@ export abstract class DappInteractionStream extends Duplex {
   /**
    * this method is not implemented yet.
    */
-  createSubStream = (name: String) => {};
+  createSubStream = (_name: String) => {};
 
   /**
    *
@@ -33,7 +33,7 @@ export abstract class DappInteractionStream extends Duplex {
    * ```
    * _write=(chunk, encoding, callback)=>{
    * const {eventId, params} = chunk;
-   * webViewRef.injectJavaScript(`window.aelf.emit(${eventId},JSON.stringify(params))`);
+   * webViewRef.injectJavaScript(`window.portkey.emit(${eventId},JSON.stringify(params))`);
    * callback();
    * }
    * ```

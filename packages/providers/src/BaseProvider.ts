@@ -7,13 +7,12 @@ import {
   ConsoleLike,
   ResponseCode,
   EventResponse,
-  RPCMethodsBase,
   BaseProviderOptions,
   DappInteractionStream,
   IDappRequestArguments,
   IDappRequestResponse,
-  RPCMethodsUnimplemented,
 } from '@portkey/provider-types';
+import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: DappInteractionStream;
@@ -79,10 +78,11 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   public request = async (params: IDappRequestArguments): Promise<IDappRequestResponse> => {
     const eventId = this.getEventId();
     const { method } = params || {};
+    this._log.log(params, 'request,=======params');
     if (!this.methodCheck(method)) {
       return { code: ResponseCode.ERROR_IN_PARAMS, msg: 'method not found!' };
     }
-    this.companionStream.push({ eventId, params });
+    this.companionStream.push(JSON.stringify({ eventId, params }));
     return new Promise((resolve, reject) => {
       this.once(eventId, (response: IDappRequestResponse) => {
         if (response.code === ResponseCode.SUCCESS) {
@@ -95,7 +95,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   };
 
   protected methodCheck = (method: string): method is RPCMethods => {
-    return method in RPCMethodsBase || method in RPCMethodsUnimplemented;
+    return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
   };
 
   setupStream = (companionStream: DappInteractionStream) => {

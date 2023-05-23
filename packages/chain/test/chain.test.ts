@@ -17,11 +17,12 @@ describe('chain describe', () => {
   });
   test('test chain contract', async () => {
     const tokenContract = chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE');
-    // const balance = await tokenContract.callViewMethod('GetBalance', {
-    //   symbol: 'ELF',
-    //   owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
-    // });
-    console.log(tokenContract, '=======tokenContract');
-    expect('0').toBe('0');
-  });
+    const info = await tokenContract.callViewMethod<{ balance: string; symbol: string; owner: string }>('GetBalance', {
+      symbol: 'ELF',
+      owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+    });
+    expect(info).toHaveProperty('symbol');
+    expect(info).toHaveProperty('balance');
+    expect(info).toHaveProperty('owner');
+  }, 10000);
 });
