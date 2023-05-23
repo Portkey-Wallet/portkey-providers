@@ -13,7 +13,10 @@ import {
   IDappRequestArguments,
   IDappRequestResponse,
   RPCMethodsUnimplemented,
+  IDappRequestWrapper,
+  PageMetaData,
 } from '@portkey/provider-types';
+import { getHostName } from './utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: DappInteractionStream;
@@ -82,7 +85,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (!this.methodCheck(method)) {
       return { code: ResponseCode.ERROR_IN_PARAMS, msg: 'method not found!' };
     }
-    this.companionStream.push({ eventId, params });
+    this.companionStream.push({
+      eventId,
+      params: Object.assign({}, params, { metaData: this.getMetaData() } as Partial<IDappRequestArguments>),
+    } as IDappRequestWrapper);
     return new Promise((resolve, reject) => {
       this.once(eventId, (response: IDappRequestResponse) => {
         if (response.code === ResponseCode.SUCCESS) {
@@ -92,6 +98,12 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         }
       });
     });
+  };
+
+  private getMetaData = (): PageMetaData => {
+    return {
+      hostname: getHostName(window.location.href),
+    };
   };
 
   protected methodCheck = (method: string): method is RPCMethods => {
