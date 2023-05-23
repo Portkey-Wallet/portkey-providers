@@ -36,6 +36,19 @@ export enum ResponseCode {
   USER_DENIED = 3,
 }
 
+export type ResponseCodeType = keyof typeof ResponseCode;
+
+export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
+  SUCCESS: 'success',
+  ERROR_IN_PARAMS: 'please check your params.',
+  UNKNOWN_METHOD: 'you are using an unknown method name, please check again.',
+  UNIMPLEMENTED: 'this method is not implemented yet.',
+  UNAUTHENTICATED: `you are not authenticated, use request({method:'accounts'}) first.`,
+  INTERNAL_ERROR: 'server internal error.',
+  TIMEOUT: 'request timeout.',
+  USER_DENIED: 'user denied.',
+};
+
 export enum RPCMethodsBase {
   ACCOUNTS = 'accounts',
   REQUEST_ACCOUNTS = 'requestAccounts',
