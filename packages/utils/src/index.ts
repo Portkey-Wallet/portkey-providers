@@ -1,5 +1,12 @@
-import { IDappRequestResponse, ResponseCode, ResponseCodeType, ResponseMessagePreset } from '../src';
-import { AnyOriginMark, SpecialOriginMark, SpecialOriginMarkValues } from '../src/origin';
+import {
+  AnyOriginMark,
+  SpecialOriginMark,
+  SpecialOriginMarkValues,
+  IDappRequestResponse,
+  ResponseCode,
+  ResponseCodeType,
+  ResponseMessagePreset,
+} from '@portkey/provider-types';
 
 /**
  * this class is used to generate response data

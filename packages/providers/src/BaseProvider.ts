@@ -19,7 +19,7 @@ import {
 } from '@portkey/provider-types';
 import { getHostName } from './utils';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
-import { CryptoManager, generateOriginName } from '@portkey/provider-types';
+import { CryptoManager, generateOriginName } from '@portkey/provider-utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: IDappInteractionStream;

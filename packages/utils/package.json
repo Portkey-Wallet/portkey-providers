@@ -1,5 +1,5 @@
 {
-  "name": "@portkey/detect-provider",
+  "name": "@portkey/provider-utils",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -15,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Portkey-Wallet/portkey-providers.git",
-    "directory": "packages/detect-provider"
+    "directory": "packages/utils"
   },
   "type": "commonjs",
   "types": "./dist/index.d.ts",
