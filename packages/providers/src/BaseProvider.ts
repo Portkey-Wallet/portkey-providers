@@ -41,6 +41,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   public init = async () => {
+    if (this.inited) return;
     try {
       this.keyPair = await CryptoManager.generateKeyPair();
       if (!this.keyPair) throw new Error('generate key pair failed!');
