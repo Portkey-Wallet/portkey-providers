@@ -12,8 +12,12 @@ export interface EventMessage {
   params: any;
 }
 
+export interface EventResponse {
+  eventName: string;
+  data?: any;
+  msg?: string;
+}
+
 export type DappEvents = CentralEthereumEvents;
 
 export type EventId = string;
-
-export type EventResponse = any;

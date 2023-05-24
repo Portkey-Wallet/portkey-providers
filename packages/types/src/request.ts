@@ -1,3 +1,5 @@
+import { AnyOriginMark } from './origin';
+
 export interface IDappRequestWrapper {
   eventId: string;
   params: IDappRequestArguments;
@@ -5,6 +7,7 @@ export interface IDappRequestWrapper {
 
 export interface IDappRequestArguments {
   method: RPCMethods;
+  mark?: AnyOriginMark;
   metaData?: PageMetaData;
   payload?: any;
 }
@@ -50,6 +53,7 @@ export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
 };
 
 export enum RPCMethodsBase {
+  EXCHANGE_KEY = 'exchangeKey',
   ACCOUNTS = 'accounts',
   REQUEST_ACCOUNTS = 'requestAccounts',
   DECRYPT = 'decrypt',

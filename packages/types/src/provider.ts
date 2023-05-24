@@ -3,13 +3,15 @@ import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './r
 import type { Duplex } from 'stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
+import { AnyOriginMark } from './origin';
 
-export interface IStreamBehavior {
+export interface IStreamBehaviour {
   setupStream: (companionStream: Duplex) => void;
   onConnectionDisconnect: (error: Error) => void;
 }
 
-export interface IProvider extends IStreamBehavior {
+export interface IProvider extends IStreamBehaviour, CryptoBehaviour {
+  init(): Promise<void | never>;
   on(event: DappEvents, listener: (...args: any[]) => void): this;
   once(event: DappEvents, listener: (...args: any[]) => void): this;
   emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean;
@@ -20,6 +22,20 @@ export interface IProvider extends IStreamBehavior {
     method: RPCMethodsBase.SEND_TRANSACTION;
     payload?: SendTransactionParams;
   }): Promise<IDappRequestResponse>;
+}
+
+export interface CryptoBehaviour {
+  readonly keyPair: KeyPairJSON;
+}
+
+export interface KeyPairJSON {
+  publicKey: JsonWebKey;
+  privateKey: JsonWebKey;
+}
+
+export interface ExchangeKeyRequestData {
+  publicKey: JsonWebKey;
+  mark: AnyOriginMark;
 }
 
 export interface SendTransactionParams {

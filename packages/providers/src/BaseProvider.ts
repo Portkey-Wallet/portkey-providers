@@ -13,19 +13,50 @@ import {
   IDappRequestResponse,
   IDappRequestWrapper,
   PageMetaData,
+  KeyPairJSON,
+  RPCMethodsBase,
+  ExchangeKeyRequestData,
 } from '@portkey/provider-types';
 import { getHostName } from './utils';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
+import { CryptoManager, generateOriginName } from '@portkey/provider-types';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: IDappInteractionStream;
+  private _keyPair: KeyPairJSON;
+
+  //this.keyPair should not be read from outside
+  public get keyPair(): KeyPairJSON {
+    return undefined as any;
+  }
+
+  public set keyPair(keyPair: KeyPairJSON) {
+    this._keyPair = keyPair;
+  }
+
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
     super();
     this.companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
+    this.init();
   }
+
+  public init = async () => {
+    this.keyPair = await CryptoManager.generateKeyPair();
+    const res = await this.request({
+      method: RPCMethodsBase.EXCHANGE_KEY,
+      payload: { publicKey: this._keyPair.publicKey, mark: generateOriginName() } as ExchangeKeyRequestData,
+    });
+    setTimeout(() => {
+      throw new Error('init timeout');
+    }, 3000);
+    if (res.code !== ResponseCode.SUCCESS) {
+      throw new Error('init failed!');
+    }
+    this._log.info('init success!');
+  };
 
   /**
    * @override
