@@ -41,6 +41,16 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
     this.init();
+    this.companionStream.on('data', this.onData.bind(this));
+  }
+
+  private onData(data: Buffer): void {
+    try {
+      const { eventId, ...params } = JSON.parse(data.toString());
+      if (eventId) this.emit(eventId, params as unknown as IDappRequestResponse);
+    } catch (error) {
+      console.log(error, '====error');
+    }
   }
 
   public init = async () => {
@@ -116,10 +126,12 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (!this.methodCheck(method)) {
       return { code: ResponseCode.ERROR_IN_PARAMS, msg: 'method not found!' };
     }
-    this.companionStream.push({
-      eventId,
-      params: Object.assign({}, params, { metaData: this.getMetaData() } as Partial<IDappRequestArguments>),
-    } as IDappRequestWrapper);
+    this.companionStream.write(
+      JSON.stringify({
+        eventId,
+        params: Object.assign({}, params, { metaData: this.getMetaData() } as Partial<IDappRequestArguments>),
+      } as IDappRequestWrapper),
+    );
     return new Promise((resolve, reject) => {
       this.once(eventId, (response: IDappRequestResponse) => {
         if (response.code === ResponseCode.SUCCESS) {
