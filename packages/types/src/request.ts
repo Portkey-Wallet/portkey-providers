@@ -1,4 +1,4 @@
-import { AnyOriginMark } from './origin';
+import { AnyOriginMark, SpecialOriginMark } from './origin';
 
 export interface IDappRequestWrapper {
   eventId: string;
@@ -25,6 +25,7 @@ export interface IDappResponseWrapper {
 export interface IDappRequestResponse {
   code: ResponseCode;
   data?: any;
+  mark?: AnyOriginMark | SpecialOriginMark;
   msg?: string;
 }
 

@@ -14,25 +14,22 @@ import {
   IDappRequestWrapper,
   PageMetaData,
   KeyPairJSON,
-  RPCMethodsBase,
-  ExchangeKeyRequestData,
+  CryptoResponse,
+  SpecialEvent,
+  MessageType,
+  IDappResponseWrapper,
+  CryptoRequest,
+  SyncOriginData,
 } from '@portkey/provider-types';
 import { getHostName } from './utils';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
-import { CryptoManager, generateOriginName } from '@portkey/provider-utils';
+import { CryptoManager, generateOriginMark } from '@portkey/provider-utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: IDappInteractionStream;
-  private _keyPair: KeyPairJSON;
-
-  //this.keyPair should not be read from outside
-  public get keyPair(): KeyPairJSON {
-    return undefined as any;
-  }
-
-  public set keyPair(keyPair: KeyPairJSON) {
-    this._keyPair = keyPair;
-  }
+  private keyPair: KeyPairJSON;
+  private readonly originMark: string = generateOriginMark();
+  private inited = false;
 
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
@@ -54,18 +51,58 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   public init = async () => {
-    this.keyPair = await CryptoManager.generateKeyPair();
-    const res = await this.request({
-      method: RPCMethodsBase.EXCHANGE_KEY,
-      payload: { publicKey: this._keyPair.publicKey, mark: generateOriginName() } as ExchangeKeyRequestData,
-    });
-    setTimeout(() => {
-      throw new Error('init timeout');
-    }, 3000);
-    if (res.code !== ResponseCode.SUCCESS) {
-      throw new Error('init failed!');
+    if (this.inited) return;
+    try {
+      this.keyPair = await CryptoManager.generateKeyPair();
+      if (!this.keyPair) throw new Error('generate key pair failed!');
+      await new Promise<void>((resolve, reject) => {
+        this.commandCall(SpecialEvent.SYNC, { publicKey: this.keyPair.publicKey } as SyncOriginData).then(() => {
+          this._log.info('init success!');
+          this.inited = true;
+          resolve();
+        });
+        setTimeout(() => {
+          reject('init timeout!');
+        }, 3000);
+      });
+    } catch (e) {
+      this._log.error('init failed, error:' + JSON.stringify(e ?? {}));
+      throw e;
     }
-    this._log.info('init success!');
+  };
+
+  public commandCall = async (command: SpecialEvent, data: any): Promise<IDappResponseWrapper> => {
+    return new Promise((resolve, reject) => {
+      this.companionStream.push({
+        type: MessageType.REQUEST,
+        origin: this.originMark,
+        command,
+        raw: JSON.stringify(data),
+      });
+      this.once(origin, async (res: CryptoResponse) => {
+        const { raw } = res || {};
+        try {
+          if (raw) {
+            const result = JSON.parse(
+              await CryptoManager.decrypt(this.keyPair.privateKey, raw),
+            ) as IDappResponseWrapper;
+            if (result.params.code === ResponseCode.SUCCESS) {
+              resolve(result);
+            } else {
+              reject(`commandCall failed, code:${result.params.code}, message:${result.params.msg}`);
+            }
+          } else {
+            reject('commandCall failed, no data found');
+          }
+        } catch (e) {
+          this._log.error('commandCall failed, error:' + JSON.stringify(e ?? {}));
+          reject(e);
+        }
+      });
+      setTimeout(() => {
+        reject('commandCall timeout!');
+      }, 3000);
+    });
   };
 
   /**
@@ -120,24 +157,50 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   public request = async (params: IDappRequestArguments): Promise<IDappRequestResponse> => {
+    if (!this.inited) {
+      await this.init();
+    }
     const eventId = this.getEventId();
     const { method } = params || {};
     this._log.log(params, 'request,=======params');
     if (!this.methodCheck(method)) {
       return { code: ResponseCode.ERROR_IN_PARAMS, msg: 'method not found!' };
     }
-    this.companionStream.write(
-      JSON.stringify({
-        eventId,
-        params: Object.assign({}, params, { metaData: this.getMetaData() } as Partial<IDappRequestArguments>),
-      } as IDappRequestWrapper),
-    );
+    this.companionStream.write({
+      origin: this.originMark,
+      type: MessageType.REQUEST,
+      raw: await CryptoManager.encrypt(
+        this.keyPair.publicKey,
+        JSON.stringify({
+          eventId,
+          params: Object.assign({}, params, {
+            metaData: this.getMetaData(),
+            mark: this.originMark,
+          } as Partial<IDappRequestArguments>),
+        } as IDappRequestWrapper),
+      ),
+    } as CryptoRequest);
     return new Promise((resolve, reject) => {
-      this.once(eventId, (response: IDappRequestResponse) => {
-        if (response.code === ResponseCode.SUCCESS) {
-          resolve(response);
+      this.once(eventId, async (response: CryptoResponse) => {
+        const { type } = response || {};
+        if (type === MessageType.EVENT) {
+          reject('expect:request response, got: event response, please check again');
+          return;
         } else {
-          reject(response);
+          try {
+            const data = JSON.parse(
+              await CryptoManager.decrypt(this.keyPair.privateKey, response.raw),
+            ) as IDappResponseWrapper;
+            const { params, eventId: actualEventId } = data || {};
+            if (eventId !== actualEventId) {
+              reject(`expect eventId:${eventId}, got eventId:${actualEventId}`);
+              return;
+            } else {
+              resolve(params);
+            }
+          } catch (e) {
+            reject(`request failed, error:${e}`);
+          }
         }
       });
     });
