@@ -10,7 +10,7 @@ export interface IStreamBehaviour {
   onConnectionDisconnect: (error: Error) => void;
 }
 
-export interface IProvider extends IStreamBehaviour, CryptoBehaviour {
+export interface IProvider extends IStreamBehaviour {
   init(): Promise<void | never>;
   on(event: DappEvents, listener: (...args: any[]) => void): this;
   once(event: DappEvents, listener: (...args: any[]) => void): this;
@@ -22,10 +22,6 @@ export interface IProvider extends IStreamBehaviour, CryptoBehaviour {
     method: RPCMethodsBase.SEND_TRANSACTION;
     payload?: SendTransactionParams;
   }): Promise<IDappRequestResponse>;
-}
-
-export interface CryptoBehaviour {
-  readonly keyPair: KeyPairJSON;
 }
 
 export interface KeyPairJSON {

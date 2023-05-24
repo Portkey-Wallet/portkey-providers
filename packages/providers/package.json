@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@portkey/chain": "0.0.1",
-    "@portkey/provider-types": "0.0.1"
+    "@portkey/provider-types": "0.0.1",
+    "@portkey/provider-utils": "0.0.1"
   }
 }
