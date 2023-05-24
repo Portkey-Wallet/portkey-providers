@@ -8,7 +8,7 @@ export interface IDappRequestWrapper {
   params: IDappRequestArguments;
 }
 
-export interface IDappResoponseWrapper {
+export interface IDappResponseWrapper {
   eventId: string;
   params: IDappRequestResponse;
 }

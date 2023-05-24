@@ -1,9 +1,15 @@
 {
   "name": "root",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/react",
+      "**/react-**"
+    ]
+  },
   "scripts": {
     "postinstall": "husky install",
     "version": "yarn run bootstrap && yarn build",
@@ -13,7 +19,8 @@
     "clean": "lerna run clean --stream --parallel",
     "test": "jest",
     "test:browser": "jest --config=jest.browser.config.ts",
-    "make-badges": "istanbul-badges-readme"
+    "make-badges": "istanbul-badges-readme",
+    "example": "yarn workspace @portkey/example run"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

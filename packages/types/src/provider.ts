@@ -1,7 +1,7 @@
 import { DappEvents, EventId, EventResponse } from './event';
 import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './request';
 import type { Duplex } from 'stream';
-import { DappInteractionStream } from './stream';
+import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
 
 export interface IStreamBehavior {
@@ -36,7 +36,7 @@ export interface IWeb3Provider extends IProvider {
 export type ConsoleLike = Pick<Console, 'log' | 'warn' | 'error' | 'debug' | 'info' | 'trace'>;
 
 export type BaseProviderOptions = {
-  connectionStream: DappInteractionStream;
+  connectionStream: IDappInteractionStream;
   /**
    * The logging API to use.
    */

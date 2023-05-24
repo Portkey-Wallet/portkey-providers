@@ -8,14 +8,14 @@ import {
   ResponseCode,
   EventResponse,
   BaseProviderOptions,
-  DappInteractionStream,
+  IDappInteractionStream,
   IDappRequestArguments,
   IDappRequestResponse,
 } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
-  private companionStream: DappInteractionStream;
+  private companionStream: IDappInteractionStream;
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
     super();
@@ -98,7 +98,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
   };
 
-  setupStream = (companionStream: DappInteractionStream) => {
+  setupStream = (companionStream: IDappInteractionStream) => {
     this.companionStream = companionStream;
   };
 
