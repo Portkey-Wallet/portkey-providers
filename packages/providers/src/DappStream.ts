@@ -1,7 +1,7 @@
-import { CentralEthereumEvents, IDappRequestWrapper } from '@portkey/provider-types';
+import { CentralEthereumEvents, IDappInteractionStream, IDappRequestWrapper } from '@portkey/provider-types';
 import { Duplex } from 'stream';
 
-export abstract class DappInteractionStream extends Duplex {
+export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
   constructor() {
     super();
   }

@@ -3,10 +3,11 @@ import {
   IDappInteractionStream,
   IDappRequestResponse,
   IDappRequestWrapper,
-  IDappResponseWrapper as IDappResponseWrapper,
+  IDappResponseWrapper,
+  IOperator,
 } from '@portkey/provider-types';
 
-export default abstract class Operator {
+export default abstract class Operator implements IOperator {
   /**
    * we use _stream to communicate with the dapp
    * Operator does not need to know how to communicate with the dapp
@@ -21,7 +22,7 @@ export default abstract class Operator {
    * use this method to handle the message from the dapp
    * @param message the message from the dapp
    */
-  protected handleRequestMessage = async (message: string) => {
+  public handleRequestMessage = async (message: string) => {
     if (!(message?.length > 0)) {
       this._stream.createMessageEvent('invalid message');
       return;
@@ -41,7 +42,7 @@ export default abstract class Operator {
    * implement this method to handle the request from the dapp
    * @param request the request from the dapp
    */
-  protected abstract handleRequest(request: IDappRequestWrapper): Promise<IDappRequestResponse>;
+  public abstract handleRequest(request: IDappRequestWrapper): Promise<IDappRequestResponse>;
 
   /**
    * expose it to your server code, it creates an event to the dapp

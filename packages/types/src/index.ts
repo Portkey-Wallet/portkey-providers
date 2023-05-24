@@ -4,3 +4,4 @@ export * from './provider';
 export * from './stream';
 export * from './chain';
 export * from './contract';
+export * from './operator';
