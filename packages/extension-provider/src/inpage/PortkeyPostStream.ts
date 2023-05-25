@@ -1,6 +1,6 @@
 import { DappInteractionStream } from '@portkey/providers';
 const noop = () => undefined;
-export class PortkeyPortStream extends DappInteractionStream {
+export class PortkeyPostStream extends DappInteractionStream {
   _read = noop;
 
   _write = function (msg: unknown, _encoding: BufferEncoding, cb: (error?: Error | null) => void) {

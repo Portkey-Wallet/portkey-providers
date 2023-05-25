@@ -1,5 +1,5 @@
 const path = require('path');
-
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const config = {
   entry: './index.ts',
 
@@ -12,7 +12,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/u,
+        test: /\.(ts|tsx|js|jsx)$/u,
         exclude: /node_modules/u,
         use: {
           loader: 'babel-loader',
@@ -27,6 +27,7 @@ const config = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
+  // plugins: [new BundleAnalyzerPlugin()],
 };
 
 module.exports = (_env, argv) => {

@@ -1,4 +1,4 @@
-import { InitializeProvider, PortkeyPortStream } from '@portkey/extension-provider';
+import { InitializeProvider, PortkeyPostStream } from '@portkey/extension-provider';
 import shouldInjectProvider from 'utils/provider-injection';
 
 export default class Inject {
@@ -8,7 +8,7 @@ export default class Inject {
 
   initPortKey() {
     if (shouldInjectProvider()) {
-      const portkeyStream = new PortkeyPortStream();
+      const portkeyStream = new PortkeyPostStream();
 
       new InitializeProvider({
         connectionStream: portkeyStream,
