@@ -1,4 +1,4 @@
-const { portkey } = require('./PortkeyPortStream');
+import { portkey } from './portkey';
 
 // Set content script post-setup function
 Object.defineProperty(window, 'portkey', {
