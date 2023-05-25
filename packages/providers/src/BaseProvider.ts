@@ -158,15 +158,15 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   public request = async (args: IDappRequestArguments): Promise<IDappRequestResponse> => {
     this._log.log(args, 'request,=======params');
     const eventName = this.getEventName();
-    const { method, ...params } = args || {};
+    const { method, payload } = args || {};
     if (!this.methodCheck(method)) {
       throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
     }
     this.companionStream.write(
       JSON.stringify({
-        method: method,
+        method,
+        payload,
         eventName,
-        params,
       }),
     );
     return new Promise((resolve, reject) => {

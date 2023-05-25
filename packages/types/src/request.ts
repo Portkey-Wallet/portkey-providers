@@ -1,5 +1,3 @@
-import { AnyOriginMark } from './origin';
-
 export interface IDappRequestWrapper {
   eventId: string;
   params: IDappRequestArguments;
@@ -7,8 +5,6 @@ export interface IDappRequestWrapper {
 
 export interface IDappRequestArguments {
   method: RPCMethods;
-  mark?: AnyOriginMark;
-  metaData?: PageMetaData;
   payload?: any;
 }
 
