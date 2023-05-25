@@ -49,7 +49,6 @@ export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
 };
 
 export enum RPCMethodsBase {
-  EXCHANGE_KEY = 'exchangeKey',
   ACCOUNTS = 'accounts',
   REQUEST_ACCOUNTS = 'requestAccounts',
   DECRYPT = 'decrypt',

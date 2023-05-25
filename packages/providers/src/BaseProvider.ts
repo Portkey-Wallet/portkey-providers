@@ -25,6 +25,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   private companionStream: IDappInteractionStream;
   private keyPair: KeyPairJSON;
   private initialized = false;
+  private cryptoManager = new CryptoManager(window.crypto.subtle);
 
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
@@ -47,7 +48,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   public init = async () => {
     if (this.initialized) return;
     try {
-      this.keyPair = await CryptoManager.generateKeyPair();
+      this.keyPair = await this.cryptoManager.generateKeyPair();
       if (!this.keyPair) throw new Error('generate key pair failed!');
       await new Promise<void>((resolve, reject) => {
         this.commandCall(SpecialEvent.SYNC, { publicKey: this.keyPair.publicKey } as SyncOriginData).then(() => {
@@ -76,7 +77,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         try {
           if (raw) {
             const result = JSON.parse(
-              await CryptoManager.decrypt(this.keyPair.privateKey, raw),
+              await this.cryptoManager.decrypt(this.keyPair.privateKey, raw),
             ) as IDappResponseWrapper;
             if (result.params.code === ResponseCode.SUCCESS) {
               resolve(result);
@@ -149,10 +150,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   protected async decrypt(params: string) {
-    return CryptoManager.decrypt(this.keyPair.privateKey, params);
+    return this.cryptoManager.decrypt(this.keyPair.privateKey, params);
   }
   protected async encrypt(params: string) {
-    return CryptoManager.encrypt(this.keyPair.privateKey, params);
+    return this.cryptoManager.encrypt(this.keyPair.privateKey, params);
   }
 
   public request = async (args: IDappRequestArguments): Promise<IDappRequestResponse> => {

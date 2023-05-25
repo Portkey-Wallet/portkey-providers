@@ -7,9 +7,15 @@
  * 5. ```Server``` encrypts data with ```publicKey```
  * 6. ```DAPP``` receives the encrypted data and decrypts it with ```privateKey```
  */
-export abstract class CryptoManager {
-  public static generateKeyPair = async (): Promise<{ publicKey: JsonWebKey; privateKey: JsonWebKey }> => {
-    const key = await window.crypto.subtle.generateKey(
+export class CryptoManager {
+  private crypto: CryptoLike;
+
+  constructor(crypto: CryptoLike) {
+    this.crypto = crypto;
+  }
+
+  public generateKeyPair = async (): Promise<{ publicKey: JsonWebKey; privateKey: JsonWebKey }> => {
+    const key = await this.crypto.generateKey(
       {
         name: 'RSA-OAEP',
         modulusLength: 2048,
@@ -19,28 +25,26 @@ export abstract class CryptoManager {
       true,
       ['encrypt', 'decrypt'],
     );
-    const privateKey = await window.crypto.subtle.exportKey('jwk', key.privateKey);
-    const publicKey = await window.crypto.subtle.exportKey('jwk', key.publicKey);
+    const privateKey = await this.crypto.exportKey('jwk', key.privateKey);
+    const publicKey = await this.crypto.exportKey('jwk', key.publicKey);
     return { publicKey, privateKey };
   };
-  public static encrypt = async (cryptoKey: JsonWebKey, data: string): Promise<string> => {
-    const encrypted = await window.crypto.subtle.encrypt(
+  public encrypt = async (cryptoKey: JsonWebKey, data: string): Promise<string> => {
+    const encrypted = await this.crypto.encrypt(
       {
         name: 'RSA-OAEP',
       },
-      await window.crypto.subtle.importKey('jwk', cryptoKey, { name: 'RSA-OAEP', hash: { name: 'SHA-512' } }, true, [
-        'encrypt',
-      ]),
+      await this.crypto.importKey('jwk', cryptoKey, { name: 'RSA-OAEP', hash: { name: 'SHA-512' } }, true, ['encrypt']),
       new TextEncoder().encode(data),
     );
     return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
   };
-  public static decrypt = async (privateKey: JsonWebKey, data: string): Promise<string> => {
-    const decrypted = await window.crypto.subtle.decrypt(
+  public decrypt = async (privateKey: JsonWebKey, data: string): Promise<string> => {
+    const decrypted = await this.crypto.decrypt(
       {
         name: 'RSA-OAEP',
       },
-      await window.crypto.subtle.importKey('jwk', privateKey, { name: 'RSA-OAEP', hash: { name: 'SHA-512' } }, true, [
+      await this.crypto.importKey('jwk', privateKey, { name: 'RSA-OAEP', hash: { name: 'SHA-512' } }, true, [
         'decrypt',
       ]),
       Uint8Array.from(atob(data), c => c.charCodeAt(0)),
@@ -48,3 +52,5 @@ export abstract class CryptoManager {
     return new TextDecoder().decode(decrypted);
   };
 }
+
+export type CryptoLike = Pick<SubtleCrypto, 'generateKey' | 'encrypt' | 'decrypt' | 'exportKey' | 'importKey'>;
