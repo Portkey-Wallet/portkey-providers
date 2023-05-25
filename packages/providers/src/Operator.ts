@@ -1,4 +1,4 @@
-import { AnyOriginMark, ResponseCode, SyncOriginData } from '@portkey/provider-types';
+import { AnyOriginMark, OriginRecord, ResponseCode, SyncOriginData } from '@portkey/provider-types';
 import {
   CryptoRequest,
   CryptoResponse,
@@ -8,7 +8,6 @@ import {
   IDappRequestWrapper,
   IDappResponseWrapper,
   IOperator,
-  MessageType,
   SpecialEvent,
 } from '@portkey/provider-types';
 import { CryptoManager } from '@portkey/provider-utils';
@@ -26,7 +25,7 @@ export default abstract class Operator implements IOperator {
   constructor(stream: IDappInteractionStream) {
     this._stream = stream;
   }
-  public readonly origins: Array<{ origin: AnyOriginMark; publicKey: JsonWebKey }> = [];
+  public readonly origins: Array<OriginRecord> = [];
 
   /**
    * use this method to handle the message from the dapp
@@ -49,15 +48,14 @@ export default abstract class Operator implements IOperator {
         return;
       }
       const publicKey = this.origins.find(item => item.origin === origin)?.publicKey;
-      if (!this.isVavidOrigin(origin) || !publicKey) {
+      if (!this.isValidOrigin(origin) || !publicKey) {
         this._stream.createMessageEvent(`invalid origin:${origin}`);
         return;
       }
-      const params = JSON.parse(await this._cryptoManager.decrypt(publicKey, raw)) as IDappRequestWrapper;
+      const params = JSON.parse(await this.readCryptoData(origin, raw)) as IDappRequestWrapper;
       const { eventId } = params || {};
       const result = await this.handleRequest(params);
       this._stream.push({
-        type: MessageType.REQUEST,
         origin,
         raw: await this._cryptoManager.encrypt(
           publicKey,
@@ -80,28 +78,41 @@ export default abstract class Operator implements IOperator {
       this._stream.createMessageEvent(`error when try to sync origin:${origin}, it is already in the origins list`);
       return;
     } else {
-      const { publicKey } = JSON.parse(raw) as SyncOriginData;
-      this.origins.push({ origin, publicKey });
+      const { publicKey, useCrypto = false } = JSON.parse(raw) as SyncOriginData;
+      this.origins.push({ origin, publicKey, useCrypto });
       this._stream.createMessageEvent(`success sync origin:${origin}`);
       this._stream.push({
         origin,
-        type: MessageType.REQUEST,
         command: SpecialEvent.SYNC,
-        raw: await this._cryptoManager.encrypt(
-          publicKey,
-          JSON.stringify(
-            Object.assign(
-              {},
-              { params: { code: ResponseCode.SUCCESS } as IDappRequestResponse },
-              { eventId: origin },
-            ) as IDappResponseWrapper,
-          ),
+        raw: await this.useCryptoData(
+          origin,
+          Object.assign(
+            {},
+            { params: { code: ResponseCode.SUCCESS } as IDappRequestResponse },
+            { eventId: origin },
+          ) as IDappResponseWrapper,
         ),
       } as CryptoResponse);
     }
   };
 
-  public isVavidOrigin = (origin: string): boolean => {
+  public useCryptoData = async (origin: AnyOriginMark, data: Object): Promise<string> => {
+    const originRecord = this.origins.find(item => item.origin === origin);
+    if (!originRecord) return JSON.stringify(data);
+    return originRecord.useCrypto && originRecord.publicKey
+      ? this._cryptoManager.encrypt(originRecord.publicKey, JSON.stringify(data))
+      : JSON.stringify(data);
+  };
+
+  public readCryptoData = async (origin: AnyOriginMark, data: string): Promise<string> => {
+    const originRecord = this.origins.find(item => item.origin === origin);
+    if (!originRecord) return data;
+    return originRecord.useCrypto && originRecord.publicKey
+      ? this._cryptoManager.decrypt(originRecord.publicKey, data)
+      : data;
+  };
+
+  public isValidOrigin = (origin: string): boolean => {
     return this.origins.some(item => item.origin === origin);
   };
 
