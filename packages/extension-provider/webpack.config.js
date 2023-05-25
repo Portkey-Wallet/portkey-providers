@@ -4,13 +4,9 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const ROOT = path.resolve(__dirname, './');
-const { version } = require(path.resolve(ROOT, 'package.json'));
 const projectRoot = __dirname;
-const workspaceRoot = path.resolve(projectRoot, '../..');
 
 const outputDir = 'dist';
-
 // module.exports =
 let config = {
   // When mode is production or not defined, minimize is enabled. This option automatically adds Uglify plugin.
@@ -18,9 +14,7 @@ let config = {
   // mode: 'none',
   devtool: 'source-map',
   // mode: 'development',
-  entry: {
-    inpage: './src/inpage/index.ts',
-  },
+  entry: './src/index.ts',
   output: {
     path: path.resolve(projectRoot, outputDir),
     filename: 'index.js',
@@ -30,18 +24,10 @@ let config = {
 
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],
-    alias: {
-      'aelf-sdk$': 'aelf-sdk/dist/aelf.umd.js',
-    },
     fallback: {
-      // crypto: false,
-      crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       buffer: require.resolve('buffer'),
-      fs: false,
-      child_process: false,
     },
-    modules: [path.resolve(projectRoot, 'node_modules'), path.resolve(workspaceRoot, 'node_modules')],
   },
   module: {
     rules: [
@@ -93,12 +79,6 @@ let config = {
 };
 
 module.exports = (env, argv) => {
-  config.plugins.push(
-    new webpack.DefinePlugin({
-      'process.env.SDK_VERSION': JSON.stringify('v' + version),
-      'process.env.NODE_ENV': JSON.stringify(argv.mode),
-    }),
-  );
 
   if (argv.mode === 'production') {
     config.plugins.push(
