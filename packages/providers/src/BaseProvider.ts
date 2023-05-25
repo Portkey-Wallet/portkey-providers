@@ -11,25 +11,20 @@ import {
   IDappInteractionStream,
   IDappRequestArguments,
   IDappRequestResponse,
-  IDappRequestWrapper,
-  PageMetaData,
   KeyPairJSON,
   CryptoResponse,
   SpecialEvent,
-  MessageType,
   IDappResponseWrapper,
-  CryptoRequest,
   SyncOriginData,
+  ProviderError,
 } from '@portkey/provider-types';
-import { getHostName } from './utils';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
-import { CryptoManager, generateOriginMark } from '@portkey/provider-utils';
+import { CryptoManager } from '@portkey/provider-utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private companionStream: IDappInteractionStream;
   private keyPair: KeyPairJSON;
-  private readonly originMark: string = generateOriginMark();
-  private inited = false;
+  private initialized = false;
 
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
@@ -37,28 +32,27 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this.companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
-    this.init();
     this.companionStream.on('data', this.onData.bind(this));
   }
 
-  private onData(data: Buffer): void {
+  private onData(buffer: Buffer): void {
     try {
-      const { eventId, ...params } = JSON.parse(data.toString());
-      if (eventId) this.emit(eventId, params as unknown as IDappRequestResponse);
+      const { eventName, ...params } = JSON.parse(buffer.toString());
+      if (eventName) this.emit(eventName, params.info as IDappRequestResponse);
     } catch (error) {
-      console.log(error, '====error');
+      this._log.log(error, '====error');
     }
   }
 
   public init = async () => {
-    if (this.inited) return;
+    if (this.initialized) return;
     try {
       this.keyPair = await CryptoManager.generateKeyPair();
       if (!this.keyPair) throw new Error('generate key pair failed!');
       await new Promise<void>((resolve, reject) => {
         this.commandCall(SpecialEvent.SYNC, { publicKey: this.keyPair.publicKey } as SyncOriginData).then(() => {
           this._log.info('init success!');
-          this.inited = true;
+          this.initialized = true;
           resolve();
         });
         setTimeout(() => {
@@ -74,8 +68,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   public commandCall = async (command: SpecialEvent, data: any): Promise<IDappResponseWrapper> => {
     return new Promise((resolve, reject) => {
       this.companionStream.push({
-        type: MessageType.REQUEST,
-        origin: this.originMark,
         command,
         raw: JSON.stringify(data),
       });
@@ -156,60 +148,37 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  public request = async (params: IDappRequestArguments): Promise<IDappRequestResponse> => {
-    if (!this.inited) {
-      await this.init();
-    }
-    const eventId = this.getEventId();
-    const { method } = params || {};
-    this._log.log(params, 'request,=======params');
+  protected async decrypt(params: string) {
+    return CryptoManager.decrypt(this.keyPair.privateKey, params);
+  }
+  protected async encrypt(params: string) {
+    return CryptoManager.encrypt(this.keyPair.privateKey, params);
+  }
+
+  public request = async (args: IDappRequestArguments): Promise<IDappRequestResponse> => {
+    this._log.log(args, 'request,=======params');
+    const eventName = this.getEventName();
+    const { method, ...params } = args || {};
     if (!this.methodCheck(method)) {
-      return { code: ResponseCode.ERROR_IN_PARAMS, msg: 'method not found!' };
+      throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
     }
-    this.companionStream.write({
-      origin: this.originMark,
-      type: MessageType.REQUEST,
-      raw: await CryptoManager.encrypt(
-        this.keyPair.publicKey,
-        JSON.stringify({
-          eventId,
-          params: Object.assign({}, params, {
-            metaData: this.getMetaData(),
-            mark: this.originMark,
-          } as Partial<IDappRequestArguments>),
-        } as IDappRequestWrapper),
-      ),
-    } as CryptoRequest);
+    this.companionStream.write(
+      JSON.stringify({
+        method: method,
+        eventName,
+        params,
+      }),
+    );
     return new Promise((resolve, reject) => {
-      this.once(eventId, async (response: CryptoResponse) => {
-        const { type } = response || {};
-        if (type === MessageType.EVENT) {
-          reject('expect:request response, got: event response, please check again');
-          return;
+      this.once(eventName, (response: IDappRequestResponse) => {
+        const { code } = response || {};
+        if (code == ResponseCode.SUCCESS) {
+          resolve(response);
         } else {
-          try {
-            const data = JSON.parse(
-              await CryptoManager.decrypt(this.keyPair.privateKey, response.raw),
-            ) as IDappResponseWrapper;
-            const { params, eventId: actualEventId } = data || {};
-            if (eventId !== actualEventId) {
-              reject(`expect eventId:${eventId}, got eventId:${actualEventId}`);
-              return;
-            } else {
-              resolve(params);
-            }
-          } catch (e) {
-            reject(`request failed, error:${e}`);
-          }
+          reject(new ProviderError(`${response.msg}`, code));
         }
       });
     });
-  };
-
-  private getMetaData = (): PageMetaData => {
-    return {
-      hostname: getHostName(window.location.href),
-    };
   };
 
   protected methodCheck = (method: string): method is RPCMethods => {
@@ -229,7 +198,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
    * @param {number} seed used to generate random number, default is 999999
    * @returns {string} eventId
    */
-  protected getEventId = (seed: number = 999999): string => {
+  protected getEventName = (seed: number = 999999): string => {
     return new Date().getTime() + '_' + Math.floor(Math.random() * seed);
   };
 }
