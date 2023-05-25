@@ -17,9 +17,11 @@
     "react-router": "^6.4.0",
     "react-router-dom": "^6.4.0",
     "react-use": "^17.4.0",
-    "@portkey/extension-provider": "0.0.1"
+    "@portkey/extension-provider": "0.0.1",
+    "@portkey/provider-utils": "0.0.1-alpha.1"
   },
   "devDependencies": {
+    "process": "^0.11.10",
     "@babel/plugin-proposal-decorators": "^7.19.1",
     "@babel/plugin-transform-runtime": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
@@ -64,6 +66,7 @@
     "html-webpack-plugin": "^5.5.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "readable-stream": "4.4.0",
     "babel-plugin-import": "^1.13.5",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-transform-class-properties": "^6.2.0"

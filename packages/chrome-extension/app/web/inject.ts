@@ -1,6 +1,8 @@
-import { InitializeProvider, PortkeyPostStream } from '@portkey/extension-provider';
-import shouldInjectProvider from 'utils/provider-injection';
+import { InitializeProvider } from '@portkey/extension-provider';
+import { shouldInjectProvider } from '@portkey/provider-utils';
+import { PortkeyPostStream } from '@portkey/providers';
 
+const CONTENT_SCRIPT = 'portkey-contentscript';
 export default class Inject {
   constructor() {
     this.initPortKey();
@@ -8,12 +10,10 @@ export default class Inject {
 
   initPortKey() {
     if (shouldInjectProvider()) {
-      const portkeyStream = new PortkeyPostStream();
-
+      const portkeyStream = new PortkeyPostStream({ name: CONTENT_SCRIPT, postWindow: window });
       new InitializeProvider({
         connectionStream: portkeyStream,
       });
-      console.log('initPortKey==');
     }
   }
 }

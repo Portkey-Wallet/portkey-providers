@@ -178,6 +178,9 @@ let config = {
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
 };
 
@@ -193,7 +196,6 @@ module.exports = (env, argv) => {
   if (argv.mode === 'production') {
     config.plugins.push(
       new TerserPlugin({
-        //   cache: true,
         parallel: true,
         extractComments: false, // Do not extract comments to separate file summary
         terserOptions: {

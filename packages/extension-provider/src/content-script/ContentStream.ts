@@ -1,0 +1,24 @@
+import { PortkeyPostStream } from '@portkey/providers';
+
+export class ContentStream extends PortkeyPostStream {
+  _onMessage(event: any): void {
+    try {
+      const msg = event.data;
+      if (typeof msg !== 'string') return;
+      const data = JSON.parse(msg);
+      // validate message
+      if (!data || typeof data !== 'object') return;
+
+      // if (super.origin !== '*' && data.origin && data.origin !== this.origin) return;
+
+      // // mark stream push message
+      // if (data.target && data.target !== this.name) return;
+
+      // if (!data.info || typeof data.info !== 'object') return;
+
+      this.push(msg);
+    } catch (error) {
+      console.log(error, 'Portkey send message error');
+    }
+  }
+}

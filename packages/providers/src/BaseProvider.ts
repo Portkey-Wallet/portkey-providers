@@ -37,7 +37,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._log = logger;
     this._companionStream.on('data', this._onData.bind(this));
     this._useCrypto = useCrypto;
-    this.init();
   }
 
   private _onData(buffer: Buffer): void {
@@ -75,11 +74,13 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
 
   public commandCall = async (command: SpecialEvent, data: any): Promise<IDappResponseWrapper> => {
     return new Promise((resolve, reject) => {
-      this._companionStream.push({
-        command,
-        origin,
-        raw: JSON.stringify(data),
-      } as CryptoRequest);
+      this._companionStream.push(
+        JSON.stringify({
+          command,
+          origin,
+          raw: JSON.stringify(data),
+        } as CryptoRequest),
+      );
       this.once(origin, async (res: CryptoResponse) => {
         const { raw } = res || {};
         try {
