@@ -24,13 +24,28 @@
   "scripts": {
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
-    "build": "tsc",
     "lint": "eslint --ext .js,.ts .",
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier --write '**/*'",
-    "start": "tsc --watch"
+    "dev": "webpack --mode development",
+    "dev:watch": "webpack watch --mode development",
+    "build": "webpack --mode production",
+    "build:watch": "webpack watch --mode production"
   },
   "dependencies": {
-    "@types/elliptic": "^6.4.14"
+    "@types/elliptic": "^6.4.14",
+    "@portkey/providers": "0.0.1"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.2.5",
+    "webpack": "^5.74.0",
+    "webpack-bundle-analyzer": "^4.6.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.0",
+    "webpack-livereload-plugin": "^3.0.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "stream-browserify": "3.0.0",
+    "readable-stream": "^4.4.0"
   }
 }
