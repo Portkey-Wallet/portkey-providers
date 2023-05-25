@@ -5,7 +5,6 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
   constructor() {
     super();
   }
-
   /**
    * this method is not implemented yet.
    */

@@ -21,7 +21,7 @@ export default abstract class Operator implements IOperator {
    * Operator does not need to know how to communicate with the dapp
    */
   private _stream: IDappInteractionStream;
-  private cryptoManager: CryptoManager = new CryptoManager(window.crypto.subtle);
+  private _cryptoManager: CryptoManager = new CryptoManager(window.crypto.subtle);
 
   constructor(stream: IDappInteractionStream) {
     this._stream = stream;
@@ -53,13 +53,13 @@ export default abstract class Operator implements IOperator {
         this._stream.createMessageEvent(`invalid origin:${origin}`);
         return;
       }
-      const params = JSON.parse(await this.cryptoManager.decrypt(publicKey, raw)) as IDappRequestWrapper;
+      const params = JSON.parse(await this._cryptoManager.decrypt(publicKey, raw)) as IDappRequestWrapper;
       const { eventId } = params || {};
       const result = await this.handleRequest(params);
       this._stream.push({
         type: MessageType.REQUEST,
         origin,
-        raw: await this.cryptoManager.encrypt(
+        raw: await this._cryptoManager.encrypt(
           publicKey,
           JSON.stringify(Object.assign({}, { params: result }, { eventId }) as IDappResponseWrapper),
         ),
@@ -87,7 +87,7 @@ export default abstract class Operator implements IOperator {
         origin,
         type: MessageType.REQUEST,
         command: SpecialEvent.SYNC,
-        raw: await this.cryptoManager.encrypt(
+        raw: await this._cryptoManager.encrypt(
           publicKey,
           JSON.stringify(
             Object.assign(
