@@ -57,13 +57,18 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const balance = await tokenContract.callSendMethod('GetBalance', '', {
-              symbol: 'ELF',
-              owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
-            });
+            const balance = await tokenContract.callSendMethod(
+              'GetBalance',
+              '',
+              {
+                symbol: 'ELF',
+                owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+              },
+              { onMethod: 'receipt' },
+            );
             console.log(balance, '=====balance');
           } catch (error) {
-            console.log(error, '====error');
+            console.log(error, '====callSendMethod-error');
           }
         }}>
         callSendMethod

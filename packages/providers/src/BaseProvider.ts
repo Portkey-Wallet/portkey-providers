@@ -17,26 +17,30 @@ import {
   IDappResponseWrapper,
   SyncOriginData,
   ProviderError,
+  CryptoRequest,
 } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 import { CryptoManager } from '@portkey/provider-utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
-  private companionStream: IDappInteractionStream;
-  private keyPair: KeyPairJSON;
-  private initialized = false;
-  private cryptoManager = new CryptoManager(window.crypto.subtle);
+  private _companionStream: IDappInteractionStream;
+  private _keyPair: KeyPairJSON;
+  private _initialized = false;
+  private _cryptoManager = new CryptoManager(window.crypto.subtle);
+  private _useCrypto: boolean;
 
   protected readonly _log: ConsoleLike;
-  constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
+  constructor({ connectionStream, logger = console, maxEventListeners = 100, useCrypto = false }: BaseProviderOptions) {
     super();
-    this.companionStream = connectionStream;
+    this._companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
-    this.companionStream.on('data', this.onData.bind(this));
+    this._companionStream.on('data', this._onData.bind(this));
+    this._useCrypto = useCrypto;
+    this.init();
   }
 
-  private onData(buffer: Buffer): void {
+  private _onData(buffer: Buffer): void {
     try {
       const { eventName, ...params } = JSON.parse(buffer.toString());
       if (eventName) this.emit(eventName, params.info as IDappRequestResponse);
@@ -46,14 +50,17 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   public init = async () => {
-    if (this.initialized) return;
+    if (this._initialized) return;
     try {
-      this.keyPair = await this.cryptoManager.generateKeyPair();
-      if (!this.keyPair) throw new Error('generate key pair failed!');
+      this._keyPair = await this._cryptoManager.generateKeyPair();
+      if (!this._keyPair) throw new Error('generate key pair failed!');
       await new Promise<void>((resolve, reject) => {
-        this.commandCall(SpecialEvent.SYNC, { publicKey: this.keyPair.publicKey } as SyncOriginData).then(() => {
+        this.commandCall(SpecialEvent.SYNC, {
+          publicKey: this._useCrypto ? this._keyPair.publicKey : null,
+          useCrypto: this._useCrypto,
+        } as SyncOriginData).then(() => {
           this._log.info('init success!');
-          this.initialized = true;
+          this._initialized = true;
           resolve();
         });
         setTimeout(() => {
@@ -68,17 +75,16 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
 
   public commandCall = async (command: SpecialEvent, data: any): Promise<IDappResponseWrapper> => {
     return new Promise((resolve, reject) => {
-      this.companionStream.push({
+      this._companionStream.push({
         command,
+        origin,
         raw: JSON.stringify(data),
-      });
+      } as CryptoRequest);
       this.once(origin, async (res: CryptoResponse) => {
         const { raw } = res || {};
         try {
           if (raw) {
-            const result = JSON.parse(
-              await this.cryptoManager.decrypt(this.keyPair.privateKey, raw),
-            ) as IDappResponseWrapper;
+            const result = JSON.parse(await this.readCryptoData(raw)) as IDappResponseWrapper;
             if (result.params.code === ResponseCode.SUCCESS) {
               resolve(result);
             } else {
@@ -96,6 +102,15 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         reject('commandCall timeout!');
       }, 3000);
     });
+  };
+
+  public useCryptoData = async (data: object): Promise<string> => {
+    const raw = JSON.stringify(data);
+    return this._useCrypto ? await this.encrypt(raw) : raw;
+  };
+
+  public readCryptoData = async (data: string): Promise<string> => {
+    return this._useCrypto ? await this.decrypt(data) : data;
   };
 
   /**
@@ -150,10 +165,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   protected async decrypt(params: string) {
-    return this.cryptoManager.decrypt(this.keyPair.privateKey, params);
+    return this._cryptoManager.decrypt(this._keyPair.privateKey, params);
   }
   protected async encrypt(params: string) {
-    return this.cryptoManager.encrypt(this.keyPair.privateKey, params);
+    return this._cryptoManager.encrypt(this._keyPair.privateKey, params);
   }
 
   public request = async (args: IDappRequestArguments): Promise<IDappRequestResponse> => {
@@ -163,7 +178,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (!this.methodCheck(method)) {
       throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
     }
-    this.companionStream.write(
+    this._companionStream.write(
       JSON.stringify({
         method,
         payload,
@@ -186,8 +201,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
   };
 
-  setupStream = (companionStream: IDappInteractionStream) => {
-    this.companionStream = companionStream;
+  setupStream = (_companionStream: IDappInteractionStream) => {
+    this._companionStream = _companionStream;
   };
 
   onConnectionDisconnect = (error: Error) => {
