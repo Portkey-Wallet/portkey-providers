@@ -18,9 +18,9 @@ export interface IDappResponseWrapper {
   params: IDappRequestResponse;
 }
 
-export interface IDappRequestResponse {
+export interface IDappRequestResponse<T = any> {
   code: ResponseCode;
-  data?: any;
+  data?: T;
   msg?: string;
 }
 

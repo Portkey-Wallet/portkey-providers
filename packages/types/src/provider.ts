@@ -16,11 +16,11 @@ export interface IProvider extends IStreamBehaviour {
   emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean;
   addListener(event: DappEvents, listener: (...args: any[]) => void): this;
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
-  request(params: IDappRequestArguments): Promise<IDappRequestResponse>;
-  request(params: {
+  request<T = any>(params: IDappRequestArguments): Promise<IDappRequestResponse<T>>;
+  request<T = any>(params: {
     method: RPCMethodsBase.SEND_TRANSACTION;
     payload?: SendTransactionParams;
-  }): Promise<IDappRequestResponse>;
+  }): Promise<IDappRequestResponse<T>>;
 }
 
 export interface KeyPairJSON {

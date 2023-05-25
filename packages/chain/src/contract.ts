@@ -10,8 +10,10 @@ import {
   ViewResult,
   RPCMethodsBase,
   SendTransactionParams,
+  ProviderError,
+  ResponseCode,
 } from '@portkey/provider-types';
-import { formatFunctionName, getWallet } from './utils';
+import { COMMON_WALLET, formatFunctionName, getTxResult, handleContractError } from './utils';
 
 export abstract class BaseContract {
   public address: string;
@@ -56,7 +58,7 @@ export class AELFContract extends BaseContract implements IContract {
   }
   private async initContract() {
     // init viewContract by common wallet
-    this.viewContract = await this.chainProvider.contractAt(this.address, getWallet());
+    this.viewContract = await this.chainProvider.contractAt(this.address, COMMON_WALLET);
   }
   checkContract = async () => {
     if (!this.viewContract) await this.initContract();
@@ -78,7 +80,14 @@ export class AELFContract extends BaseContract implements IContract {
     paramsOption?: any,
     sendOptions?: SendOptions | undefined,
   ): Promise<SendResult<T>> {
-    return this._request({
+    await this.checkContract();
+    if (!this.viewContract[functionName])
+      throw new ProviderError(`Contract ${this.address} does not exist ${functionName}`, 4001);
+    if (this.viewContract[functionName].call)
+      throw new ProviderError(`The method is the view method ${functionName}`, 4002);
+    const { onMethod = 'transactionHash' } = sendOptions || {};
+
+    const req = await this._request<{ transactionId: string }>({
       method: RPCMethodsBase.SEND_TRANSACTION,
       payload: {
         chainId: this.chainId,
@@ -90,6 +99,23 @@ export class AELFContract extends BaseContract implements IContract {
         },
       } as SendTransactionParams,
     });
+    const { data, code, msg } = req;
+    if (code === ResponseCode.SUCCESS) {
+      if (data?.transactionId) {
+        if (onMethod === 'receipt') {
+          try {
+            const txResult = await getTxResult(this.chainProvider, data?.transactionId);
+            return { data: txResult, ...data };
+          } catch (error) {
+            throw new ProviderError(handleContractError(error).message, 4003, data);
+          }
+        }
+        return data;
+      }
+      return {};
+    } else {
+      throw new ProviderError(msg || 'request fail', 4003, req);
+    }
   }
 }
 
