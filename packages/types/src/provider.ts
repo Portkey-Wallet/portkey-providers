@@ -52,6 +52,7 @@ export type BaseProviderOptions = {
    * The maximum number of event listeners.
    */
   maxEventListeners?: number;
+  useCrypto?: boolean;
 };
 
 export const portkeyInitEvent = 'portkeyInitEvent';

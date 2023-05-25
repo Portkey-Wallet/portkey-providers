@@ -9,7 +9,13 @@ export interface IOperator extends OriginBehaviour {
 }
 
 export interface OriginBehaviour {
-  readonly origins: Array<{ origin: AnyOriginMark; publicKey: JsonWebKey }>;
-  isVavidOrigin(origin: AnyOriginMark): boolean;
+  readonly origins: Array<OriginRecord>;
+  isValidOrigin(origin: AnyOriginMark): boolean;
   originSync(origin: AnyOriginMark, raw: string): void;
+}
+
+export interface OriginRecord {
+  origin: AnyOriginMark;
+  publicKey?: JsonWebKey;
+  useCrypto?: boolean;
 }

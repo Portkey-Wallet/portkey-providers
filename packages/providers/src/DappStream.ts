@@ -1,7 +1,7 @@
 import { CentralEthereumEvents, IDappInteractionStream, IDappRequestWrapper } from '@portkey/provider-types';
 import { Duplex } from 'readable-stream';
 
-export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
+export abstract class DappInteractionStream extends IDappInteractionStream {
   constructor() {
     super();
   }
@@ -45,7 +45,7 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
 }
 
 /**
- * Use SubStream to create a new Stream port used for other perpose.
+ * Use SubStream to create a new Stream port used for other purpose.
  * For example, you can create a SubStream to deal with RPC connection, and an error won't make the parent stream crash.
  */
 export class SubStream extends Duplex {
