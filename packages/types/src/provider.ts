@@ -1,6 +1,6 @@
 import { DappEvents, EventId, EventResponse } from './event';
 import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './request';
-import type { Duplex } from 'stream';
+import type { Duplex } from 'readable-stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
 
