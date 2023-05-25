@@ -3,7 +3,6 @@ import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './r
 import type { Duplex } from 'stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
-import { AnyOriginMark } from './origin';
 
 export interface IStreamBehaviour {
   setupStream: (companionStream: Duplex) => void;
@@ -27,11 +26,6 @@ export interface IProvider extends IStreamBehaviour {
 export interface KeyPairJSON {
   publicKey: JsonWebKey;
   privateKey: JsonWebKey;
-}
-
-export interface ExchangeKeyRequestData {
-  publicKey: JsonWebKey;
-  mark: AnyOriginMark;
 }
 
 export interface SendTransactionParams {

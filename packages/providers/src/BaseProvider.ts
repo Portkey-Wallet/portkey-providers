@@ -29,7 +29,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   private companionStream: IDappInteractionStream;
   private keyPair: KeyPairJSON;
   private readonly originMark: string = generateOriginMark();
-  private inited = false;
+  private sync = false;
+  private cryptoManager: CryptoManager = new CryptoManager(window.crypto.subtle);
 
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
@@ -41,14 +42,14 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   public init = async () => {
-    if (this.inited) return;
+    if (this.sync) return;
     try {
-      this.keyPair = await CryptoManager.generateKeyPair();
+      this.keyPair = await this.cryptoManager.generateKeyPair();
       if (!this.keyPair) throw new Error('generate key pair failed!');
       await new Promise<void>((resolve, reject) => {
         this.commandCall(SpecialEvent.SYNC, { publicKey: this.keyPair.publicKey } as SyncOriginData).then(() => {
           this._log.info('init success!');
-          this.inited = true;
+          this.sync = true;
           resolve();
         });
         setTimeout(() => {
@@ -74,7 +75,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         try {
           if (raw) {
             const result = JSON.parse(
-              await CryptoManager.decrypt(this.keyPair.privateKey, raw),
+              await this.cryptoManager.decrypt(this.keyPair.privateKey, raw),
             ) as IDappResponseWrapper;
             if (result.params.code === ResponseCode.SUCCESS) {
               resolve(result);
@@ -147,7 +148,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   public request = async (params: IDappRequestArguments): Promise<IDappRequestResponse> => {
-    if (!this.inited) {
+    if (!this.sync) {
       await this.init();
     }
     const eventId = this.getEventId();
@@ -159,7 +160,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this.companionStream.push({
       origin: this.originMark,
       type: MessageType.REQUEST,
-      raw: await CryptoManager.encrypt(
+      raw: await this.cryptoManager.encrypt(
         this.keyPair.publicKey,
         JSON.stringify({
           eventId,
@@ -179,7 +180,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         } else {
           try {
             const data = JSON.parse(
-              await CryptoManager.decrypt(this.keyPair.privateKey, response.raw),
+              await this.cryptoManager.decrypt(this.keyPair.privateKey, response.raw),
             ) as IDappResponseWrapper;
             const { params, eventId: actualEventId } = data || {};
             if (eventId !== actualEventId) {

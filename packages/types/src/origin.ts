@@ -6,7 +6,7 @@ export interface CryptoRequest {
   origin: AnyOriginMark;
   command?: SpecialEvent;
   /**
-   * use ```CryptoManager.encrypt(publicKey,raw)``` to get the ebcrypted data first.
+   * use ```CryptoManager.encrypt(encryptKey,raw)``` to get the ebcrypted data first.
    */
   raw?: string;
 }
@@ -16,7 +16,7 @@ export interface CryptoResponse {
   origin: OriginType;
   command?: SpecialEvent;
   /**
-   * use ```CryptoManager.decrypt(publicKey,raw)``` to get the decrypted data first.
+   * use ```CryptoManager.decrypt(encryptKey,raw)``` to get the decrypted data first.
    */
   raw: string;
 }
