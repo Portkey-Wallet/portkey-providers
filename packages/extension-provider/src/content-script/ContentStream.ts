@@ -9,12 +9,12 @@ export class ContentStream extends PortkeyPostStream {
       // validate message
       if (!data || typeof data !== 'object') return;
 
-      // if (super.origin !== '*' && data.origin && data.origin !== this.origin) return;
+      // if (this.origin !== '*' && data.origin && data.origin !== this.origin) return;
 
-      // // mark stream push message
+      // mark stream push message
       // if (data.target && data.target !== this.name) return;
 
-      // if (!data.info || typeof data.info !== 'object') return;
+      if (!data.payload || typeof data.payload !== 'object') return;
 
       this.push(msg);
     } catch (error) {

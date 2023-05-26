@@ -3,9 +3,9 @@ import { shouldInjectProvider } from '@portkey/provider-utils';
 
 // The filename of the injected communication script.
 export const INJECTION_SCRIPT_FILENAME = 'js/inject.js';
-const CONTENT_SCRIPT = 'metamask-contentscript';
+const CONTENT_SCRIPT = 'portkey-contentscript';
 
-let pageStream;
+let pageStream: ContentStream;
 
 /***
  * The content script is what gets run on the application.
@@ -14,6 +14,18 @@ let pageStream;
 class Content {
   constructor() {
     this.injectInteractionScript();
+    this.setupPageStream();
+  }
+  /**
+   * Establish communication between pages
+   */
+  setupPageStream() {
+    pageStream = new ContentStream({ name: CONTENT_SCRIPT, portWindow: window });
+    pageStream.on('data', (data: Buffer) => {
+      // console.log(data, 'data===pageStream');
+      const params = JSON.parse(data.toString());
+      console.log(params, 'params===pageStream==');
+    });
   }
 
   /***
@@ -22,14 +34,6 @@ class Content {
    * sync up with the one here.
    */
   injectInteractionScript() {
-    pageStream = new ContentStream({ name: CONTENT_SCRIPT, portWindow: window });
-    pageStream.on('data', (data) => {
-      console.log(data, 'data===pageStream');
-    });
-    window.addEventListener('message', (e) => {
-      // We only accept messages from ourselves
-      console.log(e, '====addEventListener===');
-    });
     // window.postMessage({ type: 'portkey', text: 'Hello from the webpage!' }, '*');
     if (shouldInjectProvider()) {
       const script = document.createElement('script');

@@ -71,6 +71,27 @@ function App() {
             console.log(error, '====callSendMethod-error');
           }
         }}>
+        callSendMethod Error
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            console.log(tokenContract, '=====tokenContract');
+
+            const balance = await tokenContract.callSendMethod(
+              'Transfer',
+              '',
+              {
+                symbol: 'ELF',
+                owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+              },
+              { onMethod: 'receipt' },
+            );
+            console.log(balance, '=====balance');
+          } catch (error) {
+            console.log(error, '====callSendMethod-error');
+          }
+        }}>
         callSendMethod
       </button>
     </div>
