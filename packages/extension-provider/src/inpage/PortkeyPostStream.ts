@@ -1,6 +1,6 @@
 import { DappInteractionStream } from '@portkey/providers';
 
-export class PortkeyPortStream extends DappInteractionStream {
+export class PortkeyPostStream extends DappInteractionStream {
   _write = function (msg: unknown, _encoding: BufferEncoding, cb: (error?: Error | null) => void) {
     try {
       if (Buffer.isBuffer(msg)) {

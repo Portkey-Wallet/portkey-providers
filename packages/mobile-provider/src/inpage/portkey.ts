@@ -1,8 +1,8 @@
-import { PortkeyPortStream } from '@portkey/providers';
+import { PortkeyPostStream } from '@portkey/providers';
 import { MobileProvider } from './MobileProvider';
 
 const CONTENT_SCRIPT = 'portkey-contentscript';
 
 export const portkey = new MobileProvider({
-  connectionStream: new PortkeyPortStream({ name: CONTENT_SCRIPT, portWindow: window.ReactNativeWebView }),
+  connectionStream: new PortkeyPostStream({ name: CONTENT_SCRIPT, postWindow: window.ReactNativeWebView }),
 });

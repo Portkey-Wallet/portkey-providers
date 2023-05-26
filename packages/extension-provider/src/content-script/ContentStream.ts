@@ -1,6 +1,6 @@
-import { PortkeyPortStream } from '@portkey/providers';
+import { PortkeyPostStream } from '@portkey/providers';
 
-export class ContentStream extends PortkeyPortStream {
+export class ContentStream extends PortkeyPostStream {
   _onMessage(event: any): void {
     try {
       const msg = event.data;

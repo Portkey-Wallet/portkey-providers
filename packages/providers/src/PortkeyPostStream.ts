@@ -2,27 +2,27 @@ import { DappInteractionStream } from './DappStream';
 
 const noop = () => undefined;
 
-export type PortkeyPortOptions = {
+export type PortkeyPostOptions = {
   name: string;
   targetWindow?: any;
-  portWindow?: any;
+  postWindow?: any;
 };
 
-export class PortkeyPortStream extends DappInteractionStream {
+export class PortkeyPostStream extends DappInteractionStream {
   private _name: string;
   private _origin: string;
-  private _portWindow: any;
+  private _postWindow: any;
   _read = noop;
-  constructor({ portWindow = window, targetWindow, name }: PortkeyPortOptions) {
+  constructor({ postWindow = window, targetWindow, name }: PortkeyPostOptions) {
     super();
     this._name = name;
     this._origin = targetWindow ? '*' : location.origin;
-    this._portWindow = portWindow;
+    this._postWindow = postWindow;
     window.addEventListener('message', this._onMessage.bind(this), false);
   }
   _write = (msg, _encoding, cb) => {
     try {
-      this._portWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.href }));
+      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.href }));
     } catch (err) {
       return cb(new Error('MobilePortStream - disconnected'));
     }
@@ -30,7 +30,7 @@ export class PortkeyPortStream extends DappInteractionStream {
   };
   _onMessage(event) {
     console.log(event, '======event');
-    console.log(this._portWindow, '======this._portWindow');
+    console.log(this._postWindow, '======this._postWindow');
     console.log(this._origin, '======this._origin');
     console.log(this._name, '======this._name');
 
