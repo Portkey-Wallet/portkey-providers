@@ -22,4 +22,8 @@ export abstract class Web3Provider extends BaseProvider implements IWeb3Provider
   getInitialize() {
     return this.initializeState();
   }
+
+  isConnected() {
+    return this.state.isConnected;
+  }
 }
