@@ -36,7 +36,6 @@ export class IProviderMockStream extends DappInteractionStream {
   _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
-    console.log('producerStream=====_write=', convertedText);
     this._platform.sendResponse(JSON.parse(convertedText));
   }
 }
@@ -50,7 +49,6 @@ export class ICustomerMockStream extends DappInteractionStream {
   _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
-    console.log('customerStream=====_write=', convertedText);
     this._platform.sendMessage(JSON.parse(convertedText));
   }
 }

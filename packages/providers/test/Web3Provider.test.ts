@@ -10,8 +10,6 @@ const mockEvent = new EventEmitter();
 
 class MockServer {
   postMessage(message) {
-    console.log(message, '======message');
-
     const { eventName, method } = JSON.parse(message);
 
     switch (method) {
@@ -35,8 +33,7 @@ class MockServer {
   }
 
   pushMessage(eventName, info) {
-    console.log(eventName, '=====eventName', info);
-
+    // react native postMessage
     mockEvent.emit(
       'message',
       JSON.stringify({
@@ -62,6 +59,7 @@ class MockStream extends DappInteractionStream {
   }
   _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
     try {
+      // send
       server.readMessage(chunk.toString());
     } catch (err) {
       return callback(new Error('MockStream - disconnected'));
