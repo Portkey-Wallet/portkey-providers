@@ -1,3 +1,5 @@
+import { CryptoTool, KeyPairJSON } from '@portkey/provider-types';
+
 /**
  * this class is used to manage crypto operations
  * 1. ```DAPP``` creates KeyPair ```{ publicKey: JsonWebKey; privateKey: JsonWebKey }```
@@ -7,14 +9,14 @@
  * 5. ```Server``` encrypts data with ```publicKey```
  * 6. ```DAPP``` receives the encrypted data and decrypts it with ```privateKey```
  */
-export class CryptoManager {
+export class CryptoManager implements CryptoTool {
   private crypto: CryptoLike;
 
   constructor(crypto: CryptoLike) {
     this.crypto = crypto;
   }
 
-  public generateKeyPair = async (): Promise<{ publicKey: JsonWebKey; privateKey: JsonWebKey }> => {
+  public generateKeyPair = async (): Promise<KeyPairJSON> => {
     const key = await this.crypto.generateKey(
       {
         name: 'RSA-OAEP',

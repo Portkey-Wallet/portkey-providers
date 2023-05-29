@@ -1,4 +1,4 @@
-import { CentralEthereumEvents, IDappInteractionStream, IDappRequestWrapper } from '@portkey/provider-types';
+import { CentralEthereumEvents, IDappInteractionStream } from '@portkey/provider-types';
 import { Duplex } from 'readable-stream';
 
 export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
@@ -10,12 +10,14 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
    */
   createSubStream = (_name: String) => {};
 
+  _read = (_size?: number | undefined): void => {};
+
   /**
    *
    * @param message the message content you want to send to the dapp
    */
   createMessageEvent = (message: string) => {
-    this.push({ event: CentralEthereumEvents.MESSAGE, msg: message });
+    this.write(JSON.stringify({ event: CentralEthereumEvents.MESSAGE, msg: message }));
   };
 
   /**
@@ -37,7 +39,7 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
    * ```
    */
   abstract _write(
-    chunk: IDappRequestWrapper,
+    chunk: ArrayBuffer,
     encoding: BufferEncoding,
     callback: (error?: Error | null | undefined) => void,
   ): void;
