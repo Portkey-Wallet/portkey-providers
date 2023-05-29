@@ -10,7 +10,6 @@ export interface IStreamBehaviour {
 }
 
 export interface IProvider extends IStreamBehaviour {
-  init(): Promise<void | never>;
   on(event: DappEvents, listener: (...args: any[]) => void): this;
   once(event: DappEvents, listener: (...args: any[]) => void): this;
   emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean;
@@ -52,7 +51,7 @@ export type BaseProviderOptions = {
    * The maximum number of event listeners.
    */
   maxEventListeners?: number;
-  useCrypto?: boolean;
+  // useCrypto?: boolean;
 };
 
 export const portkeyInitEvent = 'portkeyInitEvent';

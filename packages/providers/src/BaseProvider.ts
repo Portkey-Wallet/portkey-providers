@@ -11,32 +11,19 @@ import {
   IDappInteractionStream,
   IDappRequestArguments,
   IDappRequestResponse,
-  KeyPairJSON,
-  CryptoResponse,
-  SpecialEvent,
-  IDappResponseWrapper,
-  SyncOriginData,
   ProviderError,
-  CryptoRequest,
 } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
-import { CryptoManager } from '@portkey/provider-utils';
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private _companionStream: IDappInteractionStream;
-  private _keyPair: KeyPairJSON;
-  private _initialized = false;
-  private _cryptoManager = new CryptoManager(window.crypto.subtle);
-  private _useCrypto: boolean;
-
   protected readonly _log: ConsoleLike;
-  constructor({ connectionStream, logger = console, maxEventListeners = 100, useCrypto = false }: BaseProviderOptions) {
+  constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
     super();
     this._companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
     this._companionStream.on('data', this._onData.bind(this));
-    this._useCrypto = useCrypto;
   }
 
   private _onData(buffer: Buffer): void {
@@ -47,72 +34,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       this._log.log(error, '====error');
     }
   }
-
-  public init = async () => {
-    if (this._initialized) return;
-    try {
-      this._keyPair = await this._cryptoManager.generateKeyPair();
-      if (!this._keyPair) throw new Error('generate key pair failed!');
-      await new Promise<void>((resolve, reject) => {
-        this.commandCall(SpecialEvent.SYNC, {
-          publicKey: this._useCrypto ? this._keyPair.publicKey : null,
-          useCrypto: this._useCrypto,
-        } as SyncOriginData).then(() => {
-          this._log.info('init success!');
-          this._initialized = true;
-          resolve();
-        });
-        setTimeout(() => {
-          reject('init timeout!');
-        }, 3000);
-      });
-    } catch (e) {
-      this._log.error('init failed, error:' + JSON.stringify(e ?? {}));
-      throw e;
-    }
-  };
-
-  public commandCall = async (command: SpecialEvent, data: any): Promise<IDappResponseWrapper> => {
-    return new Promise((resolve, reject) => {
-      this._companionStream.push(
-        JSON.stringify({
-          command,
-          origin,
-          raw: JSON.stringify(data),
-        } as CryptoRequest),
-      );
-      this.once(origin, async (res: CryptoResponse) => {
-        const { raw } = res || {};
-        try {
-          if (raw) {
-            const result = JSON.parse(await this.readCryptoData(raw)) as IDappResponseWrapper;
-            if (result.params.code === ResponseCode.SUCCESS) {
-              resolve(result);
-            } else {
-              reject(`commandCall failed, code:${result.params.code}, message:${result.params.msg}`);
-            }
-          } else {
-            reject('commandCall failed, no data found');
-          }
-        } catch (e) {
-          this._log.error('commandCall failed, error:' + JSON.stringify(e ?? {}));
-          reject(e);
-        }
-      });
-      setTimeout(() => {
-        reject('commandCall timeout!');
-      }, 3000);
-    });
-  };
-
-  public useCryptoData = async (data: object): Promise<string> => {
-    const raw = JSON.stringify(data);
-    return this._useCrypto ? await this.encrypt(raw) : raw;
-  };
-
-  public readCryptoData = async (data: string): Promise<string> => {
-    return this._useCrypto ? await this.decrypt(data) : data;
-  };
 
   /**
    * @override
@@ -165,14 +86,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  protected async decrypt(params: string) {
-    return this._cryptoManager.decrypt(this._keyPair.privateKey, params);
-  }
-  protected async encrypt(params: string) {
-    return this._cryptoManager.encrypt(this._keyPair.privateKey, params);
-  }
-
-  public request = async (args: IDappRequestArguments): Promise<IDappRequestResponse> => {
+  public request = async <T = any>(args: IDappRequestArguments): Promise<IDappRequestResponse<T>> => {
     this._log.log(args, 'request,=======params');
     const eventName = this.getEventName();
     const { method, payload } = args || {};
