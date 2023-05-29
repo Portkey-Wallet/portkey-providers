@@ -45,7 +45,7 @@ export class ContentPostStream extends DappInteractionStream {
 
       if (!data.payload || typeof data.payload !== 'object') return;
 
-      this.push(msg);
+      this.write(msg);
     } catch (error) {
       console.log(error, 'Portkey send message error');
     }

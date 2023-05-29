@@ -150,8 +150,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     });
   };
 
-  protected abstract getOrigin: () => string;
-
   protected methodCheck = (method: string): method is RPCMethods => {
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
   };
@@ -163,6 +161,12 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   onConnectionDisconnect = (error: Error) => {
     console.warn('connection disconnected, please re-open this webpage!', error);
   };
+
+  /**
+   * it is used to get the origin of the current page
+   * usually it can be the window.location.origin
+   */
+  protected abstract getOrigin: () => string;
 
   /**
    * create an unduplicated eventId for a request
