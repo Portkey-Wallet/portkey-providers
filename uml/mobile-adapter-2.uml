@@ -1,0 +1,70 @@
+@startuml adapter-2
+
+class DappEventManager {
+    - static list: Array<Operator>
+    + static publishEvent(option: {eventName: string, data?: any, callback?: () => void, filter?: (origin: string) => boolean}):void
+    + static registerOperator(operator: Operator): void
+    + static unregisterOperator(operator: Operator): void
+}
+
+class Operator {
+    - _stream: DappInteractionStream
+    + constructor(stream: DappInteractionStream): this
+    ...
+    - onCreate(): void
+    + onMessage(event:NativeEvent): void
+    + onDestory(): void
+   }
+
+class WebView {
+    + postMessage(message: string): void
+}
+
+class MobileStream extends DappInteractionStream{
+    - _webViewRef: WebView
+    + constructor(webView: WebView): this
+    + _write(): void
+}
+
+class IDappManager {
+    + checkOriginIsAuthorized(origin: string): boolean
+}
+
+Object DappWebView {
+    webViewRef: WebView
+    stream: MobileStream
+    Operator: Operator
+}
+
+note right of Operator::constructor
+constructor(stream){
+    this.onCreate();
+}
+onCreate=()=>{
+    DappEventManager.registerOperator(this);
+}
+onDestory=()=>{
+    DappEventManager.unregisterOperator(this);
+}
+end note
+
+note bottom of DappWebView
+const DappWebView=(){
+    const webViewRef = useRef<WebView>();
+    const stream = useMemo(() => new MobileStream(webViewRef.current), [webViewRef.current]);
+    const operator = useMemo(() => new Operator(stream), [stream]);
+    return <WebView ref={webViewRef}  onMessage={operator.onMessage}/>
+}
+end note
+
+Operator --> DappEventManager
+WebView --> MobileStream
+MobileStream --> Operator
+DappInteractionStream --> Operator
+IDappManager --> Operator
+
+WebView --> DappWebView
+Operator --> DappWebView
+MobileStream --> DappWebView
+
+@enduml
