@@ -14,16 +14,18 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
   /**
    * this method is not implemented yet.
    */
-  createSubStream = (_name: String) => {};
+  createSubStream = (_name: String) => {
+    throw new Error('not implemented yet');
+  };
 
   _read = (_size?: number | undefined): void => {};
 
   /**
    *
-   * @param message the message content you want to send to the dapp
+   * @param msg the message content you want to send to the dapp
    */
-  createMessageEvent = (message: string) => {
-    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR } });
+  createMessageEvent = (msg: string) => {
+    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR, msg } });
   };
 
   public push(chunk: IRequestParams | IResponseType, encoding?: BufferEncoding | undefined): boolean {
