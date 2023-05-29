@@ -122,7 +122,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  public request = async <T = any>(args: IDappRequestArguments): Promise<IDappRequestResponse<T>> => {
+  public request = async <T = any>(args: IDappRequestArguments): Promise<T> => {
+    this._log.log(args, 'request,=======params');
     const eventName = this.getEventName();
     const { method, payload } = args || {};
     if (!this.methodCheck(method)) {
@@ -137,9 +138,9 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     );
     return new Promise((resolve, reject) => {
       this.once(eventName, (response: IDappRequestResponse) => {
-        const { code } = response || {};
+        const { code, data } = response || {};
         if (code == ResponseCode.SUCCESS) {
-          resolve(response);
+          resolve(data);
         } else {
           reject(new ProviderError(`${response.msg}`, code));
         }
@@ -179,9 +180,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     }>({
       method: RPCMethodsUnimplemented.GET_PROVIDER_STATE,
     });
-    const { code, data } = initialResponse;
-    if (code === ResponseCode.SUCCESS && data) {
-      this.state = { ...this.state, ...data, initialized: true };
+    if (initialResponse) {
+      this.state = { ...this.state, ...initialResponse, initialized: true };
     }
     // this.handleAccountsChanged()
   };
