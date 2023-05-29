@@ -18,9 +18,18 @@ import {
   SyncOriginData,
   ProviderError,
   CryptoRequest,
+  NotificationEvents,
+  RPCMethodsUnimplemented,
 } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 import { CryptoManager } from '@portkey/provider-utils';
+
+export interface BaseProviderState {
+  accounts: null | string[];
+  isConnected: boolean;
+  isUnlocked: boolean;
+  initialized: boolean;
+}
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private _companionStream: IDappInteractionStream;
@@ -28,6 +37,13 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   private _initialized = false;
   private _cryptoManager = new CryptoManager(window.crypto.subtle);
   private _useCrypto: boolean;
+  protected state: BaseProviderState;
+  protected static _defaultState: BaseProviderState = {
+    accounts: null,
+    isConnected: false,
+    isUnlocked: false,
+    initialized: false,
+  };
 
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100, useCrypto = false }: BaseProviderOptions) {
@@ -37,11 +53,23 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._log = logger;
     this._companionStream.on('data', this._onData.bind(this));
     this._useCrypto = useCrypto;
+    this.state = BaseProvider._defaultState;
   }
 
   private _onData(buffer: Buffer): void {
     try {
       const { eventName, ...params } = JSON.parse(buffer.toString());
+      switch (eventName) {
+        case NotificationEvents.CONNECTED:
+          this.handleConnect(params.info);
+          return;
+        case NotificationEvents.DISCONNECTED:
+          this.handleDisconnect(params.info);
+          return;
+        case NotificationEvents.ACCOUNTS_CHANGED:
+          this.handleAccountsChanged(params.info);
+          return;
+      }
       if (eventName) this.emit(eventName, params.info as IDappRequestResponse);
     } catch (error) {
       this._log.log(error, '====error');
@@ -172,7 +200,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return this._cryptoManager.encrypt(this._keyPair.privateKey, params);
   }
 
-  public request = async (args: IDappRequestArguments): Promise<IDappRequestResponse> => {
+  public request = async <T>(args: IDappRequestArguments): Promise<IDappRequestResponse<T>> => {
     this._log.log(args, 'request,=======params');
     const eventName = this.getEventName();
     const { method, payload } = args || {};
@@ -218,4 +246,51 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   protected getEventName = (seed: number = 999999): string => {
     return new Date().getTime() + '_' + Math.floor(Math.random() * seed);
   };
+
+  protected initializeState = async () => {
+    if (this.state.initialized === true) {
+      throw new Error('Provider already initialized.');
+    }
+    const initialResponse = await this.request<{
+      accounts: null | string[];
+      isConnected: boolean;
+      isUnlocked: boolean;
+    }>({
+      method: RPCMethodsUnimplemented.GET_PROVIDER_STATE,
+    });
+    const { code, data } = initialResponse;
+    if (code === ResponseCode.SUCCESS && data) {
+      this.state = { ...this.state, ...data, initialized: true };
+    }
+  };
+  /**
+   * When the provider becomes connected, updates internal state and emits required events.
+   * @param event connected
+   * @param response
+   */
+  protected handleConnect(response: IDappRequestResponse | EventResponse) {
+    if (!this.state.isConnected) {
+      this.state.isConnected = true;
+      this.emit(NotificationEvents.CONNECTED, response);
+    }
+  }
+  /**
+   * When the provider becomes disconnected, updates internal state and emits required events
+   * @param event disconnected
+   * @param response
+   */
+  protected handleDisconnect(response: EventResponse) {
+    if (this.state.isConnected) {
+      this.state.isConnected = false;
+      this.state.accounts = null;
+      this.state.isUnlocked = false;
+      this.emit(NotificationEvents.DISCONNECTED, response);
+    }
+  }
+
+  protected handleAccountsChanged(response: EventResponse<{ accounts: unknown[] }>) {
+    // const { data } = response;
+    // this.emit(NotificationEvents.DISCONNECTED, data?.accounts);
+    console.log(response, 'response==handleAccountsChanged');
+  }
 }
