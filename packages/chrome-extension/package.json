@@ -17,8 +17,8 @@
     "react-router": "^6.4.0",
     "react-router-dom": "^6.4.0",
     "react-use": "^17.4.0",
-    "@portkey/extension-provider": "0.0.1",
-    "@portkey/provider-utils": "0.0.1-alpha.1"
+    "@portkey/extension-provider": "0.0.1-alpha.3",
+    "@portkey/provider-utils": "0.0.1-alpha.3"
   },
   "devDependencies": {
     "process": "^0.11.10",
