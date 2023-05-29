@@ -18,6 +18,13 @@ export interface IDappResponseWrapper {
   params: IDappRequestResponse;
 }
 
+export interface IResponseType<T = any> {
+  eventName: string;
+  info: IDappRequestResponse<T>;
+  origin?: string;
+  target?: string;
+}
+
 export interface IDappRequestResponse<T = any> {
   code: ResponseCode;
   data?: T;
@@ -48,21 +55,26 @@ export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
   USER_DENIED: 'user denied.',
 };
 
-export enum RPCMethodsBase {
-  ACCOUNTS = 'accounts',
-  REQUEST_ACCOUNTS = 'requestAccounts',
-  DECRYPT = 'decrypt',
-  CHAIN_ID = 'chainId',
-  GET_PUBLIC_KEY = 'getEncryptionPublicKey',
-  SEND_TRANSACTION = 'sendTransaction',
-}
+export const RPCMethodsBase = {
+  ACCOUNTS: 'accounts',
+  REQUEST_ACCOUNTS: 'requestAccounts',
+  DECRYPT: 'decrypt',
+  CHAIN_ID: 'chainId',
+  GET_PUBLIC_KEY: 'getEncryptionPublicKey',
+  SEND_TRANSACTION: 'sendTransaction',
+} as const;
 
-export enum RPCMethodsUnimplemented {
-  ADD_CHAIN = 'wallet_addEthereumChain',
-  SWITCH_CHAIN = 'wallet_switchEthereumChain',
-  REQUEST_PERMISSIONS = 'wallet_requestPermissions',
-  GET_PERMISSIONS = 'wallet_getPermissions',
-  NET_VERSION = 'net_version',
-}
+export type RPCMethodsBaseType = (typeof RPCMethodsBase)[keyof typeof RPCMethodsBase];
 
-export type RPCMethods = RPCMethodsBase | RPCMethodsUnimplemented;
+export const RPCMethodsUnimplemented = {
+  GET_PROVIDER_STATE: 'wallet_getProviderState',
+  ADD_CHAIN: 'wallet_addEthereumChain',
+  SWITCH_CHAIN: 'wallet_switchEthereumChain',
+  REQUEST_PERMISSIONS: 'wallet_requestPermissions',
+  GET_PERMISSIONS: 'wallet_getPermissions',
+  NET_VERSION: 'net_version',
+} as const;
+
+export type RPCMethodsUnimplementedType = (typeof RPCMethodsUnimplemented)[keyof typeof RPCMethodsUnimplemented];
+
+export type RPCMethods = RPCMethodsBaseType | RPCMethodsUnimplementedType;

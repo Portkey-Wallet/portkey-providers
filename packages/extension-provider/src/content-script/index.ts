@@ -1,1 +1,1 @@
-export * from './ContentStream';
+export * from './ContentPostStream';

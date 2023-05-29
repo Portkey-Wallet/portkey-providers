@@ -24,7 +24,7 @@ export class PortkeyPostStream extends DappInteractionStream {
     try {
       this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.origin }));
     } catch (err) {
-      return cb(new Error('MobilePortStream - disconnected'));
+      return cb(new Error('PortkeyPostStream - disconnected'));
     }
     return cb();
   };
