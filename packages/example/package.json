@@ -1,22 +1,22 @@
 {
   "private": true,
   "name": "@portkey/example",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.4",
   "scripts": {
     "start": "cross-env craco start",
     "pin": "sh -c '{ for X in {core,empty}; do lerna add @web3-react/$X --exact --no-bootstrap --scope=example-cra; done }'"
   },
   "dependencies": {
-    "react": "^18.0.0",
+    "@portkey/detect-provider": "^0.0.1-alpha.4",
     "@types/react-dom": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-scripts": "^5.0.1",
     "aelf-sdk": "^3.2.40",
-    "@portkey/detect-provider": "0.0.1"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "@craco/craco": "^6.4.2",
+    "cross-env": "^7.0.3",
     "ts-loader": "^9.4.0"
   },
   "browserslist": {

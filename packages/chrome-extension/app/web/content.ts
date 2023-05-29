@@ -23,7 +23,7 @@ class Content {
     pageStream = new ContentPostStream({ name: CONTENT_SCRIPT, postWindow: window });
     pageStream.on('data', (data: Buffer) => {
       const params = JSON.parse(data.toString());
-      console.log(params, 'params===setupPageStream');
+      console.log(params, location.origin, 'params===setupPageStream');
       if (params.method === 'requestAccounts') {
         pageStream.send({
           eventName: 'connected',

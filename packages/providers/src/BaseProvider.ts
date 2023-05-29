@@ -18,8 +18,11 @@ import {
 } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
+type Chain = string; //  Chain:ChainId
+type IAccounts = { [x: Chain]: string[] }; // {AELF: ['ELF_xxxxx_AELF'],
+
 export interface BaseProviderState {
-  accounts: null | string[];
+  accounts: null | IAccounts;
   isConnected: boolean;
   isUnlocked: boolean;
   initialized: boolean;
@@ -27,7 +30,6 @@ export interface BaseProviderState {
 
 export default abstract class BaseProvider extends EventEmitter implements IProvider {
   private _companionStream: IDappInteractionStream;
-  // private _initialized = false;
   protected state: BaseProviderState;
   protected static _defaultState: BaseProviderState = {
     accounts: null,
@@ -58,8 +60,13 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         case NotificationEvents.ACCOUNTS_CHANGED:
           this.handleAccountsChanged(params.info);
           return;
+        case NotificationEvents.NETWORK_CHANGED:
+          this.handleNetworkChanged(params.info);
+          return;
+        default:
+          if (eventName) this.emit(eventName, params.info as IRequestParams | EventResponse);
+          break;
       }
-      if (eventName) this.emit(eventName, params.info as IResponseInfo);
     } catch (error) {
       this._log.log(error, '====error');
     }
@@ -168,10 +175,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
 
   protected initializeState = async () => {
     if (this.state.initialized === true) {
-      throw new Error('Provider already initialized.');
+      throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
     }
     const initialResponse = await this.request<{
-      accounts: null | string[];
+      accounts: IAccounts;
       isConnected: boolean;
       isUnlocked: boolean;
     }>({
@@ -180,16 +187,17 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (initialResponse) {
       this.state = { ...this.state, ...initialResponse, initialized: true };
     }
+    // this.handleAccountsChanged()
   };
   /**
    * When the provider becomes connected, updates internal state and emits required events.
    * @param event connected
    * @param response
    */
-  protected handleConnect(response: IResponseInfo | EventResponse) {
+  protected handleConnect(response: EventResponse) {
     if (!this.state.isConnected) {
       this.state.isConnected = true;
-      this.emit(NotificationEvents.CONNECTED, response);
+      this.emit(NotificationEvents.CONNECTED, response.data);
     }
   }
   /**
@@ -202,13 +210,30 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       this.state.isConnected = false;
       this.state.accounts = null;
       this.state.isUnlocked = false;
-      this.emit(NotificationEvents.DISCONNECTED, response);
+      this.emit(NotificationEvents.DISCONNECTED, response.data);
     }
   }
 
-  protected handleAccountsChanged(response: EventResponse<{ accounts: unknown[] }>) {
-    // const { data } = response;
-    // this.emit(NotificationEvents.DISCONNECTED, data?.accounts);
-    console.log(response, 'response==handleAccountsChanged');
+  /**
+   * When the account is updated or the network is switched
+   */
+  protected handleAccountsChanged(response: EventResponse) {
+    const { data } = response;
+
+    // TODO accounts !== this.state.accounts
+    this.state.accounts = data?.accounts;
+
+    this.emit(NotificationEvents.ACCOUNTS_CHANGED, response.data);
+  }
+  /**
+   * When the network switches, updates internal state and emits required events
+   */
+  protected handleNetworkChanged(response: EventResponse) {
+    const { data } = response;
+
+    // TODO accounts !== this.state.accounts
+    this.state.accounts = data?.accounts;
+    this.initializeState();
+    this.emit(NotificationEvents.NETWORK_CHANGED, response);
   }
 }

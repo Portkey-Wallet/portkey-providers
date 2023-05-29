@@ -13,6 +13,8 @@
   "scripts": {
     "postinstall": "husky install",
     "version": "yarn run bootstrap && yarn build",
+    "update": "lerna updated",
+    "publish:npm": "lerna publish",
     "bootstrap": "lerna bootstrap",
     "prebuild": "yarn clean",
     "build": "lerna run build --stream",
