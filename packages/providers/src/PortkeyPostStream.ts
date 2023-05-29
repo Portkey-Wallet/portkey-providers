@@ -16,7 +16,7 @@ export class PortkeyPostStream extends DappInteractionStream {
   constructor({ postWindow = window, targetWindow, name }: PortkeyPostOptions) {
     super();
     this._name = name;
-    this._origin = targetWindow ? '*' : location.origin;
+    this._origin = targetWindow ? '*' : window.location.origin;
     this._postWindow = postWindow;
     window.addEventListener('message', this._onMessage.bind(this), false);
   }
