@@ -26,6 +26,9 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    fallback: {
+      stream: false,
+    },
   },
   // plugins: [new BundleAnalyzerPlugin()],
 };
