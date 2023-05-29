@@ -16,15 +16,15 @@ export class PortkeyPostStream extends DappInteractionStream {
   constructor({ postWindow = window, targetWindow, name }: PortkeyPostOptions) {
     super();
     this._name = name;
-    this._origin = targetWindow ? '*' : location.origin;
+    this._origin = targetWindow ? '*' : window.location.origin;
     this._postWindow = postWindow;
     window.addEventListener('message', this._onMessage.bind(this), false);
   }
   _write = (msg, _encoding, cb) => {
     try {
-      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.href }));
+      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.origin }));
     } catch (err) {
-      return cb(new Error('MobilePortStream - disconnected'));
+      return cb(new Error('PortkeyPostStream - disconnected'));
     }
     return cb();
   };

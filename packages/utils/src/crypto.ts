@@ -1,4 +1,4 @@
-import { CryptoTool, KeyPairJSON } from '@portkey/provider-types';
+import { KeyPairJSON } from '@portkey/provider-types';
 
 /**
  * this class is used to manage crypto operations
@@ -9,7 +9,7 @@ import { CryptoTool, KeyPairJSON } from '@portkey/provider-types';
  * 5. ```Server``` encrypts data with ```publicKey```
  * 6. ```DAPP``` receives the encrypted data and decrypts it with ```privateKey```
  */
-export class CryptoManager implements CryptoTool {
+export class CryptoManager {
   private crypto: CryptoLike;
 
   constructor(crypto: CryptoLike) {

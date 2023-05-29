@@ -1,7 +1,5 @@
-import { KeyPairJSON } from './provider';
-
-export interface CryptoTool {
-  generateKeyPair: () => Promise<KeyPairJSON>;
-  encrypt: (cryptoKey: JsonWebKey, data: string) => Promise<string>;
-  decrypt(privateKey: JsonWebKey, data: string): Promise<string>;
+export interface ICryptoManager {
+  generateKeyPair(): Promise<{ publicKey: string; privateKey: string }>;
+  encrypt(cryptoKey: string, data: string): Promise<string>;
+  encrypt(privateKey: string, data: string): Promise<string>;
 }

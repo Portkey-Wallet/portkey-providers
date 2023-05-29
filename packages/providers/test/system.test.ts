@@ -14,8 +14,8 @@ const cryptoManager = new CryptoManager(subtle);
 const testPlatform = new ITestPlatform();
 const customerStream = new ICustomerMockStream(testPlatform);
 const providerStream = new IProviderMockStream(testPlatform);
-const customer = new CustomerTestBehaviour({ connectionStream: customerStream, cryptoTool: cryptoManager });
-const producer = new ProducerTestBehaviour(providerStream, cryptoManager);
+const customer = new CustomerTestBehaviour({ connectionStream: customerStream });
+const producer = new ProducerTestBehaviour(providerStream);
 testPlatform.registerCustomer(customer);
 testPlatform.registerProducer(producer);
 

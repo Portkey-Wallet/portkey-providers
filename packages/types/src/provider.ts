@@ -1,5 +1,5 @@
 import { DappEvents, EventId, EventResponse } from './event';
-import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './request';
+import { IDappRequestArguments, IDappRequestResponse } from './request';
 import type { Duplex } from 'readable-stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
@@ -10,7 +10,6 @@ export interface IStreamBehaviour {
 }
 
 export interface IProvider extends IStreamBehaviour {
-  init(): Promise<void | never>;
   on(event: DappEvents, listener: (...args: any[]) => void): this;
   once(event: DappEvents, listener: (...args: any[]) => void): this;
   emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean;
@@ -18,7 +17,7 @@ export interface IProvider extends IStreamBehaviour {
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
   request<T = any>(params: IDappRequestArguments): Promise<IDappRequestResponse<T>>;
   request<T = any>(params: {
-    method: RPCMethodsBase.SEND_TRANSACTION;
+    method: 'sendTransaction';
     payload?: SendTransactionParams;
   }): Promise<IDappRequestResponse<T>>;
 }
@@ -52,7 +51,7 @@ export type BaseProviderOptions = {
    * The maximum number of event listeners.
    */
   maxEventListeners?: number;
-  useCrypto?: boolean;
+  // useCrypto?: boolean;
 };
 
 export const portkeyInitEvent = 'portkeyInitEvent';

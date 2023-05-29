@@ -92,7 +92,7 @@ export class CustomerTestBehaviour extends BaseProvider {
   onMessage = async (message: CryptoResponse): Promise<void | never> => {
     const { raw } = message || {};
     if (!(raw?.length > 0)) throw new Error('invalid raw');
-    const response = JSON.parse(await this.readCryptoData(raw)) as IDappResponseWrapper;
+    const response = JSON.parse(raw) as IDappResponseWrapper;
     const {
       params: { code },
       eventId,

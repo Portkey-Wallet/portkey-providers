@@ -83,8 +83,8 @@ export class AELFContract extends BaseContract implements IContract {
     await this.checkContract();
     if (!this.viewContract[functionName])
       throw new ProviderError(`Contract ${this.address} does not exist ${functionName}`, 4001);
-    if (this.viewContract[functionName].call)
-      throw new ProviderError(`The method is the view method ${functionName}`, 4002);
+    // if (this.viewContract[functionName].call)
+    //   throw new ProviderError(`The method is the view method ${functionName}`, 4002);
     const { onMethod = 'transactionHash' } = sendOptions || {};
 
     const req = await this._request<{ transactionId: string }>({

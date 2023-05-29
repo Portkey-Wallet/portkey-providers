@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { IChain, IContract, IWeb3Provider } from '@portkey/provider-types';
+import { IChain, IContract, IWeb3Provider, NotificationEvents, RPCMethodsBase } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
 import './index.css';
 function App() {
@@ -71,7 +71,44 @@ function App() {
             console.log(error, '====callSendMethod-error');
           }
         }}>
+        callSendMethod Error
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            console.log(tokenContract, '=====tokenContract');
+
+            const balance = await tokenContract.callSendMethod(
+              'Transfer',
+              '',
+              {
+                symbol: 'ELF',
+                owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+              },
+              // { onMethod: 'receipt' },
+            );
+            console.log(balance, '=====balance');
+          } catch (error) {
+            console.log(error, '====callSendMethod-error');
+          }
+        }}>
         callSendMethod
+      </button>
+      <button
+        onClick={async () => {
+          provider.on(NotificationEvents.CONNECTED, (...args) => {
+            console.log(args, 'args===onConnect=event');
+          });
+          // const result = provider.request({ method: 'requestAccounts' });
+          const result = await provider.request({
+            method: RPCMethodsBase.REQUEST_ACCOUNTS,
+            payload: {
+              a: 1,
+            },
+          });
+          console.log(result, 'result=====onConnect');
+        }}>
+        onConnect
       </button>
     </div>
   );
