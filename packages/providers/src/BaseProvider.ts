@@ -9,11 +9,12 @@ import {
   EventResponse,
   BaseProviderOptions,
   IDappInteractionStream,
-  IDappRequestArguments,
-  IDappRequestResponse,
+  IResponseInfo,
   ProviderError,
   NotificationEvents,
   RPCMethodsUnimplemented,
+  RequestOption,
+  IRequestParams,
 } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
@@ -58,7 +59,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
           this.handleAccountsChanged(params.info);
           return;
       }
-      if (eventName) this.emit(eventName, params.info as IDappRequestResponse);
+      if (eventName) this.emit(eventName, params.info as IResponseInfo);
     } catch (error) {
       this._log.log(error, '====error');
     }
@@ -111,14 +112,14 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
    * @param event ```DappEvents | EventId``` event name or eventId
    * @param response ```IDappRequestResponse | EventResponse``` response data
    */
-  public emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean {
+  public emit(event: DappEvents | EventId, response: IResponseInfo | EventResponse): boolean {
     return super.emit(event, response);
   }
 
-  public request = async <T = any>(args: IDappRequestArguments): Promise<T> => {
-    this._log.log(args, 'request,=======params');
+  public request = async <T = any>(params: RequestOption): Promise<T> => {
+    this._log.log(params, 'request,=======params');
     const eventName = this.getEventName();
-    const { method, payload } = args || {};
+    const { method, payload } = params || {};
     if (!this.methodCheck(method)) {
       throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
     }
@@ -127,10 +128,11 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         method,
         payload,
         eventName,
-      }),
+        origin: this.getOrigin(),
+      } as IRequestParams),
     );
     return new Promise((resolve, reject) => {
-      this.once(eventName, (response: IDappRequestResponse) => {
+      this.once(eventName, (response: IResponseInfo) => {
         const { code, data } = response || {};
         if (code == ResponseCode.SUCCESS) {
           resolve(data);
@@ -140,6 +142,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       });
     });
   };
+
+  protected abstract getOrigin: () => string;
 
   protected methodCheck = (method: string): method is RPCMethods => {
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
@@ -182,7 +186,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
    * @param event connected
    * @param response
    */
-  protected handleConnect(response: IDappRequestResponse | EventResponse) {
+  protected handleConnect(response: IResponseInfo | EventResponse) {
     if (!this.state.isConnected) {
       this.state.isConnected = true;
       this.emit(NotificationEvents.CONNECTED, response);

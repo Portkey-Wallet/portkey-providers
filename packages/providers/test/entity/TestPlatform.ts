@@ -1,14 +1,7 @@
 // Provides a virtual platform for test
 
-import {
-  CryptoResponse,
-  CryptoRequest,
-  IDappRequestResponse,
-  IDappRequestWrapper,
-  ResponseCode,
-  IDappResponseWrapper,
-  RPCMethods,
-} from '@portkey/provider-types';
+import { ResponseCode, IResponseType, RPCMethods, IRequestParams } from '@portkey/provider-types';
+import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
 import { DappInteractionStream } from '../../src/DappStream';
 import BaseProvider from '../../src/BaseProvider';
 import Operator from '../../src/Operator';
@@ -26,10 +19,10 @@ export class ITestPlatform implements TestPlatform {
     this._producer = producer;
   };
 
-  sendMessage = (message: CryptoRequest) => {
+  sendMessage = (message: IRequestParams) => {
     this._producer.onMessage(message);
   };
-  sendResponse = (message: CryptoResponse) => {
+  sendResponse = (message: IResponseType) => {
     this._customer.onMessage(message);
   };
 }
@@ -63,24 +56,25 @@ export class ICustomerMockStream extends DappInteractionStream {
 export interface TestPlatform {
   registerCustomer(customer: CustomerTestBehaviour): void;
   registerProducer(producer: ProducerTestBehaviour): void;
-  sendMessage(message: CryptoRequest): void;
-  sendResponse(message: CryptoResponse): void;
+  sendMessage(message: IRequestParams): void;
+  sendResponse(message: IResponseType): void;
 }
 
 export class ProducerTestBehaviour extends Operator {
-  onMessage = async (message: CryptoRequest): Promise<void> => {
+  onMessage = async (message: IRequestParams): Promise<void> => {
     console.log('testOperator=======onMessage', message);
     this.handleRequestMessage(JSON.stringify(message));
   };
 
-  public handleRequest = async (request: IDappRequestWrapper): Promise<IDappRequestResponse<any>> => {
+  public handleRequest = async (request: IRequestParams): Promise<IResponseType<any>> => {
     const {
-      params: { method },
+      eventName,
+      payload: { method },
     } = request || {};
     if (method === TEST_METHOD) {
-      return { code: ResponseCode.SUCCESS, message: 'success' } as IDappRequestResponse;
+      return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName });
     }
-    return { code: ResponseCode.UNKNOWN_METHOD, message: 'error' } as IDappRequestResponse;
+    return generateErrorResponse({ code: ResponseCode.UNKNOWN_METHOD, eventName });
   };
 }
 
@@ -89,15 +83,16 @@ export class CustomerTestBehaviour extends BaseProvider {
     return !!method;
   };
 
-  onMessage = async (message: CryptoResponse): Promise<void | never> => {
-    const { raw } = message || {};
-    if (!(raw?.length > 0)) throw new Error('invalid raw');
-    const response = JSON.parse(raw) as IDappResponseWrapper;
+  protected getOrigin = (): string => {
+    return window.location.origin;
+  };
+
+  onMessage = async (response: IResponseType): Promise<void | never> => {
     const {
-      params: { code },
-      eventId,
+      info: { code },
+      eventName,
     } = response || {};
     if (code !== ResponseCode.SUCCESS) throw new Error('invalid response');
-    this.emit(eventId, response.params);
+    this.emit(eventName, response.info);
   };
 }

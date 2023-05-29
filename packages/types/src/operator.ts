@@ -1,17 +1,11 @@
 import { EventMessage } from './event';
 import { AnyOriginMark } from './origin';
-import { IDappRequestResponse, IDappRequestWrapper } from './request';
+import { IRequestParams, IResponseType } from './request';
 
-export interface IOperator extends OriginBehaviour {
+export interface IOperator {
   handleRequestMessage(message: string): Promise<void>;
-  handleRequest(request: IDappRequestWrapper): Promise<IDappRequestResponse>;
+  handleRequest(request: IRequestParams): Promise<IResponseType>;
   publishEvent(event: EventMessage): void;
-}
-
-export interface OriginBehaviour {
-  readonly origins: Array<OriginRecord>;
-  isValidOrigin(origin: AnyOriginMark): boolean;
-  originSync(origin: AnyOriginMark, raw: string): void;
 }
 
 export interface OriginRecord {

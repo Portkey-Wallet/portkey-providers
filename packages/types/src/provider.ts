@@ -1,5 +1,5 @@
 import { DappEvents, EventId, EventResponse } from './event';
-import { IDappRequestArguments, IDappRequestResponse } from './request';
+import { IRequestParams, IResponseInfo } from './request';
 import type { Duplex } from 'readable-stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
@@ -12,14 +12,11 @@ export interface IStreamBehaviour {
 export interface IProvider extends IStreamBehaviour {
   on(event: DappEvents, listener: (...args: any[]) => void): this;
   once(event: DappEvents, listener: (...args: any[]) => void): this;
-  emit(event: DappEvents | EventId, response: IDappRequestResponse | EventResponse): boolean;
+  emit(event: DappEvents | EventId, response: IResponseInfo | EventResponse): boolean;
   addListener(event: DappEvents, listener: (...args: any[]) => void): this;
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
-  request<T = any>(params: IDappRequestArguments): Promise<IDappRequestResponse<T>>;
-  request<T = any>(params: {
-    method: 'sendTransaction';
-    payload?: SendTransactionParams;
-  }): Promise<IDappRequestResponse<T>>;
+  request<T = any>(params: IRequestParams): Promise<IResponseInfo<T>>;
+  request<T = any>(params: { method: 'sendTransaction'; payload?: SendTransactionParams }): Promise<IResponseInfo<T>>;
 }
 
 export interface KeyPairJSON {

@@ -3,6 +3,8 @@ import { ResponseCode, ResponseMessagePreset, ResponseCodeType, IResponseType } 
 export function generateErrorResponse({
   code,
   msg,
+  origin,
+  target,
   ...params
 }: {
   code: ResponseCode;
@@ -13,6 +15,8 @@ export function generateErrorResponse({
       code,
       msg: msg && msg.length > 0 ? msg : ResponseMessagePreset[ResponseCode[code] as ResponseCodeType],
     },
+    origin,
+    target,
     ...params,
   });
 }
@@ -20,9 +24,11 @@ export function generateErrorResponse({
 export function generateNormalResponse({
   data,
   code,
+  origin,
+  target,
   ...params
 }: {
-  data: any;
+  data?: any;
   code?: ResponseCode;
 } & Omit<IResponseType, 'info'>) {
   return generateResponse({
@@ -30,6 +36,8 @@ export function generateNormalResponse({
       data,
       code: code ?? ResponseCode.SUCCESS,
     },
+    origin,
+    target,
     ...params,
   });
 }

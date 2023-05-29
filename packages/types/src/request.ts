@@ -1,9 +1,11 @@
-export interface IDappRequestWrapper {
-  eventId: string;
-  params: IDappRequestArguments;
+export interface IRequestParams {
+  origin: string;
+  eventName: string;
+  method: RPCMethods;
+  payload?: any;
 }
 
-export interface IDappRequestArguments {
+export interface RequestOption {
   method: RPCMethods;
   payload?: any;
 }
@@ -13,30 +15,31 @@ export interface PageMetaData {
   avatar?: string;
 }
 
-export interface IDappResponseWrapper {
-  eventId: string;
-  params: IDappRequestResponse;
-}
-
 export interface IResponseType<T = any> {
   eventName: string;
-  info: IDappRequestResponse<T>;
+  info: IResponseInfo<T>;
   origin?: string;
   target?: string;
 }
 
-export interface IDappRequestResponse<T = any> {
+export interface IResponseInfo<T = any> {
   code: ResponseCode;
   data?: T;
   msg?: string;
 }
 
+/**
+ * Code values that under zero are unexpected.
+ * Those above zero are some issues that your code may have to face
+ */
 export enum ResponseCode {
+  SUCCESS = 0,
+
   ERROR_IN_PARAMS = -1,
   UNKNOWN_METHOD = -2,
   UNIMPLEMENTED = -3,
   UNAUTHENTICATED = -4,
-  SUCCESS = 0,
+
   INTERNAL_ERROR = 1,
   TIMEOUT = 2,
   USER_DENIED = 3,
@@ -45,14 +48,14 @@ export enum ResponseCode {
 export type ResponseCodeType = keyof typeof ResponseCode;
 
 export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
-  SUCCESS: 'success',
-  ERROR_IN_PARAMS: 'please check your params.',
-  UNKNOWN_METHOD: 'you are using an unknown method name, please check again.',
-  UNIMPLEMENTED: 'this method is not implemented yet.',
-  UNAUTHENTICATED: `you are not authenticated, use request({method:'accounts'}) first.`,
-  INTERNAL_ERROR: 'server internal error.',
-  TIMEOUT: 'request timeout.',
-  USER_DENIED: 'user denied.',
+  SUCCESS: 'Success',
+  ERROR_IN_PARAMS: 'Please check your params.',
+  UNKNOWN_METHOD: 'You are using an unknown method name, please check again.',
+  UNIMPLEMENTED: 'This method is not implemented yet.',
+  UNAUTHENTICATED: `You are not authenticated, use request({method:'accounts'}) first.`,
+  INTERNAL_ERROR: 'Server internal error.',
+  TIMEOUT: 'Request timeout.',
+  USER_DENIED: 'User denied.',
 };
 
 export const RPCMethodsBase = {

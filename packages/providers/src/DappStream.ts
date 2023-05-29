@@ -1,4 +1,10 @@
-import { NotificationEvents, IDappInteractionStream } from '@portkey/provider-types';
+import {
+  NotificationEvents,
+  IDappInteractionStream,
+  IRequestParams,
+  IResponseType,
+  ResponseCode,
+} from '@portkey/provider-types';
 import { Duplex } from 'readable-stream';
 
 export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
@@ -17,8 +23,12 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
    * @param message the message content you want to send to the dapp
    */
   createMessageEvent = (message: string) => {
-    this.push({ event: NotificationEvents.MESSAGE, msg: message });
+    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR } });
   };
+
+  public push(chunk: IRequestParams | IResponseType, encoding?: BufferEncoding | undefined): boolean {
+    return super.push(chunk, encoding);
+  }
 
   /**
    * this method is abstract, so it must be implemented by the subclass.
@@ -56,8 +66,8 @@ export class SubStream extends Duplex {
     this.parentStream = parentStream;
   }
   _read(_size: number): void {}
-  _write(chunk: any, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
-    this.parentStream?.push({ chunk: Object.assign({}, chunk, { name: this.name }), encoding });
+  _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
+    this.parentStream?.push(Object.assign({}, chunk, { name: this.name }));
     callback();
   }
 }
