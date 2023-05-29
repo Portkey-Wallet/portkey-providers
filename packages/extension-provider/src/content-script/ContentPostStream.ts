@@ -1,5 +1,5 @@
-import { DappInteractionStream } from './DappStream';
-
+import { DappInteractionStream } from '@portkey/providers';
+import { IResponseType } from '@portkey/provider-types';
 const noop = () => undefined;
 
 export type PortkeyPostOptions = {
@@ -8,7 +8,7 @@ export type PortkeyPostOptions = {
   postWindow?: any;
 };
 
-export class PortkeyPostStream extends DappInteractionStream {
+export class ContentPostStream extends DappInteractionStream {
   private _name: string;
   private _origin: string;
   private _postWindow: any;
@@ -20,33 +20,30 @@ export class PortkeyPostStream extends DappInteractionStream {
     this._postWindow = postWindow;
     window.addEventListener('message', this._onMessage.bind(this), false);
   }
-  _write = (msg, _encoding, cb) => {
+  _write = (chunk: any, _encoding?: string, cb?: (error?: Error | null | undefined) => void) => {
     try {
-      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.origin }));
+      this._postWindow.postMessage(JSON.stringify(JSON.parse(chunk)));
     } catch (err) {
-      return cb(new Error('PortkeyPostStream - disconnected'));
+      return cb?.(new Error('PortkeyPostStream - disconnected'));
     }
-    return cb();
+    return cb?.();
   };
-  _onMessage(event) {
-    console.log(event, '======event');
-    console.log(this._postWindow, '======this._postWindow');
-    console.log(this._origin, '======this._origin');
-    console.log(this._name, '======this._name');
 
+  send = (params: IResponseType) => {
+    this.write(JSON.stringify(params));
+  };
+
+  _onMessage(event: any): void {
     try {
+      console.log(this._origin, 'ContentPostStream======this._origin');
+      console.log(this._name, 'ContentPostStream======this._name');
       const msg = event.data;
       if (typeof msg !== 'string') return;
       const data = JSON.parse(msg);
       // validate message
       if (!data || typeof data !== 'object') return;
 
-      if (this._origin !== '*' && data.origin && data.origin !== this._origin) return;
-
-      // mark stream push message
-      if (data.target && data.target !== this._name) return;
-
-      if (!data.info || typeof data.info !== 'object') return;
+      if (!data.payload || typeof data.payload !== 'object') return;
 
       this.push(msg);
     } catch (error) {

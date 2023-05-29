@@ -1,23 +1,23 @@
-export enum CentralEthereumEvents {
-  CONNECTED = 'connected',
-  MESSAGE = 'message',
-  DISCONNECTED = 'disconnected',
-  ACCOUNT_CHANGED = 'accountChanged',
-  CHAIN_CHANGED = 'chainChanged',
-  ERROR = 'error',
-}
+export const NotificationEvents = {
+  CONNECTED: 'connected',
+  MESSAGE: 'message',
+  DISCONNECTED: 'disconnected',
+  ACCOUNTS_CHANGED: 'accountsChanged',
+  CHAIN_CHANGED: 'chainChanged',
+  ERROR: 'error',
+} as const;
 
 export interface EventMessage {
-  event: CentralEthereumEvents;
+  event: DappEvents;
   params: any;
 }
 
-export interface EventResponse {
+export interface EventResponse<T = any> {
   eventName: string;
-  data?: any;
+  data?: T;
   msg?: string;
 }
 
-export type DappEvents = CentralEthereumEvents;
+export type DappEvents = (typeof NotificationEvents)[keyof typeof NotificationEvents];
 
 export type EventId = string;
