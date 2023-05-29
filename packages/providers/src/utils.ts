@@ -1,4 +1,9 @@
-import { RPCMethodsBase, RPCMethodsUnimplemented } from '@portkey/provider-types';
+import {
+  RPCMethodsBaseType,
+  RPCMethodsBase,
+  RPCMethodsUnimplemented,
+  RPCMethodsUnimplementedType,
+} from '@portkey/provider-types';
 
 /**
  * get page's host name
@@ -12,10 +17,10 @@ export const getHostName = (url: string): string => {
     : 'unknown';
 };
 
-export function isRPCMethodsBase(method: string): method is RPCMethodsBase {
+export function isRPCMethodsBase(method: string): method is RPCMethodsBaseType {
   return Object.values(RPCMethodsBase).indexOf(method as any) !== -1;
 }
 
-export function isRPCMethodsUnimplemented(method: string): method is RPCMethodsUnimplemented {
+export function isRPCMethodsUnimplemented(method: string): method is RPCMethodsUnimplementedType {
   return Object.values(RPCMethodsUnimplemented).indexOf(method as any) !== -1;
 }

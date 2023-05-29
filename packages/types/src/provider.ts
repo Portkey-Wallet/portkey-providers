@@ -1,5 +1,5 @@
 import { DappEvents, EventId, EventResponse } from './event';
-import { IDappRequestArguments, IDappRequestResponse, RPCMethodsBase } from './request';
+import { IDappRequestArguments, IDappRequestResponse } from './request';
 import type { Duplex } from 'readable-stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
@@ -17,7 +17,7 @@ export interface IProvider extends IStreamBehaviour {
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
   request<T = any>(params: IDappRequestArguments): Promise<IDappRequestResponse<T>>;
   request<T = any>(params: {
-    method: RPCMethodsBase.SEND_TRANSACTION;
+    method: 'sendTransaction';
     payload?: SendTransactionParams;
   }): Promise<IDappRequestResponse<T>>;
 }

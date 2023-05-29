@@ -64,6 +64,8 @@ export const RPCMethodsBase = {
   SEND_TRANSACTION: 'sendTransaction',
 } as const;
 
+export type RPCMethodsBaseType = (typeof RPCMethodsBase)[keyof typeof RPCMethodsBase];
+
 export const RPCMethodsUnimplemented = {
   GET_PROVIDER_STATE: 'wallet_getProviderState',
   ADD_CHAIN: 'wallet_addEthereumChain',
@@ -73,6 +75,6 @@ export const RPCMethodsUnimplemented = {
   NET_VERSION: 'net_version',
 } as const;
 
-export type RPCMethods =
-  | (typeof RPCMethodsBase)[keyof typeof RPCMethodsBase]
-  | (typeof RPCMethodsUnimplemented)[keyof typeof RPCMethodsUnimplemented];
+export type RPCMethodsUnimplementedType = (typeof RPCMethodsUnimplemented)[keyof typeof RPCMethodsUnimplemented];
+
+export type RPCMethods = RPCMethodsBaseType | RPCMethodsUnimplementedType;
