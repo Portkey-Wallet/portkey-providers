@@ -1,10 +1,4 @@
-import {
-  NotificationEvents,
-  IDappInteractionStream,
-  IRequestParams,
-  IResponseType,
-  ResponseCode,
-} from '@portkey/provider-types';
+import { NotificationEvents, IDappInteractionStream, ResponseCode } from '@portkey/provider-types';
 import { Duplex } from 'readable-stream';
 
 export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
@@ -23,10 +17,10 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
    * @param message the message content you want to send to the dapp
    */
   createMessageEvent = (message: string) => {
-    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR } });
+    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR, msg: message } });
   };
 
-  public push(chunk: IRequestParams | IResponseType, encoding?: BufferEncoding | undefined): boolean {
+  public push(chunk: any, encoding?: BufferEncoding | undefined): boolean {
     return super.push(chunk, encoding);
   }
 

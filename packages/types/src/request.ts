@@ -1,13 +1,13 @@
-export interface IRequestParams {
-  origin: string;
+export interface IRequestParams<T = any> {
+  origin?: string;
   eventName: string;
   method: RPCMethods;
-  payload?: any;
+  payload?: T;
 }
 
-export interface RequestOption {
+export interface RequestOption<T = any> {
   method: RPCMethods;
-  payload?: any;
+  payload?: T;
 }
 
 export interface PageMetaData {

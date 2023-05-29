@@ -3,6 +3,8 @@ import {
   RPCMethodsBase,
   RPCMethodsUnimplemented,
   RPCMethodsUnimplementedType,
+  DappEvents,
+  NotificationEvents,
 } from '@portkey/provider-types';
 
 /**
@@ -23,4 +25,8 @@ export function isRPCMethodsBase(method: string): method is RPCMethodsBaseType {
 
 export function isRPCMethodsUnimplemented(method: string): method is RPCMethodsUnimplementedType {
   return Object.values(RPCMethodsUnimplemented).indexOf(method as any) !== -1;
+}
+
+export function isNotificationEvents(eventName: string): eventName is DappEvents {
+  return Object.values(NotificationEvents).indexOf(eventName as any) !== -1;
 }

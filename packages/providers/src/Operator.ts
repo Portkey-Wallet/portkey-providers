@@ -28,7 +28,7 @@ export default abstract class Operator implements IOperator {
     try {
       const requestObj = JSON.parse(message) as IRequestParams;
       const result = await this.handleRequest(requestObj);
-      this._stream.push(result);
+      this._stream.push(JSON.stringify(result));
     } catch (e) {
       console.error('error when parsing message:' + message, 'error:', e);
       this._stream.createMessageEvent('operation failed:' + e?.message);

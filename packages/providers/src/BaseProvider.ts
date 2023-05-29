@@ -6,7 +6,6 @@ import {
   RPCMethods,
   ConsoleLike,
   ResponseCode,
-  EventResponse,
   BaseProviderOptions,
   IDappInteractionStream,
   IResponseInfo,
@@ -16,7 +15,7 @@ import {
   RequestOption,
   IRequestParams,
 } from '@portkey/provider-types';
-import { isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
+import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
 type Chain = string; //  Chain:ChainId
 type IAccounts = { [x: Chain]: string[] }; // {AELF: ['ELF_xxxxx_AELF'],
@@ -49,23 +48,27 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
 
   private _onData(buffer: Buffer): void {
     try {
-      const { eventName, ...params } = JSON.parse(buffer.toString());
-      switch (eventName) {
-        case NotificationEvents.CONNECTED:
-          this.handleConnect(params.info);
-          return;
-        case NotificationEvents.DISCONNECTED:
-          this.handleDisconnect(params.info);
-          return;
-        case NotificationEvents.ACCOUNTS_CHANGED:
-          this.handleAccountsChanged(params.info);
-          return;
-        case NotificationEvents.NETWORK_CHANGED:
-          this.handleNetworkChanged(params.info);
-          return;
-        default:
-          if (eventName) this.emit(eventName, params.info as IRequestParams | EventResponse);
-          break;
+      const { eventName, info } = JSON.parse(buffer.toString());
+      if (isNotificationEvents(eventName)) {
+        switch (eventName) {
+          case NotificationEvents.CONNECTED:
+            this.handleConnect(info);
+            return;
+          case NotificationEvents.DISCONNECTED:
+            this.handleDisconnect(info);
+            return;
+          case NotificationEvents.ACCOUNTS_CHANGED:
+            this.handleAccountsChanged(info);
+            return;
+          case NotificationEvents.NETWORK_CHANGED:
+            this.handleNetworkChanged(info);
+            return;
+          default:
+            if (eventName && info?.data) this.emit(eventName, info.data);
+            break;
+        }
+      } else {
+        if (eventName && info) this.emit(eventName, info as IResponseInfo);
       }
     } catch (error) {
       this._log.log(error, '====error');
@@ -117,9 +120,9 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * emit method to create a event on the provider
    * @param event ```DappEvents | EventId``` event name or eventId
-   * @param response ```IDappRequestResponse | EventResponse``` response data
+   * @param response ```IResponseInfo``` response data
    */
-  public emit(event: DappEvents | EventId, response: IResponseInfo | EventResponse): boolean {
+  public emit(event: DappEvents | EventId, response: IResponseInfo | any): boolean {
     return super.emit(event, response);
   }
 
@@ -135,7 +138,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         method,
         payload,
         eventName,
-        origin: this.getOrigin(),
       } as IRequestParams),
     );
     return new Promise((resolve, reject) => {
@@ -149,8 +151,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       });
     });
   };
-
-  protected abstract getOrigin: () => string;
 
   protected methodCheck = (method: string): method is RPCMethods => {
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
@@ -194,7 +194,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
    * @param event connected
    * @param response
    */
-  protected handleConnect(response: EventResponse) {
+  protected handleConnect(response: IResponseInfo) {
     if (!this.state.isConnected) {
       this.state.isConnected = true;
       this.emit(NotificationEvents.CONNECTED, response.data);
@@ -205,7 +205,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
    * @param event disconnected
    * @param response
    */
-  protected handleDisconnect(response: EventResponse) {
+  protected handleDisconnect(response: IResponseInfo) {
     if (this.state.isConnected) {
       this.state.isConnected = false;
       this.state.accounts = null;
@@ -217,23 +217,23 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * When the account is updated or the network is switched
    */
-  protected handleAccountsChanged(response: EventResponse) {
+  protected handleAccountsChanged(response: IResponseInfo<IAccounts>) {
     const { data } = response;
-
+    if (!data) return;
     // TODO accounts !== this.state.accounts
-    this.state.accounts = data?.accounts;
+    this.state.accounts = data;
 
-    this.emit(NotificationEvents.ACCOUNTS_CHANGED, response.data);
+    this.emit(NotificationEvents.ACCOUNTS_CHANGED, data);
   }
   /**
    * When the network switches, updates internal state and emits required events
    */
-  protected handleNetworkChanged(response: EventResponse) {
+  protected handleNetworkChanged(response: IResponseInfo) {
     const { data } = response;
 
     // TODO accounts !== this.state.accounts
     this.state.accounts = data?.accounts;
     this.initializeState();
-    this.emit(NotificationEvents.NETWORK_CHANGED, response);
+    this.emit(NotificationEvents.NETWORK_CHANGED, response.data);
   }
 }

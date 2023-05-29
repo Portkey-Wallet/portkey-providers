@@ -33,6 +33,7 @@ export class IProviderMockStream extends DappInteractionStream {
     super();
     this._platform = platform;
   }
+  _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
     console.log('producerStream=====_write=', convertedText);
@@ -46,6 +47,7 @@ export class ICustomerMockStream extends DappInteractionStream {
     super();
     this._platform = platform;
   }
+  _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
     console.log('customerStream=====_write=', convertedText);
@@ -67,12 +69,11 @@ export class ProducerTestBehaviour extends Operator {
   };
 
   public handleRequest = async (request: IRequestParams): Promise<IResponseType<any>> => {
-    const {
-      eventName,
-      payload: { method },
-    } = request || {};
+    const { eventName, method } = request || {};
+    console.log(request, '=====request-handleRequest');
+
     if (method === TEST_METHOD) {
-      return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName });
+      return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName, data: { test: null } });
     }
     return generateErrorResponse({ code: ResponseCode.UNKNOWN_METHOD, eventName });
   };

@@ -11,7 +11,6 @@ import {
   RPCMethodsBase,
   SendTransactionParams,
   ProviderError,
-  ResponseCode,
 } from '@portkey/provider-types';
 import { COMMON_WALLET, formatFunctionName, getTxResult, handleContractError } from './utils';
 
@@ -87,7 +86,7 @@ export class AELFContract extends BaseContract implements IContract {
     //   throw new ProviderError(`The method is the view method ${functionName}`, 4002);
     const { onMethod = 'transactionHash' } = sendOptions || {};
 
-    const req = await this._request<{ transactionId: string }>({
+    const { transactionId } = await this._request<{ transactionId: string }>({
       method: RPCMethodsBase.SEND_TRANSACTION,
       payload: {
         chainId: this.chainId,
@@ -99,23 +98,15 @@ export class AELFContract extends BaseContract implements IContract {
         },
       } as SendTransactionParams,
     });
-    const { data, code, msg } = req;
-    if (code === ResponseCode.SUCCESS) {
-      if (data?.transactionId) {
-        if (onMethod === 'receipt') {
-          try {
-            const txResult = await getTxResult(this.chainProvider, data?.transactionId);
-            return { data: txResult, ...data };
-          } catch (error) {
-            throw new ProviderError(handleContractError(error).message, 4003, data);
-          }
-        }
-        return data;
+    if (onMethod === 'receipt') {
+      try {
+        const txResult = await getTxResult(this.chainProvider, transactionId);
+        return { data: txResult, transactionId };
+      } catch (error) {
+        throw new ProviderError(handleContractError(error).message, 4003, { transactionId });
       }
-      return {};
-    } else {
-      throw new ProviderError(msg || 'request fail', 4003, req);
     }
+    return { transactionId };
   }
 }
 

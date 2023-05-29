@@ -7,10 +7,7 @@ import {
   IProviderMockStream,
   TEST_METHOD,
 } from './entity/TestPlatform';
-import { CryptoManager } from '@portkey/provider-utils';
-import { subtle } from 'crypto';
 
-const cryptoManager = new CryptoManager(subtle);
 const testPlatform = new ITestPlatform();
 const customerStream = new ICustomerMockStream(testPlatform);
 const providerStream = new IProviderMockStream(testPlatform);

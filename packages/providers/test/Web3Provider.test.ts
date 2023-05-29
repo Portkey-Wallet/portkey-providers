@@ -35,6 +35,8 @@ class MockServer {
   }
 
   pushMessage(eventName, info) {
+    console.log(eventName, '=====eventName', info);
+
     mockEvent.emit(
       'message',
       JSON.stringify({
