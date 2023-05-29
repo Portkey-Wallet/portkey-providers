@@ -10,6 +10,7 @@ export class InitializeProvider {
 
   initPortKey(props: BaseProviderOptions) {
     const provider = new PortKeyProvider(props);
+    provider.getInitialize();
     const proxyProvider = new Proxy(provider, {
       deleteProperty: () => true,
     });

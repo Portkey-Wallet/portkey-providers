@@ -3,6 +3,7 @@ export const NotificationEvents = {
   MESSAGE: 'message',
   DISCONNECTED: 'disconnected',
   ACCOUNTS_CHANGED: 'accountsChanged',
+  NETWORK_CHANGED: 'networkChanged',
   CHAIN_CHANGED: 'chainChanged',
   ERROR: 'error',
 } as const;
