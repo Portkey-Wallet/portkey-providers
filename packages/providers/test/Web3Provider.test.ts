@@ -118,7 +118,7 @@ class MockStream extends DappInteractionStream {
     } catch (err) {
       return callback(new Error('MockStream - disconnected'));
     }
-    callback();
+    return callback();
   }
 }
 

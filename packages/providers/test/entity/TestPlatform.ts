@@ -1,12 +1,18 @@
 // Provides a virtual platform for test
 
-import { ResponseCode, IResponseType, RPCMethods, IRequestParams } from '@portkey/provider-types';
+import {
+  ResponseCode,
+  IResponseType,
+  IRequestParams,
+  RPCMethodsBase,
+  RPCMethodsUnimplemented,
+} from '@portkey/provider-types';
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
 import { DappInteractionStream } from '../../src/DappStream';
 import BaseProvider from '../../src/BaseProvider';
 import Operator from '../../src/Operator';
 
-export const TEST_METHOD = 'test' as any;
+export const UNKNOWN_METHOD = '42' as any;
 
 export class ITestPlatform implements TestPlatform {
   private _customer: CustomerTestBehaviour;
@@ -37,6 +43,7 @@ export class IProviderMockStream extends DappInteractionStream {
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
     this._platform.sendResponse(JSON.parse(convertedText));
+    return _callback();
   }
 }
 
@@ -49,7 +56,9 @@ export class ICustomerMockStream extends DappInteractionStream {
   _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
+    console.log('ICustomerMockStream::_write', convertedText);
     this._platform.sendMessage(JSON.parse(convertedText));
+    return _callback();
   }
 }
 
@@ -69,29 +78,21 @@ export class ProducerTestBehaviour extends Operator {
   public handleRequest = async (request: IRequestParams): Promise<IResponseType<any>> => {
     const { eventName, method } = request || {};
     console.log(request, '=====request-handleRequest');
-
-    if (method === TEST_METHOD) {
-      return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName, data: { test: null } });
+    switch (method) {
+      case RPCMethodsBase.CHAIN_ID:
+        return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName, data: { test: null } });
+      case RPCMethodsUnimplemented.ADD_CHAIN:
+        return generateErrorResponse({ code: ResponseCode.UNIMPLEMENTED, eventName });
+      default:
+        return generateErrorResponse({ code: ResponseCode.UNKNOWN_METHOD, eventName });
     }
-    return generateErrorResponse({ code: ResponseCode.UNKNOWN_METHOD, eventName });
   };
 }
 
 export class CustomerTestBehaviour extends BaseProvider {
-  methodCheck = (method: string): method is RPCMethods => {
-    return !!method;
-  };
-
-  protected getOrigin = (): string => {
-    return window.location.origin;
-  };
-
   onMessage = async (response: IResponseType): Promise<void | never> => {
-    const {
-      info: { code },
-      eventName,
-    } = response || {};
-    if (code !== ResponseCode.SUCCESS) throw new Error('invalid response');
-    this.emit(eventName, response.info);
+    const { info, eventName } = response || {};
+    console.log('testProvider=======onMessage', response);
+    this.emit(eventName, info);
   };
 }

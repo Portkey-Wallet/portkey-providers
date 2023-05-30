@@ -79,10 +79,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * @override
    * creates a listener on the provider
-   * @param {DappEvents} eventName event name that the listener will listen to
+   * @param {string} event event name that the listener will listen to
    * @param {Function} listener callback function
    */
-  public on(event: DappEvents, listener: (...args: any[]) => void): this {
+  public on(event: string, listener: (...args: any[]) => void): this {
     super.on(event, listener);
     return this;
   }
@@ -90,10 +90,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * @override
    * creates a listener on the provider, the listener will be removed after the first time it is triggered
-   * @param {DappEvents} eventName event name that the listener will listen to
+   * @param {string} event event name that the listener will listen to
    * @param {Function} listener callback function
    */
-  public once(event: DappEvents | EventId, listener: (...args: any[]) => void): this {
+  public once(event: string, listener: (...args: any[]) => void): this {
     super.once(event, listener);
     return this;
   }
@@ -101,20 +101,20 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * @override
    * alias for ```BaseProvider.on()```
-   * @param {DappEvents} eventName event name that the listener will listen to
+   * @param {string} event event name that the listener will listen to
    * @param {Function} listener callback function
    */
-  public addListener(eventName: DappEvents, listener: (...args: any[]) => void): this {
-    return this.on(eventName, listener);
+  public addListener(event: string, listener: (...args: any[]) => void): this {
+    return this.on(event, listener);
   }
 
   /**
    * remove a listener from the provider
-   * @param eventName  event name that the listener used to listen to
+   * @param {string} event event name that the listener used to listen to
    * @param {Function} listener callback function
    */
-  public removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    super.removeListener(eventName, listener);
+  public removeListener(event: string, listener: (...args: any[]) => void): this {
+    super.removeListener(event, listener);
     return this;
   }
 
@@ -131,9 +131,9 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._log.log(params, 'request,=======params');
     const eventName = this.getEventName();
     const { method, payload } = params || {};
-    // if (!this.methodCheck(method)) {
-    //   throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
-    // }
+    if (!this.methodCheck(method)) {
+      throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
+    }
     this._companionStream.write(
       JSON.stringify({
         method,
@@ -155,10 +155,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
 
   protected methodCheck = (method: string): method is RPCMethods => {
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
-  };
-
-  setupStream = (_companionStream: IDappInteractionStream) => {
-    this._companionStream = _companionStream;
   };
 
   onConnectionDisconnect = (error: Error) => {
