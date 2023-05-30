@@ -8,11 +8,6 @@ export const NotificationEvents = {
   ERROR: 'error',
 } as const;
 
-export interface EventMessage {
-  event: DappEvents;
-  params: any;
-}
-
 export interface EventResponse<T = any> {
   eventName: string;
   data?: T;
