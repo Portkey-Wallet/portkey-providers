@@ -1,15 +1,25 @@
-import { NotificationEvents, IDappInteractionStream, ResponseCode } from '@portkey/provider-types';
+import { NotificationEvents, IDappInteractionStream, ResponseCode, IResponseType } from '@portkey/provider-types';
 import { Duplex } from 'readable-stream';
+import ObjectMultiplex from '@metamask/object-multiplex';
+import pump from 'pump';
 
 export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
   constructor() {
     super();
   }
+
+  private _subStreamMap: Map<String, SubStream> = new Map();
+
   /**
    * this method is not implemented yet.
    */
-  createSubStream = (_name: String) => {
-    throw new Error('not implemented yet');
+  public createSubStream = (name: string): SubStream => {
+    if (this._subStreamMap.has(name)) {
+      return this._subStreamMap.get(name) ?? new SubStream(this, name);
+    }
+    const subStream = new SubStream(this, name);
+    this._subStreamMap.set(name, subStream);
+    return subStream;
   };
 
   _read = (_size?: number | undefined): void => {};
@@ -19,7 +29,12 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
    * @param msg the message content you want to send to the dapp
    */
   createMessageEvent = (msg: string) => {
-    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR, msg } });
+    this.write(
+      JSON.stringify({
+        eventName: NotificationEvents.MESSAGE,
+        info: { code: ResponseCode.SUCCESS, msg },
+      } as IResponseType),
+    );
   };
 
   public push(chunk: any, encoding?: BufferEncoding | undefined): boolean {
@@ -27,18 +42,20 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
   }
 
   /**
-   * this method is abstract, so it must be implemented by the subclass.
-   * @example in React Native Webview, you can override this method like this(for provider):
+   * This method is abstract, so it must be implemented by the subclass.
+   * @example In React Native Webview, you can override this method like this(for provider):
    * ```
    * _write=(chunk,encoding,callback)=>{
-   *  window.ReactNativeWebView.postMessage(chunk);
+   * // Remember that chunk is ArrayBuffer, so you need to decode it first.
+   * const data = chunk.toString();
+   *  window.ReactNativeWebView.postMessage(data);
    * callback();
    * }
    * ```
-   * @example and in React Native, you may override this method like this:
+   * @example And in React Native, you may override this method like this:
    * ```
    * _write=(chunk, encoding, callback)=>{
-   * const {eventId, params} = chunk;
+   * const {eventId, params} = JSON.parse(chunk.toString());
    * webViewRef.injectJavaScript(`window.portkey.emit(${eventId},JSON.stringify(params))`);
    * callback();
    * }
@@ -57,15 +74,29 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
  */
 export class SubStream extends Duplex {
   private parentStream: Duplex;
-  constructor(parentStream: Duplex, public name: string) {
+  public name: string;
+  constructor(parentStream: Duplex, name: string) {
     super();
     this.parentStream = parentStream;
+    this.name = name;
+    this.connect();
   }
-  _read(_size: number): void {}
+  _read = (_size: number) => {};
   _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
-    this.parentStream?.push(Object.assign({}, chunk, { name: this.name }));
-    callback();
+    this.parentStream?.write(chunk.toString());
+    return callback();
   }
+
+  /**
+   * parentStream => duplex => this => duplex => parentStream
+   */
+  private connect = () => {
+    const duplex = new ObjectMultiplex();
+    pump(this.parentStream, duplex, this.parentStream, e => {
+      console.error(`SubStream ${this.name} disconnected:`, e);
+    });
+    pump(duplex, this, duplex);
+  };
 }
 
 export interface StreamData {

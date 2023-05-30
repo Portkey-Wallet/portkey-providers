@@ -5,6 +5,7 @@ export function generateErrorResponse({
   msg,
   origin,
   target,
+  eventName,
   ...params
 }: {
   code: ResponseCode;
@@ -17,6 +18,7 @@ export function generateErrorResponse({
     },
     origin,
     target,
+    eventName,
     ...params,
   });
 }
@@ -26,6 +28,7 @@ export function generateNormalResponse({
   code,
   origin,
   target,
+  eventName,
   ...params
 }: {
   data?: any;
@@ -38,6 +41,7 @@ export function generateNormalResponse({
     },
     origin,
     target,
+    eventName,
     ...params,
   });
 }

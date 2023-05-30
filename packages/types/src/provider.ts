@@ -1,11 +1,9 @@
 import { DappEvents, EventId } from './event';
 import { IResponseInfo, RequestOption } from './request';
-import type { Duplex } from 'readable-stream';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
 
 export interface IStreamBehaviour {
-  setupStream: (companionStream: Duplex) => void;
   onConnectionDisconnect: (error: Error) => void;
 }
 
