@@ -54,25 +54,7 @@ function App() {
         }}>
         GetBalance
       </button>
-      <button
-        onClick={async () => {
-          try {
-            const balance = await tokenContract.callSendMethod(
-              'GetBalance',
-              '',
-              {
-                symbol: 'ELF',
-                owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
-              },
-              { onMethod: 'receipt' },
-            );
-            console.log(balance, '=====balance');
-          } catch (error) {
-            console.log(error, '====callSendMethod-error');
-          }
-        }}>
-        callSendMethod Error
-      </button>
+
       <button
         onClick={async () => {
           try {
@@ -96,11 +78,8 @@ function App() {
       </button>
       <button
         onClick={async () => {
-          provider.on(NotificationEvents.CONNECTED, (...args) => {
-            console.log(args, 'args===onConnect=event');
-          });
           // const result = provider.request({ method: 'requestAccounts' });
-          const result = await provider.request({
+          const result = await window.portkey.request({
             method: RPCMethodsBase.REQUEST_ACCOUNTS,
             payload: {
               a: 1,

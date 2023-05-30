@@ -13,7 +13,6 @@ import {
   NotificationEvents,
   RPCMethodsUnimplemented,
   RequestOption,
-  IRequestParams,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
@@ -132,15 +131,15 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._log.log(params, 'request,=======params');
     const eventName = this.getEventName();
     const { method, payload } = params || {};
-    if (!this.methodCheck(method)) {
-      throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
-    }
+    // if (!this.methodCheck(method)) {
+    //   throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
+    // }
     this._companionStream.write(
       JSON.stringify({
         method,
         payload,
         eventName,
-      } as IRequestParams),
+      }),
     );
     return new Promise((resolve, reject) => {
       this.once(eventName, (response: IResponseInfo) => {
@@ -184,7 +183,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       isConnected: boolean;
       isUnlocked: boolean;
     }>({
-      method: RPCMethodsUnimplemented.GET_PROVIDER_STATE,
+      method: RPCMethodsUnimplemented.GET_WALLET_STATE,
     });
     if (initialResponse) {
       this.state = { ...this.state, ...initialResponse, initialized: true };
