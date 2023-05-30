@@ -30,7 +30,7 @@ export interface SendTransactionParams {
 }
 
 export interface IWeb3Provider extends IProvider {
-  getChain(chainId: ChainId): IChain;
+  getChain(chainId: ChainId): Promise<IChain>;
 }
 
 export type ConsoleLike = Pick<Console, 'log' | 'warn' | 'error' | 'debug' | 'info' | 'trace'>;
