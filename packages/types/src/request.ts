@@ -59,12 +59,12 @@ export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
 };
 
 export const RPCMethodsBase = {
-  ACCOUNTS: 'accounts',
-  REQUEST_ACCOUNTS: 'requestAccounts',
-  DECRYPT: 'decrypt',
   CHAIN_ID: 'chainId',
-  GET_PUBLIC_KEY: 'getEncryptionPublicKey',
+  ACCOUNTS: 'accounts',
+  CHAIN_IDS: 'chainIds',
+  CHAINS_INFO: 'chainsInfo',
   SEND_TRANSACTION: 'sendTransaction',
+  REQUEST_ACCOUNTS: 'requestAccounts',
 } as const;
 
 export type RPCMethodsBaseType = (typeof RPCMethodsBase)[keyof typeof RPCMethodsBase];

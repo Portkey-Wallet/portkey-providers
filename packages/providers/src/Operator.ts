@@ -1,10 +1,4 @@
-import {
-  EventMessage,
-  IDappInteractionStream,
-  IRequestParams,
-  IResponseType,
-  IOperator,
-} from '@portkey/provider-types';
+import { IDappInteractionStream, IRequestParams, IResponseType, IOperator } from '@portkey/provider-types';
 
 export default abstract class Operator implements IOperator {
   /**
@@ -62,7 +56,7 @@ export default abstract class Operator implements IOperator {
    * expose it to your server code, it creates an event to the dapp
    * @param event the event data you want to publish to the dapp
    */
-  public publishEvent = (event: EventMessage): void => {
-    this._stream.push(event);
+  public publishEvent = (event: IResponseType): void => {
+    this._stream.write(JSON.stringify(event));
   };
 }

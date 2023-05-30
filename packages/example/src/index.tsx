@@ -89,6 +89,24 @@ function App() {
         }}>
         onConnect
       </button>
+      <button
+        onClick={async () => {
+          const result = await provider.request({
+            method: RPCMethodsBase.ACCOUNTS,
+          });
+          console.log(result, 'result=====onConnect');
+        }}>
+        ACCOUNTS
+      </button>
+      <button
+        onClick={async () => {
+          const result = await provider.request({
+            method: RPCMethodsBase.CHAIN_ID,
+          });
+          console.log(result, 'result=====onConnect');
+        }}>
+        CHAIN_ID
+      </button>
     </div>
   );
 }

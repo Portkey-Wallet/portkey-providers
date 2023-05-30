@@ -1,0 +1,78 @@
+@startuml providers
+
+interface BaseProviderOptions  {
+  * connectionStream: IDappInteractionStream;
+  logger?: ConsoleLike;
+  maxEventListeners?: number;
+}
+
+interface IContract {
+  +type:'aelf'|'ethereum';
+  +chainId:ChainId;
+  #provider:AElfProvider;
+  ---
+  +callViewMethod<T = any>(functionName: string, paramsOption?: any, callOptions?: CallOptions): Promise<ViewResult<T>>;
+  +callSendMethod<T = any>(
+    functionName: string,
+    account: string,
+    paramsOption?: any,
+    sendOptions?: SendOptions,
+  ): Promise<SendResult<T>>;
+}
+
+interface IChain {
+  getContract(contractAddress: string): IContract;
+}
+
+interface Duplex {
+  _read(size?: number): void;
+  read(size?: number): any;
+  on(ev: string | symbol, fn: (...args: any[]) => void): this;
+  _write(chunk : any, encoding : string, callback : Function) : void;
+  write(chunk: any, cb?: (error: Error | null | undefined) => void): boolean;
+}
+
+interface IDappInteractionStream extends Duplex {
+  createSubStream(name: string): void;
+  createMessageEvent(message: string): void;
+}
+
+interface IProvider {
+  on(event: DappEvents, listener: (...args: any[]) => void): this;
+  once(event: DappEvents, listener: (...args: any[]) => void): this;
+  emit(event: DappEvents | EventId, response: IResponseInfo): boolean;
+  addListener(event: DappEvents, listener: (...args: any[]) => void): this;
+  removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
+  request<T = any>(params: RequestOption): Promise<T>;
+  request<T = any>(params: { method: 'sendTransaction'; payload?: SendTransactionParams }): Promise<T>;
+}
+
+abstract class BaseProvider implements IProvider {
+  -_companionStream: IDappInteractionStream
+  ---
+  + constructor(options:BaseProviderOptions) : this
+  +on(event: DappEvents, listener: (...args: any[]) => void): this;
+  +once(event: DappEvents, listener: (...args: any[]) => void): this;
+  +emit(event: DappEvents | EventId, response: IResponseInfo): boolean;
+  +addListener(event: DappEvents, listener: (...args: any[]) => void): this;
+  +removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
+  +request<T = any>(params: RequestOption): Promise<T>;
+  +request<T = any>(params: { method: 'sendTransaction'; payload?: SendTransactionParams }): Promise<T>;
+}
+
+class MobileProvider extends BaseProvider {
+  mobile process
+}
+
+class ExtensionProvider extends BaseProvider {
+  extension process
+}
+
+class DetectProvider {
+  detectProvider<T = IProvider>():Promise<T|null>
+}
+
+DetectProvider ..> IProvider
+BaseProvider *-- BaseProviderOptions : include
+BaseProvider o-- IDappInteractionStream : polymerization
+@enduml

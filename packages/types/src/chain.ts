@@ -3,6 +3,7 @@ import { IContract } from './contract';
 import { IProvider } from './provider';
 export type ChainId = 'AELF' | 'tDVV' | 'tDVW';
 export type ChainType = 'aelf' | 'ethereum';
+export type Address = string;
 export interface IChain extends AElfChainMethods {
   getContract(contractAddress: string): IContract;
 }
