@@ -107,6 +107,15 @@ function App() {
         }}>
         CHAIN_ID
       </button>
+      <button
+        onClick={async () => {
+          const result = await provider.request({
+            method: RPCMethodsBase.CHAINS_INFO,
+          });
+          console.log(result, 'result=====onConnect');
+        }}>
+        CHAINS_INFO
+      </button>
     </div>
   );
 }
