@@ -70,7 +70,7 @@ export const RPCMethodsBase = {
 export type RPCMethodsBaseType = (typeof RPCMethodsBase)[keyof typeof RPCMethodsBase];
 
 export const RPCMethodsUnimplemented = {
-  GET_PROVIDER_STATE: 'wallet_getProviderState',
+  GET_WALLET_STATE: 'wallet_getWalletState',
   ADD_CHAIN: 'wallet_addEthereumChain',
   SWITCH_CHAIN: 'wallet_switchEthereumChain',
   REQUEST_PERMISSIONS: 'wallet_requestPermissions',
@@ -80,4 +80,4 @@ export const RPCMethodsUnimplemented = {
 
 export type RPCMethodsUnimplementedType = (typeof RPCMethodsUnimplemented)[keyof typeof RPCMethodsUnimplemented];
 
-export type RPCMethods = RPCMethodsBaseType | RPCMethodsUnimplementedType;
+export type RPCMethods = RPCMethodsBaseType | RPCMethodsUnimplementedType | string;

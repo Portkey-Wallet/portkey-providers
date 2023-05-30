@@ -42,6 +42,7 @@ export class ContentPostStream extends DappInteractionStream {
       const data = JSON.parse(msg);
       // validate message
       if (!data || typeof data !== 'object') return;
+      if (data.target && data.target !== this._name) return;
 
       if (!data.payload || typeof data.payload !== 'object') return;
 
