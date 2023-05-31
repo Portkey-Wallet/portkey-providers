@@ -41,15 +41,15 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
-    this._companionStream.on('data', this._onData.bind(this));
+    this._companionStream.on('data', this._onData);
     this.state = BaseProvider._defaultState;
   }
 
-  private _onData(buffer: Buffer): void {
-    console.log(buffer, JSON.parse(buffer.toString()), '=====buffer');
+  protected _onData = (buffer: Buffer): void => {
+    console.log(buffer, buffer ? JSON.parse(buffer?.toString()) : 'undefined', '=====buffer');
 
     try {
-      const { eventName, info } = JSON.parse(buffer.toString());
+      const { eventName, info } = JSON.parse(buffer?.toString());
       if (isNotificationEvents(eventName)) {
         switch (eventName) {
           case NotificationEvents.CONNECTED:
@@ -64,6 +64,9 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
           case NotificationEvents.NETWORK_CHANGED:
             this.handleNetworkChanged(info);
             return;
+          case NotificationEvents.MESSAGE:
+            this.handleMessage(info);
+            return;
           default:
             if (eventName && info?.data) this.emit(eventName, info.data);
             break;
@@ -74,7 +77,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     } catch (error) {
       this._log.log(error, '====error');
     }
-  }
+  };
 
   /**
    * @override
@@ -232,5 +235,12 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this.state.accounts = data?.accounts;
     this.initializeState();
     this.emit(NotificationEvents.NETWORK_CHANGED, response.data);
+  }
+
+  /**
+   * When something unexpected happens, the dapp will receive a notification
+   */
+  protected handleMessage(response: IResponseInfo) {
+    this.emit(NotificationEvents.MESSAGE, response?.data ?? response?.msg);
   }
 }

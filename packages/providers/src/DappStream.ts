@@ -32,7 +32,7 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
     this.write(
       JSON.stringify({
         eventName: NotificationEvents.MESSAGE,
-        info: { code: ResponseCode.SUCCESS, msg },
+        info: { code: ResponseCode.SUCCESS, msg, data: msg },
       } as IResponseType),
     );
   };

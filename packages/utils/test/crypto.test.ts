@@ -4,9 +4,8 @@ import { describe } from 'node:test';
 import { webcrypto } from 'crypto';
 import { CryptoManager } from '../src/crypto';
 
-const cryptoManager = new CryptoManager(webcrypto.subtle);
-
 describe('CryptoManager', () => {
+  const cryptoManager = new CryptoManager(webcrypto.subtle);
   test('should get keypair', callback => {
     cryptoManager
       .generateKeyPair()
@@ -26,8 +25,8 @@ describe('CryptoManager', () => {
         .encrypt(keyPair.publicKey, JSON.stringify(data))
         .then(encrypted => {
           cryptoManager.decrypt(keyPair.privateKey, encrypted).then(decrypted => {
-            callback();
             expect(decrypted).toEqual(JSON.stringify(data));
+            callback();
           });
         })
         .catch(e => callback(e));

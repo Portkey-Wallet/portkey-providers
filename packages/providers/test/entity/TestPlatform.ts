@@ -28,12 +28,12 @@ export class ITestPlatform implements TestPlatform {
   sendMessage = (message: IRequestParams) => {
     this._producer.onMessage(message);
   };
-  sendResponse = (message: IResponseType) => {
-    this._customer.onMessage(message);
+  sendResponse = (message: Buffer) => {
+    this._customer.onMessageRaw(message);
   };
 }
 
-export class IProviderMockStream extends DappInteractionStream {
+export class IProviderMockStream extends DappInteractionStream implements InjectDataMethod {
   private _platform: TestPlatform;
   constructor(platform: TestPlatform) {
     super();
@@ -41,13 +41,15 @@ export class IProviderMockStream extends DappInteractionStream {
   }
   _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
-    const convertedText: string = new TextDecoder().decode(chunk);
-    this._platform.sendResponse(JSON.parse(convertedText));
+    this._platform.sendResponse(chunk);
     return _callback();
+  }
+  injectData(data: IResponseType<any> | IRequestParams<any>): void {
+    this.write(JSON.stringify(data));
   }
 }
 
-export class ICustomerMockStream extends DappInteractionStream {
+export class ICustomerMockStream extends DappInteractionStream implements InjectDataMethod {
   private _platform: TestPlatform;
   constructor(platform: TestPlatform) {
     super();
@@ -60,13 +62,20 @@ export class ICustomerMockStream extends DappInteractionStream {
     this._platform.sendMessage(JSON.parse(convertedText));
     return _callback();
   }
+  injectData(data: IResponseType<any> | IRequestParams<any>): void {
+    this.write(JSON.stringify(data));
+  }
 }
 
 export interface TestPlatform {
   registerCustomer(customer: CustomerTestBehaviour): void;
   registerProducer(producer: ProducerTestBehaviour): void;
   sendMessage(message: IRequestParams): void;
-  sendResponse(message: IResponseType): void;
+  sendResponse(message: ArrayBuffer): void;
+}
+
+export interface InjectDataMethod {
+  injectData(data: IResponseType | IRequestParams): void;
 }
 
 export class ProducerTestBehaviour extends Operator {
@@ -84,15 +93,21 @@ export class ProducerTestBehaviour extends Operator {
       case RPCMethodsUnimplemented.ADD_CHAIN:
         return generateErrorResponse({ code: ResponseCode.UNIMPLEMENTED, eventName });
       default:
-        return generateErrorResponse({ code: ResponseCode.UNKNOWN_METHOD, eventName });
+        return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName });
     }
   };
 }
 
 export class CustomerTestBehaviour extends BaseProvider {
-  onMessage = async (response: IResponseType): Promise<void | never> => {
-    const { info, eventName } = response || {};
-    console.log('testProvider=======onMessage', response);
-    this.emit(eventName, info);
+  onMessageRaw = async (response: Buffer): Promise<void | never> => {
+    this._onData(response);
+  };
+
+  public mockNullMessage = () => {
+    this._onData(null as any);
+  };
+
+  public mockBlankMessage = () => {
+    this._onData('' as any);
   };
 }

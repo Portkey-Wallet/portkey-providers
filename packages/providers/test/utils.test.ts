@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { NotificationEvents, RPCMethodsBase, RPCMethodsUnimplemented } from '@portkey/provider-types';
 import { isRPCMethodsBase, isRPCMethodsUnimplemented } from '../src/utils';
-import { getHostName, isNotificationEvents } from '../dist/utils';
+import { getHostName, isNotificationEvents } from '../src/utils';
 
 describe('utils describe', () => {
   test('test isRPCMethodsBase', async () => {
@@ -32,5 +32,9 @@ describe('getHostName', () => {
     testList.forEach(item =>
       expect(getHostName(item) === expectedResultHttp || getHostName(item) === expectedResultHttps).toBe(true),
     );
+  });
+  test('default', () => {
+    const url = 'ftp://www.portkey.finance/mock';
+    expect(getHostName(url)).toBe('unknown');
   });
 });

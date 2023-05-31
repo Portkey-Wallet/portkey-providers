@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { expect, test } from '@jest/globals';
 import {
   ITestPlatform,
   ProducerTestBehaviour,
@@ -7,8 +7,15 @@ import {
   IProviderMockStream,
   UNKNOWN_METHOD,
 } from './entity/TestPlatform';
-import { IRequestParams, NotificationEvents, RPCMethodsBase, RPCMethodsUnimplemented } from '@portkey/provider-types';
+import {
+  IRequestParams,
+  NotificationEvents,
+  RPCMethodsBase,
+  RPCMethodsUnimplemented,
+  ResponseCode,
+} from '@portkey/provider-types';
 import { SubStream } from '../src/DappStream';
+import { generateNormalResponse } from '@portkey/provider-utils';
 
 const testPlatform = new ITestPlatform();
 const customerStream = new ICustomerMockStream(testPlatform);
@@ -18,25 +25,23 @@ const producer = new ProducerTestBehaviour(providerStream);
 testPlatform.registerCustomer(customer);
 testPlatform.registerProducer(producer);
 
-describe('system check', () => {
-  test('normal test goes well', done => {
-    customer
-      .request({ method: RPCMethodsBase.CHAIN_ID })
-      .then(res => {
-        console.log(res);
-        done();
-      })
-      .catch(e => done(e));
-  });
+test('normal test goes well', done => {
+  customer
+    .request({ method: RPCMethodsBase.CHAIN_ID })
+    .then(res => {
+      console.log('request=====res:', res);
+      done();
+    })
+    .catch(e => done(e));
+});
 
-  test('unknown method should be rejected', async () => {
-    expect.assertions(1);
-    try {
-      return await customer.request({ method: UNKNOWN_METHOD });
-    } catch (e) {
-      expect(e.message).toMatch('method not found!');
-    }
-  });
+test('unknown method should be rejected', async () => {
+  expect.assertions(1);
+  try {
+    return await customer.request({ method: UNKNOWN_METHOD });
+  } catch (e) {
+    expect(e.message).toMatch('method not found!');
+  }
 });
 
 test('mock provider SubStream reaction', done => {
@@ -73,6 +78,68 @@ test('handle message event', done => {
     done();
   });
   providerStream.createMessageEvent('ok');
+});
+
+test('handle NotificationEvents.CONNECTED', done => {
+  customer.once(NotificationEvents.CONNECTED, () => {
+    done();
+  });
+  producer.publishEvent(generateNormalResponse({ eventName: NotificationEvents.CONNECTED }));
+});
+
+test('handle NotificationEvents.ACCOUNTS_CHANGED', done => {
+  customer.once(NotificationEvents.ACCOUNTS_CHANGED, () => {
+    done();
+  });
+  providerStream.injectData(generateNormalResponse({ eventName: NotificationEvents.ACCOUNTS_CHANGED, data: '0x123' }));
+});
+
+test('handle NotificationEvents.NETWORK_CHANGED', done => {
+  customer.once(NotificationEvents.NETWORK_CHANGED, () => {
+    done();
+  });
+  providerStream.injectData(generateNormalResponse({ eventName: NotificationEvents.NETWORK_CHANGED, data: '0x456' }));
+});
+
+test('handle NotificationEvents.DISCONNECTED', done => {
+  customer.once(NotificationEvents.DISCONNECTED, () => {
+    done();
+  });
+  providerStream.injectData(generateNormalResponse({ eventName: NotificationEvents.DISCONNECTED }));
+});
+
+test('handle null request', done => {
+  customer.once(NotificationEvents.MESSAGE, (info: string) => {
+    expect(info).toEqual('invalid message');
+    done();
+  });
+  producer.handleRequestMessage('');
+});
+
+test('handle error response', () => {
+  expect(() => customer.mockNullMessage()).not.toThrow();
+  expect(() => customer.mockBlankMessage()).not.toThrow();
+});
+
+test('handle uncovered notification', done => {
+  customer.once(NotificationEvents.ERROR, () => {
+    done();
+  });
+  providerStream.injectData(
+    generateNormalResponse({ eventName: NotificationEvents.ERROR, code: ResponseCode.SUCCESS, data: '0x789' }),
+  );
+});
+
+test('handle unknown eventName', done => {
+  const name = 'unknown';
+  customer.once(name, () => {
+    done();
+  });
+  providerStream.injectData(generateNormalResponse({ eventName: name, code: ResponseCode.SUCCESS }));
+});
+
+test('operator handles wrong data', () => {
+  expect(() => producer.handleRequestMessage('{{{')).not.toThrow();
 });
 
 // describe('system check', () => {
