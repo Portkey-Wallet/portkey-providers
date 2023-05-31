@@ -135,8 +135,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  requestAccounts;
-
   public async request<T = ChainIdRequestResponse>(params: { method: 'chainId' }): Promise<T>;
   public async request<T = ChainIdRequestResponse>(params: { method: 'chainIds' }): Promise<T>;
   public async request<T = ChainsInfoRequestResponse>(params: { method: 'chainsInfo' }): Promise<T>;
