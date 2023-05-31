@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import { describe, expect, test } from '@jest/globals';
 import { Web3Provider, DappInteractionStream } from '../src';
 import { EventEmitter } from 'stream';
-import { IChain, RPCMethodsBase, RequestAccountsRequestResponse } from '@portkey/provider-types';
+import { IChain, RPCMethodsBase } from '@portkey/provider-types';
 const noop = () => undefined;
 
 // mock post message

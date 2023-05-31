@@ -7,13 +7,7 @@ import {
   IProviderMockStream,
   UNKNOWN_METHOD,
 } from './entity/TestPlatform';
-import {
-  IRequestParams,
-  NotificationEvents,
-  RPCMethodsBase,
-  RPCMethodsUnimplemented,
-  ResponseCode,
-} from '@portkey/provider-types';
+import { IRequestParams, NotificationEvents, RPCMethodsBase, ResponseCode } from '@portkey/provider-types';
 import { SubStream } from '../src/DappStream';
 import { generateNormalResponse } from '@portkey/provider-utils';
 
@@ -38,7 +32,7 @@ test('normal test goes well', done => {
 test('unknown method should be rejected', async () => {
   expect.assertions(1);
   try {
-    return await customer.request({ method: UNKNOWN_METHOD });
+    await customer.request({ method: UNKNOWN_METHOD });
   } catch (e) {
     expect(e.message).toMatch('method not found!');
   }
@@ -57,7 +51,7 @@ test('mock provider SubStream reaction', done => {
 test('use unimplemented method will receive a rejection', async () => {
   expect.assertions(1);
   try {
-    return await customer.request({ method: RPCMethodsUnimplemented.ADD_CHAIN });
+    await customer.request({ method: 'sendTransaction', payload: {} as any });
   } catch (e) {
     expect(e.message).toMatch('This method is not implemented yet.');
   }

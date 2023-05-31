@@ -1,12 +1,6 @@
 // Provides a virtual platform for test
 
-import {
-  ResponseCode,
-  IResponseType,
-  IRequestParams,
-  RPCMethodsBase,
-  RPCMethodsUnimplemented,
-} from '@portkey/provider-types';
+import { ResponseCode, IResponseType, IRequestParams, RPCMethodsBase } from '@portkey/provider-types';
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
 import { DappInteractionStream } from '../../src/DappStream';
 import BaseProvider from '../../src/BaseProvider';
@@ -90,7 +84,7 @@ export class ProducerTestBehaviour extends Operator {
     switch (method) {
       case RPCMethodsBase.CHAIN_ID:
         return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName, data: { test: null } });
-      case RPCMethodsUnimplemented.ADD_CHAIN:
+      case RPCMethodsBase.SEND_TRANSACTION:
         return generateErrorResponse({ code: ResponseCode.UNIMPLEMENTED, eventName });
       default:
         return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName });

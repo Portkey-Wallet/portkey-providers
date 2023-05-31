@@ -47,7 +47,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._log = logger;
     this._companionStream.on('data', this._onData);
     this.state = BaseProvider._defaultState;
-    this.request.bind(this);
+    this.request = this.request.bind(this);
   }
 
   protected _onData = (buffer: Buffer): void => {
