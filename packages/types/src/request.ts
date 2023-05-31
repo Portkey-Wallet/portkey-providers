@@ -35,14 +35,15 @@ export interface IResponseInfo<T = any> {
 export enum ResponseCode {
   SUCCESS = 0,
 
-  ERROR_IN_PARAMS = -1,
-  UNKNOWN_METHOD = -2,
-  UNIMPLEMENTED = -3,
-  UNAUTHENTICATED = -4,
+  USER_DENIED = 4001,
+  ERROR_IN_PARAMS = 4002,
+  UNKNOWN_METHOD = 4003,
+  UNIMPLEMENTED = 4004,
 
-  INTERNAL_ERROR = 1,
-  TIMEOUT = 2,
-  USER_DENIED = 3,
+  UNAUTHENTICATED = 4005,
+  TIMEOUT = 4006,
+  CONTRACT_ERROR = 4007,
+  INTERNAL_ERROR = 5001,
 }
 
 export type ResponseCodeType = keyof typeof ResponseCode;
@@ -52,10 +53,11 @@ export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
   ERROR_IN_PARAMS: 'Please check your params.',
   UNKNOWN_METHOD: 'You are using an unknown method name, please check again.',
   UNIMPLEMENTED: 'This method is not implemented yet.',
-  UNAUTHENTICATED: `You are not authenticated, use request({method:'accounts'}) first.`,
+  UNAUTHENTICATED: `You are not authenticated, use "requestAccounts" first.`,
   INTERNAL_ERROR: 'Server internal error.',
   TIMEOUT: 'Request timeout.',
   USER_DENIED: 'User denied.',
+  CONTRACT_ERROR: 'Request contract fail',
 };
 
 export const RPCMethodsBase = {

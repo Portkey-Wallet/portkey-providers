@@ -1,12 +1,20 @@
 import BaseProvider from './BaseProvider';
-import { IWeb3Provider, ChainId, IChain, RPCMethodsBase, ChainsInfo, ProviderError } from '@portkey/provider-types';
+import {
+  IWeb3Provider,
+  ChainId,
+  IChain,
+  RPCMethodsBase,
+  ChainsInfo,
+  ProviderError,
+  ResponseCode,
+} from '@portkey/provider-types';
 import { Chain } from '@portkey/chain';
 
 export abstract class Web3Provider extends BaseProvider implements IWeb3Provider {
   async getChain(chainId: ChainId): Promise<IChain> {
     const chainIdsInfo = await this.request<ChainsInfo>({ method: RPCMethodsBase.CHAINS_INFO });
     const chainInfos = chainIdsInfo[chainId]?.[0];
-    if (!chainInfos) throw new ProviderError('This chainId is not supported', 40002);
+    if (!chainInfos) throw new ProviderError('This chainId is not supported', ResponseCode.ERROR_IN_PARAMS);
     return new Chain({
       request: this.request,
       rpcUrl: chainInfos.endPoint,

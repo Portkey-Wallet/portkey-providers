@@ -13,14 +13,12 @@ import {
   NotificationEvents,
   RPCMethodsUnimplemented,
   RequestOption,
+  Accounts,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
 
-type Chain = string; //  Chain:ChainId
-type IAccounts = { [x: Chain]: string[] }; // {AELF: ['ELF_xxxxx_AELF'],
-
 export interface BaseProviderState {
-  accounts: null | IAccounts;
+  accounts: null | Accounts;
   isConnected: boolean;
   isUnlocked: boolean;
   initialized: boolean;
@@ -129,11 +127,19 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
 
   public request = async <T = any>(params: RequestOption): Promise<T> => {
     this._log.log(params, 'request,=======params');
+
+    if (!params || typeof params !== 'object' || Array.isArray(params))
+      throw new ProviderError('Expected a single, non-array, object argument.', ResponseCode.ERROR_IN_PARAMS);
+
     const eventName = this.getEventName();
     const { method, payload } = params || {};
     if (!this.methodCheck(method)) {
-      throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
+      throw new ProviderError('method not found!', ResponseCode.UNKNOWN_METHOD);
     }
+
+    if (payload !== undefined && !(typeof payload !== 'object' || payload === null))
+      throw new ProviderError('method not found!', ResponseCode.UNKNOWN_METHOD);
+
     this._companionStream.write(
       JSON.stringify({
         method,
@@ -175,7 +181,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
     }
     const initialResponse = await this.request<{
-      accounts: IAccounts;
+      accounts: Accounts;
       isConnected: boolean;
       isUnlocked: boolean;
     }>({
@@ -214,7 +220,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * When the account is updated or the network is switched
    */
-  protected handleAccountsChanged(response: IResponseInfo<IAccounts>) {
+  protected handleAccountsChanged(response: IResponseInfo<Accounts>) {
     const { data } = response;
     if (!data) return;
     // TODO accounts !== this.state.accounts
