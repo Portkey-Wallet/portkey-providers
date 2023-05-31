@@ -150,7 +150,7 @@ describe('chain describe', () => {
   }, 10000);
 
   test('test request accounts', async () => {
-    const account = await provider.request<{ AELF?: string[]; tDVV?: string[] }>({
+    const account = await provider.request({
       method: RPCMethodsBase.REQUEST_ACCOUNTS,
     });
     console.log(account, '=======account');

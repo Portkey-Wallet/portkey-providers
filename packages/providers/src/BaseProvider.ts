@@ -13,9 +13,15 @@ import {
   NotificationEvents,
   RPCMethodsUnimplemented,
   RequestOption,
+  ChainIdRequestResponse,
+  GetWalletStateRequestResponse,
   Accounts,
+  SendTransactionParams,
+  RequestAccountsRequestResponse,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
+import { ChainsInfoRequestResponse } from '@portkey/provider-types';
+import { TransactionRequestResponse } from '@portkey/provider-types';
 
 export interface BaseProviderState {
   accounts: null | Accounts;
@@ -39,15 +45,16 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
-    this._companionStream.on('data', this._onData.bind(this));
+    this._companionStream.on('data', this._onData);
     this.state = BaseProvider._defaultState;
+    this.request = this.request.bind(this);
   }
 
-  private _onData(buffer: Buffer): void {
-    console.log(buffer, JSON.parse(buffer.toString()), '=====buffer');
+  protected _onData = (buffer: Buffer): void => {
+    console.log(buffer, buffer ? JSON.parse(buffer?.toString()) : 'undefined', '=====buffer');
 
     try {
-      const { eventName, info } = JSON.parse(buffer.toString());
+      const { eventName, info } = JSON.parse(buffer?.toString());
       if (isNotificationEvents(eventName)) {
         switch (eventName) {
           case NotificationEvents.CONNECTED:
@@ -62,6 +69,9 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
           case NotificationEvents.NETWORK_CHANGED:
             this.handleNetworkChanged(info);
             return;
+          case NotificationEvents.MESSAGE:
+            this.handleMessage(info);
+            return;
           default:
             if (eventName && info?.data) this.emit(eventName, info.data);
             break;
@@ -72,7 +82,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     } catch (error) {
       this._log.log(error, '====error');
     }
-  }
+  };
 
   /**
    * @override
@@ -125,7 +135,16 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  public request = async <T = any>(params: RequestOption): Promise<T> => {
+  public async request<T = ChainIdRequestResponse>(params: { method: 'chainId' }): Promise<T>;
+  public async request<T = ChainIdRequestResponse>(params: { method: 'chainIds' }): Promise<T>;
+  public async request<T = ChainsInfoRequestResponse>(params: { method: 'chainsInfo' }): Promise<T>;
+  public async request<T = RequestAccountsRequestResponse>(params: { method: 'requestAccounts' }): Promise<T>;
+  public async request<T = GetWalletStateRequestResponse>(params: { method: 'wallet_getWalletState' }): Promise<T>;
+  public async request<T = TransactionRequestResponse>(params: {
+    method: 'sendTransaction';
+    payload: SendTransactionParams;
+  }): Promise<T>;
+  public async request<T = any>(params: RequestOption): Promise<T> {
     this._log.log(params, 'request,=======params');
 
     if (!params || typeof params !== 'object' || Array.isArray(params))
@@ -157,7 +176,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         }
       });
     });
-  };
+  }
 
   protected methodCheck = (method: string): method is RPCMethods => {
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
@@ -180,11 +199,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (this.state.initialized === true) {
       throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
     }
-    const initialResponse = await this.request<{
-      accounts: Accounts;
-      isConnected: boolean;
-      isUnlocked: boolean;
-    }>({
+    const initialResponse = await this.request({
       method: RPCMethodsUnimplemented.GET_WALLET_STATE,
     });
     if (initialResponse) {
@@ -238,5 +253,12 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this.state.accounts = data?.accounts;
     this.initializeState();
     this.emit(NotificationEvents.NETWORK_CHANGED, response.data);
+  }
+
+  /**
+   * When something unexpected happens, the dapp will receive a notification
+   */
+  protected handleMessage(response: IResponseInfo) {
+    this.emit(NotificationEvents.MESSAGE, response?.data ?? response?.msg);
   }
 }

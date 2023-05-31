@@ -6,7 +6,7 @@ export interface IRequestParams<T = any> {
 }
 
 export interface RequestOption<T = any> {
-  method: RPCMethods;
+  method: RPCMethods | string;
   payload?: T;
 }
 
