@@ -2,6 +2,7 @@ import { DappEvents, EventId } from './event';
 import { IResponseInfo, RequestOption } from './request';
 import type { IDappInteractionStream } from './stream';
 import { ChainId, IChain } from './chain';
+import { ChainsInfo } from './response';
 
 export interface IStreamBehaviour {
   onConnectionDisconnect: (error: Error) => void;
@@ -13,8 +14,8 @@ export interface IProvider extends IStreamBehaviour {
   emit(event: DappEvents | EventId, response: IResponseInfo): boolean;
   addListener(event: DappEvents, listener: (...args: any[]) => void): this;
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
-  request<T = any>(params: RequestOption): Promise<T>;
-  request<T = any>(params: { method: 'sendTransaction'; payload?: SendTransactionParams }): Promise<T>;
+
+  request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 }
 
 export interface KeyPairJSON {
@@ -27,6 +28,34 @@ export interface SendTransactionParams {
   contractAddress: string;
   method: string;
   params?: readonly unknown[] | object;
+}
+
+export type MethodResponse =
+  | TransactionRequestResponse
+  | RequestAccountsRequestResponse
+  | GetWalletStateRequestResponse
+  | ChainIdRequestResponse
+  | ChainsInfoRequestResponse
+  | null
+  | undefined;
+
+export type ChainIdRequestResponse = Array<string>;
+
+export type ChainsInfoRequestResponse = ChainsInfo;
+
+export interface GetWalletStateRequestResponse {
+  accounts: IAccounts;
+  isConnected: boolean;
+  isUnlocked: boolean;
+}
+
+export interface RequestAccountsRequestResponse {
+  AELF?: string[];
+  tDVV?: string[];
+}
+
+export interface TransactionRequestResponse {
+  transactionId: string;
 }
 
 export interface IWeb3Provider extends IProvider {
@@ -50,3 +79,6 @@ export type BaseProviderOptions = {
 };
 
 export const portkeyInitEvent = 'portkeyInitEvent';
+
+export type Chain = string; //  Chain:ChainId
+export type IAccounts = { [x: Chain]: string[] }; // {AELF: ['ELF_xxxxx_AELF'],

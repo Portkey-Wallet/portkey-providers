@@ -11,6 +11,7 @@ import {
   RPCMethodsBase,
   SendTransactionParams,
   ProviderError,
+  TransactionRequestResponse,
 } from '@portkey/provider-types';
 import { COMMON_WALLET, formatFunctionName, getTxResult, handleContractError } from './utils';
 
@@ -86,7 +87,7 @@ export class AELFContract extends BaseContract implements IContract {
     //   throw new ProviderError(`The method is the view method ${functionName}`, 4002);
     const { onMethod = 'transactionHash' } = sendOptions || {};
 
-    const { transactionId } = await this._request<{ transactionId: string }>({
+    const { transactionId } = await this._request<TransactionRequestResponse>({
       method: RPCMethodsBase.SEND_TRANSACTION,
       payload: {
         chainId: this.chainId,

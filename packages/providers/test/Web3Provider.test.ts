@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import { describe, expect, test } from '@jest/globals';
 import { Web3Provider, DappInteractionStream } from '../src';
 import { EventEmitter } from 'stream';
-import { IChain, RPCMethodsBase } from '@portkey/provider-types';
+import { IChain, RPCMethodsBase, RequestAccountsRequestResponse } from '@portkey/provider-types';
 const noop = () => undefined;
 
 // mock post message
@@ -150,7 +150,7 @@ describe('chain describe', () => {
   }, 10000);
 
   test('test request accounts', async () => {
-    const account = await provider.request<{ AELF?: string[]; tDVV?: string[] }>({
+    const account = await provider.request({
       method: RPCMethodsBase.REQUEST_ACCOUNTS,
     });
     console.log(account, '=======account');

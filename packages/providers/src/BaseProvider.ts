@@ -13,11 +13,15 @@ import {
   NotificationEvents,
   RPCMethodsUnimplemented,
   RequestOption,
+  ChainIdRequestResponse,
+  GetWalletStateRequestResponse,
+  IAccounts,
+  SendTransactionParams,
+  RequestAccountsRequestResponse,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
-
-type Chain = string; //  Chain:ChainId
-type IAccounts = { [x: Chain]: string[] }; // {AELF: ['ELF_xxxxx_AELF'],
+import { ChainsInfoRequestResponse } from '@portkey/provider-types';
+import { TransactionRequestResponse } from '@portkey/provider-types';
 
 export interface BaseProviderState {
   accounts: null | IAccounts;
@@ -43,6 +47,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._log = logger;
     this._companionStream.on('data', this._onData);
     this.state = BaseProvider._defaultState;
+    this.request.bind(this);
   }
 
   protected _onData = (buffer: Buffer): void => {
@@ -130,7 +135,18 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  public request = async <T = any>(params: RequestOption): Promise<T> => {
+  requestAccounts;
+
+  public async request<T = ChainIdRequestResponse>(params: { method: 'chainId' }): Promise<T>;
+  public async request<T = ChainIdRequestResponse>(params: { method: 'chainIds' }): Promise<T>;
+  public async request<T = ChainsInfoRequestResponse>(params: { method: 'chainsInfo' }): Promise<T>;
+  public async request<T = RequestAccountsRequestResponse>(params: { method: 'requestAccounts' }): Promise<T>;
+  public async request<T = GetWalletStateRequestResponse>(params: { method: 'wallet_getWalletState' }): Promise<T>;
+  public async request<T = TransactionRequestResponse>(params: {
+    method: 'sendTransaction';
+    payload: SendTransactionParams;
+  }): Promise<T>;
+  public async request<T = any>(params: RequestOption): Promise<T> {
     this._log.log(params, 'request,=======params');
     const eventName = this.getEventName();
     const { method, payload } = params || {};
@@ -154,7 +170,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         }
       });
     });
-  };
+  }
 
   protected methodCheck = (method: string): method is RPCMethods => {
     return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
@@ -177,11 +193,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (this.state.initialized === true) {
       throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
     }
-    const initialResponse = await this.request<{
-      accounts: IAccounts;
-      isConnected: boolean;
-      isUnlocked: boolean;
-    }>({
+    const initialResponse = await this.request({
       method: RPCMethodsUnimplemented.GET_WALLET_STATE,
     });
     if (initialResponse) {
