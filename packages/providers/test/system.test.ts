@@ -7,7 +7,13 @@ import {
   IProviderMockStream,
   UNKNOWN_METHOD,
 } from './entity/TestPlatform';
-import { IRequestParams, NotificationEvents, RPCMethodsBase, ResponseCode } from '@portkey/provider-types';
+import {
+  IRequestParams,
+  NotificationEvents,
+  RPCMethodsBase,
+  ResponseCode,
+  ResponseMessagePreset,
+} from '@portkey/provider-types';
 import { SubStream } from '../src/DappStream';
 import { generateNormalResponse } from '@portkey/provider-utils';
 
@@ -34,7 +40,7 @@ test('unknown method should be rejected', async () => {
   try {
     await customer.request({ method: UNKNOWN_METHOD });
   } catch (e) {
-    expect(e.message).toMatch('method not found!');
+    expect(e.message).toMatch(ResponseMessagePreset['UNKNOWN_METHOD']);
   }
 });
 
