@@ -18,3 +18,21 @@ export type ChainsInfo = {
 };
 
 export type NetworkType = 'MAIN' | 'TESTNET';
+
+export type ConnectInfo = {
+  chainIds: ChainIds;
+};
+
+interface Error {
+  message: string;
+  stack?: string;
+}
+export interface ProviderErrorType extends Error {
+  code: number;
+  data?: unknown;
+}
+
+export type ProviderMessage = {
+  type: string;
+  data: unknown;
+};

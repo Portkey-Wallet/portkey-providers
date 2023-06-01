@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IChain, IContract, IWeb3Provider, MethodsBase } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
@@ -7,6 +7,24 @@ function App() {
   const [provider, setProvider] = useState<IWeb3Provider>();
   const [chain, setChain] = useState<IChain>();
   const [tokenContract, setTokenContract] = useState<IContract>();
+  useEffect(() => {
+    if (!provider) return;
+
+    const accountsChanged = (...args) => {
+      console.log(args, '====args');
+    };
+
+    const initListener = () => {
+      provider.on('accountsChanged', accountsChanged);
+    };
+    initListener();
+    const removeListener = () => {
+      provider.removeListener('accountsChanged', accountsChanged);
+    };
+    return () => {
+      removeListener();
+    };
+  }, [provider]);
   return (
     <div>
       <button
