@@ -1,6 +1,6 @@
 import { IDappInteractionStream, IRequestParams, IResponseType, IOperator } from '@portkey/provider-types';
 
-export default abstract class Operator implements IOperator {
+export abstract class Operator implements IOperator {
   /**
    * we use _stream to communicate with the dapp
    * Operator does not need to know how to communicate with the dapp

@@ -4,7 +4,7 @@ import { ResponseCode, IResponseType, IRequestParams, MethodsBase } from '@portk
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
 import { DappInteractionStream } from './backupStream';
 import BaseProvider from '../../src/BaseProvider';
-import Operator from '../../src/Operator';
+import { Operator } from '../../src/Operator';
 
 export const UNKNOWN_METHOD = '42' as any;
 
