@@ -2,7 +2,7 @@
 
 import { ResponseCode, IResponseType, IRequestParams, RPCMethodsBase } from '@portkey/provider-types';
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
-import { DappInteractionStream } from '../../src/DappStream';
+import { DappInteractionStream } from './backupStream';
 import BaseProvider from '../../src/BaseProvider';
 import Operator from '../../src/Operator';
 

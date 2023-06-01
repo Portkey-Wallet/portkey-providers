@@ -6,7 +6,7 @@ import {
   ICustomerMockStream,
   IProviderMockStream,
   UNKNOWN_METHOD,
-} from './entity/TestPlatform';
+} from './entity/testPlatform';
 import {
   IRequestParams,
   NotificationEvents,
@@ -14,7 +14,7 @@ import {
   ResponseCode,
   ResponseMessagePreset,
 } from '@portkey/provider-types';
-import { SubStream } from '../src/DappStream';
+import { SubStream } from './entity/backupStream';
 import { generateNormalResponse } from '@portkey/provider-utils';
 
 const testPlatform = new ITestPlatform();
