@@ -1,6 +1,6 @@
 {
   "name": "@portkey/provider-utils",
-  "version": "0.0.1-alpha.10",
+  "version": "0.0.1-alpha.11",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -31,6 +31,6 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/provider-types": "^0.0.1-alpha.10"
+    "@portkey/provider-types": "^0.0.1-alpha.11"
   }
 }
