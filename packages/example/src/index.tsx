@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { IChain, IContract, IWeb3Provider, NotificationEvents, RPCMethodsBase } from '@portkey/provider-types';
+import { IChain, IContract, IWeb3Provider, RPCMethodsBase } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
 import './index.css';
 function App() {
@@ -22,11 +22,23 @@ function App() {
       </button>
       <button
         onClick={async () => {
-          const _chain = provider.getChain('AELF');
+          try {
+            const _chain = await provider.getChain('AELF');
+            setChain(_chain);
+            setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
+          } catch (error) {
+            console.log(error, '=====getChain');
+          }
+        }}>
+        getChain
+      </button>
+      <button
+        onClick={async () => {
+          const _chain = await provider.getChain('tDVV');
           setChain(_chain);
           setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
         }}>
-        getChain
+        getChain Error
       </button>
       <button
         onClick={async () => {
@@ -65,25 +77,23 @@ function App() {
               '',
               {
                 symbol: 'ELF',
-                owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                to: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                amount: 1,
               },
               // { onMethod: 'receipt' },
             );
             console.log(balance, '=====balance');
           } catch (error) {
-            console.log(error, '====callSendMethod-error');
+            alert(error.message);
           }
         }}>
-        callSendMethod
+        Transfer
       </button>
       <button
         onClick={async () => {
           // const result = provider.request({ method: 'requestAccounts' });
           const result = await window.portkey.request({
             method: RPCMethodsBase.REQUEST_ACCOUNTS,
-            payload: {
-              a: 1,
-            },
           });
           console.log(result, 'result=====onConnect');
         }}>

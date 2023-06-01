@@ -52,8 +52,6 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   }
 
   protected _onData = (buffer: Buffer): void => {
-    console.log(buffer, buffer ? JSON.parse(buffer?.toString()) : 'undefined', '=====buffer');
-
     try {
       const { eventName, info } = JSON.parse(buffer?.toString());
       if (isNotificationEvents(eventName)) {
