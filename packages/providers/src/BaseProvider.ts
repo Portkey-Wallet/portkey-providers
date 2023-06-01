@@ -3,7 +3,7 @@ import {
   EventId,
   IProvider,
   DappEvents,
-  RPCMethods,
+  MethodsType,
   ConsoleLike,
   ResponseCode,
   BaseProviderOptions,
@@ -11,7 +11,7 @@ import {
   IResponseInfo,
   ProviderError,
   NotificationEvents,
-  RPCMethodsUnimplemented,
+  MethodsUnimplemented,
   RequestOption,
   ChainIdRequestResponse,
   GetWalletStateRequestResponse,
@@ -20,7 +20,7 @@ import {
   RequestAccountsRequestResponse,
   ResponseMessagePreset,
 } from '@portkey/provider-types';
-import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
+import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import { ChainsInfoRequestResponse } from '@portkey/provider-types';
 import { TransactionRequestResponse } from '@portkey/provider-types';
 
@@ -177,8 +177,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     });
   }
 
-  protected methodCheck = (method: string): method is RPCMethods => {
-    return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
+  protected methodCheck = (method: string): method is MethodsType => {
+    return isMethodsBase(method) || isMethodsUnimplemented(method);
   };
 
   onConnectionDisconnect = (error: Error) => {
@@ -199,7 +199,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
       throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
     }
     const initialResponse = await this.request({
-      method: RPCMethodsUnimplemented.GET_WALLET_STATE,
+      method: MethodsUnimplemented.GET_WALLET_STATE,
     });
     if (initialResponse) {
       this.state = { ...this.state, ...initialResponse, initialized: true };

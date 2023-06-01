@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import { describe, expect, test } from '@jest/globals';
 import { Web3Provider, DappInteractionStream } from '../src';
 import { EventEmitter } from 'stream';
-import { IChain, RPCMethodsBase } from '@portkey/provider-types';
+import { IChain, MethodsBase } from '@portkey/provider-types';
 const noop = () => undefined;
 
 // mock post message
@@ -57,13 +57,13 @@ class MockServer {
     const { eventName, method } = JSON.parse(message);
 
     switch (method) {
-      case RPCMethodsBase.SEND_TRANSACTION: {
+      case MethodsBase.SEND_TRANSACTION: {
         setTimeout(() => {
           this.pushMessage(eventName, { code: 0, data: { transactionId: 'transactionId' }, msg: 'hello servers' });
         }, 1000);
         break;
       }
-      case RPCMethodsBase.REQUEST_ACCOUNTS: {
+      case MethodsBase.REQUEST_ACCOUNTS: {
         setTimeout(() => {
           this.pushMessage(eventName, {
             code: 0,
@@ -73,7 +73,7 @@ class MockServer {
         }, 1000);
         break;
       }
-      case RPCMethodsBase.CHAINS_INFO: {
+      case MethodsBase.CHAINS_INFO: {
         setTimeout(() => {
           this.pushMessage(eventName, {
             code: 0,
@@ -151,7 +151,7 @@ describe('chain describe', () => {
 
   test('test request accounts', async () => {
     const account = await provider.request({
-      method: RPCMethodsBase.REQUEST_ACCOUNTS,
+      method: MethodsBase.REQUEST_ACCOUNTS,
     });
     console.log(account, '=======account');
     expect(account).toHaveProperty('AELF');

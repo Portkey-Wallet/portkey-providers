@@ -10,7 +10,7 @@ import {
 import {
   IRequestParams,
   NotificationEvents,
-  RPCMethodsBase,
+  MethodsBase,
   ResponseCode,
   ResponseMessagePreset,
 } from '@portkey/provider-types';
@@ -27,7 +27,7 @@ testPlatform.registerProducer(producer);
 
 test('normal test goes well', done => {
   customer
-    .request({ method: RPCMethodsBase.CHAIN_ID })
+    .request({ method: MethodsBase.CHAIN_ID })
     .then(res => {
       console.log('request=====res:', res);
       done();
@@ -46,7 +46,7 @@ test('unknown method should be rejected', async () => {
 
 test('mock provider SubStream reaction', done => {
   const subStream: SubStream = customerStream.createSubStream('mockProvider');
-  const name = RPCMethodsBase.CHAIN_ID;
+  const name = MethodsBase.CHAIN_ID;
   customer.once(name, res => {
     console.log(res);
     done();
@@ -146,7 +146,7 @@ test('operator handles wrong data', () => {
 //   test('use unimplemented method will receive an rejection', async () => {
 //     expect.assertions(1);
 //     try {
-//       const res = await customer.request({ method: RPCMethodsUnimplemented.ADD_CHAIN });
+//       const res = await customer.request({ method: MethodsUnimplemented.ADD_CHAIN });
 //       console.log('res', res);
 //     } catch (e) {
 //       expect(e.message).toMatch('method not found!');

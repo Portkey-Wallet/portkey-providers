@@ -1,12 +1,12 @@
 export interface IRequestParams<T = any> {
   origin?: string;
   eventName: string;
-  method: RPCMethods;
+  method: MethodsType;
   payload?: T;
 }
 
 export interface RequestOption<T = any> {
-  method: RPCMethods | string;
+  method: MethodsType | string;
   payload?: T;
 }
 
@@ -60,7 +60,7 @@ export const ResponseMessagePreset: { [key in ResponseCodeType]: string } = {
   CONTRACT_ERROR: 'Request contract fail',
 };
 
-export const RPCMethodsBase = {
+export const MethodsBase = {
   CHAIN_ID: 'chainId',
   ACCOUNTS: 'accounts',
   CHAIN_IDS: 'chainIds',
@@ -69,9 +69,9 @@ export const RPCMethodsBase = {
   REQUEST_ACCOUNTS: 'requestAccounts',
 } as const;
 
-export type RPCMethodsBaseType = (typeof RPCMethodsBase)[keyof typeof RPCMethodsBase];
+export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
 
-export const RPCMethodsUnimplemented = {
+export const MethodsUnimplemented = {
   GET_WALLET_STATE: 'wallet_getWalletState',
   ADD_CHAIN: 'wallet_addEthereumChain',
   SWITCH_CHAIN: 'wallet_switchEthereumChain',
@@ -80,6 +80,6 @@ export const RPCMethodsUnimplemented = {
   NET_VERSION: 'net_version',
 } as const;
 
-export type RPCMethodsUnimplementedType = (typeof RPCMethodsUnimplemented)[keyof typeof RPCMethodsUnimplemented];
+export type MethodsUnimplementedType = (typeof MethodsUnimplemented)[keyof typeof MethodsUnimplemented];
 
-export type RPCMethods = RPCMethodsBaseType | RPCMethodsUnimplementedType | string;
+export type MethodsType = MethodsBaseType | MethodsUnimplementedType | string;

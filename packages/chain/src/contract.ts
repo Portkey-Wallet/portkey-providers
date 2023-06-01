@@ -8,7 +8,7 @@ import {
   SendOptions,
   SendResult,
   ViewResult,
-  RPCMethodsBase,
+  MethodsBase,
   SendTransactionParams,
   ProviderError,
   ResponseCode,
@@ -89,7 +89,7 @@ export class AELFContract extends BaseContract implements IContract {
     const { onMethod = 'transactionHash' } = sendOptions || {};
 
     const { transactionId } = await this._request<TransactionRequestResponse>({
-      method: RPCMethodsBase.SEND_TRANSACTION,
+      method: MethodsBase.SEND_TRANSACTION,
       payload: {
         chainId: this.chainId,
         contractAddress: this.address,

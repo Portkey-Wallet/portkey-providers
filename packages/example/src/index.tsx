@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { IChain, IContract, IWeb3Provider, RPCMethodsBase } from '@portkey/provider-types';
+import { IChain, IContract, IWeb3Provider, MethodsBase } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
 import './index.css';
 function App() {
@@ -70,8 +70,6 @@ function App() {
       <button
         onClick={async () => {
           try {
-            console.log(tokenContract, '=====tokenContract');
-
             const balance = await tokenContract.callSendMethod(
               'Transfer',
               '',
@@ -91,9 +89,29 @@ function App() {
       </button>
       <button
         onClick={async () => {
+          try {
+            const balance = await tokenContract.callSendMethod(
+              'Transfer',
+              '',
+              {
+                symbol: 'ELF',
+                to: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                amount: 1,
+              },
+              { onMethod: 'receipt' },
+            );
+            console.log(balance, '=====balance');
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        Transfer receipt
+      </button>
+      <button
+        onClick={async () => {
           // const result = provider.request({ method: 'requestAccounts' });
           const result = await window.portkey.request({
-            method: RPCMethodsBase.REQUEST_ACCOUNTS,
+            method: MethodsBase.REQUEST_ACCOUNTS,
           });
           console.log(result, 'result=====onConnect');
         }}>
@@ -102,7 +120,7 @@ function App() {
       <button
         onClick={async () => {
           const result = await provider.request({
-            method: RPCMethodsBase.ACCOUNTS,
+            method: MethodsBase.ACCOUNTS,
           });
           console.log(result, 'result=====onConnect');
         }}>
@@ -111,7 +129,7 @@ function App() {
       <button
         onClick={async () => {
           const result = await provider.request({
-            method: RPCMethodsBase.CHAIN_ID,
+            method: MethodsBase.CHAIN_ID,
           });
           console.log(result, 'result=====onConnect');
         }}>
@@ -120,7 +138,7 @@ function App() {
       <button
         onClick={async () => {
           const result = await provider.request({
-            method: RPCMethodsBase.CHAINS_INFO,
+            method: MethodsBase.CHAINS_INFO,
           });
           console.log(result, 'result=====onConnect');
         }}>

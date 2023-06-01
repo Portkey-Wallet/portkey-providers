@@ -1,8 +1,8 @@
 import {
-  RPCMethodsBaseType,
-  RPCMethodsBase,
-  RPCMethodsUnimplemented,
-  RPCMethodsUnimplementedType,
+  MethodsBaseType,
+  MethodsBase,
+  MethodsUnimplemented,
+  MethodsUnimplementedType,
   DappEvents,
   NotificationEvents,
 } from '@portkey/provider-types';
@@ -19,12 +19,12 @@ export const getHostName = (url: string): string => {
     : 'unknown';
 };
 
-export function isRPCMethodsBase(method: string): method is RPCMethodsBaseType {
-  return Object.values(RPCMethodsBase).indexOf(method as any) !== -1;
+export function isMethodsBase(method: string): method is MethodsBaseType {
+  return Object.values(MethodsBase).indexOf(method as any) !== -1;
 }
 
-export function isRPCMethodsUnimplemented(method: string): method is RPCMethodsUnimplementedType {
-  return Object.values(RPCMethodsUnimplemented).indexOf(method as any) !== -1;
+export function isMethodsUnimplemented(method: string): method is MethodsUnimplementedType {
+  return Object.values(MethodsUnimplemented).indexOf(method as any) !== -1;
 }
 
 export function isNotificationEvents(eventName: string): eventName is DappEvents {
