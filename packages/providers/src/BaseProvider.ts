@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import {
   EventId,
-  IProvider,
+  IInternalProvider,
   DappEvents,
   MethodsType,
   ConsoleLike,
@@ -31,7 +31,7 @@ export interface BaseProviderState {
   initialized: boolean;
 }
 
-export default abstract class BaseProvider extends EventEmitter implements IProvider {
+export default abstract class BaseProvider extends EventEmitter implements IInternalProvider {
   private _companionStream: IDappInteractionStream;
   protected state: BaseProviderState;
   protected static _defaultState: BaseProviderState = {

@@ -1,15 +1,33 @@
 import { IWeb3Provider, portkeyInitEvent } from '@portkey/provider-types';
 
-const detectProvider = async (): Promise<IWeb3Provider | null> => {
-  const timeout = 3000;
+export type DetectProviderOptions = { timeout?: number };
+
+const detectProvider = async (options?: DetectProviderOptions): Promise<IWeb3Provider | null> => {
+  const { timeout = 3000 } = options || {};
   if (window.portkey) {
     return isPortkeyProvider(window.portkey) ? window.portkey : null;
   }
+
   return new Promise((resolve, reject) => {
-    setTimeout(reject, timeout);
-    window.addEventListener(portkeyInitEvent, () => {
-      resolve(window.portkey as IWeb3Provider);
-    });
+    let timedOut;
+    const handlePortkey = () => {
+      clearTimeout(timerId);
+      window.removeEventListener(portkeyInitEvent, handlePortkey);
+      if (isPortkeyProvider(window.portkey)) {
+        resolve(window.portkey);
+      } else {
+        if (timedOut) {
+          reject(new Error('Detect portkey provider timeout'));
+        } else {
+          resolve(null);
+        }
+      }
+    };
+    const timerId = setTimeout(() => {
+      timedOut = true;
+      handlePortkey();
+    }, timeout);
+    window.addEventListener(portkeyInitEvent, handlePortkey);
   });
 };
 

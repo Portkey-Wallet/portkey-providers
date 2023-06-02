@@ -1,43 +1,75 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { IChain, IContract, IWeb3Provider, MethodsBase } from '@portkey/provider-types';
+import {
+  Accounts,
+  ChainIds,
+  IChain,
+  IContract,
+  IWeb3Provider,
+  MethodsBase,
+  NetworkType,
+  NotificationEvents,
+  ProviderErrorType,
+} from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
 import './index.css';
 function App() {
   const [provider, setProvider] = useState<IWeb3Provider>();
   const [chain, setChain] = useState<IChain>();
   const [tokenContract, setTokenContract] = useState<IContract>();
+
+  const initProvider = useCallback(async () => {
+    try {
+      console.log(window.portkey, '=window.portkey');
+      setProvider(await detectProvider());
+    } catch (error) {
+      console.log(error, '=====error');
+    }
+  }, []);
+  const accountsChanged = (accounts: Accounts) => {
+    console.log(accounts, '====accountsChanged');
+  };
+  const chainChanged = (chainIds: ChainIds) => {
+    console.log(chainIds, '====chainChanged');
+  };
+  const networkChanged = (networkType: NetworkType) => {
+    console.log(networkType, '====networkChanged');
+  };
+  const connected = (connectInfo: NetworkType) => {
+    console.log(connectInfo, '====networkChanged');
+  };
+  const disconnected = (error: ProviderErrorType) => {
+    console.log(error, '====networkChanged');
+  };
+
+  const initListener = () => {
+    provider.on(NotificationEvents.ACCOUNTS_CHANGED, accountsChanged);
+    provider.on(NotificationEvents.CHAIN_CHANGED, chainChanged);
+    provider.on(NotificationEvents.NETWORK_CHANGED, networkChanged);
+    provider.on(NotificationEvents.CONNECTED, connected);
+    provider.on(NotificationEvents.DISCONNECTED, disconnected);
+  };
+  const removeListener = () => {
+    provider.removeListener(NotificationEvents.ACCOUNTS_CHANGED, accountsChanged);
+    provider.removeListener(NotificationEvents.CHAIN_CHANGED, chainChanged);
+    provider.removeListener(NotificationEvents.NETWORK_CHANGED, networkChanged);
+    provider.removeListener(NotificationEvents.CONNECTED, connected);
+    provider.removeListener(NotificationEvents.DISCONNECTED, disconnected);
+  };
+  useEffect(() => {
+    console.log('useEffect');
+    initProvider();
+  }, []);
   useEffect(() => {
     if (!provider) return;
-
-    const accountsChanged = (...args) => {
-      console.log(args, '====args');
-    };
-
-    const initListener = () => {
-      provider.on('accountsChanged', accountsChanged);
-    };
     initListener();
-    const removeListener = () => {
-      provider.removeListener('accountsChanged', accountsChanged);
-    };
     return () => {
       removeListener();
     };
   }, [provider]);
   return (
     <div>
-      <button
-        onClick={async () => {
-          try {
-            console.log(window.portkey, '=window.portkey');
-            setProvider(await detectProvider());
-          } catch (error) {
-            console.log(error, '=====error');
-          }
-        }}>
-        init provider
-      </button>
+      <button onClick={initProvider}>init provider</button>
       <button
         onClick={async () => {
           try {
@@ -127,8 +159,7 @@ function App() {
       </button>
       <button
         onClick={async () => {
-          // const result = provider.request({ method: 'requestAccounts' });
-          const result = await window.portkey.request({
+          const result = await provider.request({
             method: MethodsBase.REQUEST_ACCOUNTS,
           });
           console.log(result, 'result=====onConnect');
@@ -162,6 +193,7 @@ function App() {
         }}>
         CHAINS_INFO
       </button>
+      <button onClick={removeListener}>removeListener</button>
     </div>
   );
 }
