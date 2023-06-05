@@ -15,6 +15,7 @@ if (shouldInjectProvider()) {
  */
 async function start() {
   await domIsReady();
+  window._portkeySetupProvider();
 }
 
 /**

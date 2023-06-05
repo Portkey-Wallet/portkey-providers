@@ -1,4 +1,4 @@
-import BaseProvider from './BaseProvider';
+import BaseProvider from './baseProvider';
 import { IWeb3Provider, ChainId, IChain, MethodsBase, ProviderError, ResponseCode } from '@portkey/provider-types';
 import { Chain } from '@portkey/chain';
 
@@ -13,19 +13,5 @@ export abstract class Web3Provider extends BaseProvider implements IWeb3Provider
       chainType: 'aelf',
       chainId: chainId,
     });
-  }
-  /**
-   * **MUST** be called after instantiation to complete initialization.
-   *
-   * Calls `getProviderState` and passes the result to
-   * {@link BaseProvider._initializeState}. Logs an error if getting initial state
-   * fails. Throws if called after initialization has completed.
-   */
-  getInitialize() {
-    return this.initializeState();
-  }
-
-  isConnected() {
-    return this.state.isConnected;
   }
 }

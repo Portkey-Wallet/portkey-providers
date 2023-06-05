@@ -1,4 +1,4 @@
-import { DappInteractionStream } from './DappStream';
+import { DappInteractionStream } from './dappStream';
 
 const noop = () => undefined;
 

@@ -36,3 +36,13 @@ export type ProviderMessage = {
   type: string;
   data: unknown;
 };
+
+export type WalletState = {
+  accounts: Accounts;
+  isConnected: boolean;
+  isUnlocked: boolean;
+};
+
+export type Transaction = {
+  transactionId: string;
+};

@@ -12,7 +12,7 @@ import {
   SendTransactionParams,
   ProviderError,
   ResponseCode,
-  TransactionRequestResponse,
+  Transaction,
 } from '@portkey/provider-types';
 import { COMMON_WALLET, formatFunctionName, getTxResult, handleContractError } from './utils';
 
@@ -88,7 +88,7 @@ export class AELFContract extends BaseContract implements IContract {
     //   throw new ProviderError(`The method is the view method ${functionName}`, ResponseCode.ERROR_IN_PARAMS);
     const { onMethod = 'transactionHash' } = sendOptions || {};
 
-    const { transactionId } = await this._request<TransactionRequestResponse>({
+    const { transactionId } = await this._request<Transaction>({
       method: MethodsBase.SEND_TRANSACTION,
       payload: {
         chainId: this.chainId,

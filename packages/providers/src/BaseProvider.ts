@@ -13,16 +13,16 @@ import {
   NotificationEvents,
   MethodsUnimplemented,
   RequestOption,
-  ChainIdRequestResponse,
-  GetWalletStateRequestResponse,
   Accounts,
   SendTransactionParams,
-  RequestAccountsRequestResponse,
   ResponseMessagePreset,
+  MethodsBase,
+  WalletState,
+  Transaction,
+  ChainIds,
+  ChainsInfo,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
-import { ChainsInfoRequestResponse } from '@portkey/provider-types';
-import { TransactionRequestResponse } from '@portkey/provider-types';
 
 export interface BaseProviderState {
   accounts: null | Accounts;
@@ -134,13 +134,14 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     return super.emit(event, response);
   }
 
-  public async request<T = ChainIdRequestResponse>(params: { method: 'chainId' }): Promise<T>;
-  public async request<T = ChainIdRequestResponse>(params: { method: 'chainIds' }): Promise<T>;
-  public async request<T = ChainsInfoRequestResponse>(params: { method: 'chainsInfo' }): Promise<T>;
-  public async request<T = RequestAccountsRequestResponse>(params: { method: 'requestAccounts' }): Promise<T>;
-  public async request<T = GetWalletStateRequestResponse>(params: { method: 'wallet_getWalletState' }): Promise<T>;
-  public async request<T = TransactionRequestResponse>(params: {
-    method: 'sendTransaction';
+  public async request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
+  public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
+  public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
+  public async request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
+  public async request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
+  public async request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
+  public async request<T = Transaction>(params: {
+    method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
   }): Promise<T>;
   public async request<T = any>(params: RequestOption): Promise<T> {
