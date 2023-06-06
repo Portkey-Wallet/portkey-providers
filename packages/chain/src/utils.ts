@@ -1,4 +1,4 @@
-import { ProviderError } from '@portkey/provider-types';
+import { ProviderError, ResponseCode } from '@portkey/provider-types';
 import AElf from 'aelf-sdk';
 
 const { wallet } = AElf;
@@ -34,11 +34,14 @@ export async function getTxResult(
   const txResult = await chain.getTxResult(TransactionId);
 
   if (txResult.error && txResult.errorMessage)
-    throw new ProviderError(txResult.errorMessage.message || txResult.errorMessage.Message, 4002);
+    throw new ProviderError(
+      txResult.errorMessage.message || txResult.errorMessage.Message,
+      ResponseCode.ERROR_IN_PARAMS,
+    );
 
   const result = txResult?.result || txResult;
 
-  if (!result) throw new ProviderError('Can not get transaction result.', 4002);
+  if (!result) throw new ProviderError('Can not get transaction result.', ResponseCode.ERROR_IN_PARAMS);
 
   const lowerCaseStatus = result.Status.toLowerCase();
 
@@ -61,7 +64,7 @@ export async function getTxResult(
     return result;
   }
 
-  throw new ProviderError(result.Error || `Transaction: ${result.Status}`, 4002);
+  throw new ProviderError(result.Error || `Transaction: ${result.Status}`, ResponseCode.ERROR_IN_PARAMS);
 }
 
 export function handleContractError(error?: any, req?: any) {

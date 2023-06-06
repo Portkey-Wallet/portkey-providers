@@ -8,9 +8,11 @@ import {
   SendOptions,
   SendResult,
   ViewResult,
-  RPCMethodsBase,
+  MethodsBase,
   SendTransactionParams,
   ProviderError,
+  ResponseCode,
+  Transaction,
 } from '@portkey/provider-types';
 import { COMMON_WALLET, formatFunctionName, getTxResult, handleContractError } from './utils';
 
@@ -30,7 +32,7 @@ export class Contract extends BaseContract implements IContract {
   public callContract: IContract;
   constructor(props: BaseContractOptions) {
     super(props);
-    this.callContract = this.type === 'aelf' ? new AELFContract(props) : new WB3Contract(props);
+    this.callContract = this.type === 'aelf' ? new AELFContract(props) : new WEB3Contract(props);
   }
   public callViewMethod<T = any>(
     functionName: string,
@@ -81,13 +83,13 @@ export class AELFContract extends BaseContract implements IContract {
   ): Promise<SendResult<T>> {
     await this.checkContract();
     if (!this.viewContract[functionName])
-      throw new ProviderError(`Contract ${this.address} does not exist ${functionName}`, 4001);
+      throw new ProviderError(`Contract ${this.address} does not exist ${functionName}`, ResponseCode.CONTRACT_ERROR);
     // if (this.viewContract[functionName].call)
-    //   throw new ProviderError(`The method is the view method ${functionName}`, 4002);
+    //   throw new ProviderError(`The method is the view method ${functionName}`, ResponseCode.ERROR_IN_PARAMS);
     const { onMethod = 'transactionHash' } = sendOptions || {};
 
-    const { transactionId } = await this._request<{ transactionId: string }>({
-      method: RPCMethodsBase.SEND_TRANSACTION,
+    const { transactionId } = await this._request<Transaction>({
+      method: MethodsBase.SEND_TRANSACTION,
       payload: {
         chainId: this.chainId,
         contractAddress: this.address,
@@ -103,14 +105,14 @@ export class AELFContract extends BaseContract implements IContract {
         const txResult = await getTxResult(this.chainProvider, transactionId);
         return { data: txResult, transactionId };
       } catch (error) {
-        throw new ProviderError(handleContractError(error).message, 4003, { transactionId });
+        throw new ProviderError(handleContractError(error).message, ResponseCode.CONTRACT_ERROR, { transactionId });
       }
     }
     return { transactionId };
   }
 }
 
-export class WB3Contract extends BaseContract implements IContract {
+export class WEB3Contract extends BaseContract implements IContract {
   public callViewMethod<T = any>(
     _functionName: string,
     _paramsOption?: any,

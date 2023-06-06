@@ -1,4 +1,4 @@
-import { DappInteractionStream } from './DappStream';
+import { DappInteractionStream } from './dappStream';
 
 const noop = () => undefined;
 
@@ -29,10 +29,8 @@ export class PortkeyPostStream extends DappInteractionStream {
     return cb();
   };
   _onMessage(event) {
-    console.log(event, '======event');
-    console.log(this._postWindow, '======this._postWindow');
     console.log(this._origin, '======this._origin');
-    console.log(this._name, '======this._name');
+    console.log(event.data, '======this._name');
 
     try {
       const msg = event.data;

@@ -1,25 +1,25 @@
-import { NotificationEvents, IDappInteractionStream, ResponseCode } from '@portkey/provider-types';
+import { NotificationEvents, IDappInteractionStream, ResponseCode, IResponseType } from '@portkey/provider-types';
 import { Duplex } from 'readable-stream';
 
 export abstract class DappInteractionStream extends Duplex implements IDappInteractionStream {
   constructor() {
     super();
   }
-  /**
-   * this method is not implemented yet.
-   */
-  createSubStream = (_name: String) => {
-    throw new Error('not implemented yet');
-  };
+  createSubStream = (_name: String) => {};
 
   _read = (_size?: number | undefined): void => {};
 
   /**
    *
-   * @param msg the message content you want to send to the dapp
+   * @param message the message content you want to send to the dapp
    */
   createMessageEvent = (msg: string) => {
-    this.push({ eventName: NotificationEvents.MESSAGE, info: { code: ResponseCode.INTERNAL_ERROR, msg } });
+    this.write(
+      JSON.stringify({
+        eventName: NotificationEvents.MESSAGE,
+        info: { code: ResponseCode.SUCCESS, msg, data: msg },
+      } as IResponseType),
+    );
   };
 
   public push(chunk: any, encoding?: BufferEncoding | undefined): boolean {
@@ -49,23 +49,6 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
     encoding: BufferEncoding,
     callback: (error?: Error | null | undefined) => void,
   ): void;
-}
-
-/**
- * Use SubStream to create a new Stream port used for other purpose.
- * For example, you can create a SubStream to deal with RPC connection, and an error won't make the parent stream crash.
- */
-export class SubStream extends Duplex {
-  private parentStream: Duplex;
-  constructor(parentStream: Duplex, public name: string) {
-    super();
-    this.parentStream = parentStream;
-  }
-  _read(_size: number): void {}
-  _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
-    this.parentStream?.push(Object.assign({}, chunk, { name: this.name }));
-    callback();
-  }
 }
 
 export interface StreamData {

@@ -1,7 +1,7 @@
 import { BaseProviderOptions } from '@portkey/provider-types';
-import { Web3Provider } from '@portkey/providers';
+import { PortkeyProvider } from '@portkey/providers';
 
-export default class PortKeyProvider extends Web3Provider {
+export default class PortKeyProvider extends PortkeyProvider {
   constructor(props: BaseProviderOptions) {
     super(props);
   }

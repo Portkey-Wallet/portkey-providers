@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src", "../../index.d.ts"],
+  "include": ["./src", "../../index.d.ts", "index.d.ts"],
   "compilerOptions": {
     "outDir": "./dist",
     "esModuleInterop": true

@@ -1,32 +1,94 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { IChain, IContract, IWeb3Provider, NotificationEvents, RPCMethodsBase } from '@portkey/provider-types';
+import {
+  Accounts,
+  ChainIds,
+  IChain,
+  IContract,
+  IWeb3Provider,
+  MethodsBase,
+  NetworkType,
+  NotificationEvents,
+  ProviderErrorType,
+} from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
 import './index.css';
 function App() {
   const [provider, setProvider] = useState<IWeb3Provider>();
   const [chain, setChain] = useState<IChain>();
   const [tokenContract, setTokenContract] = useState<IContract>();
+
+  const initProvider = useCallback(async () => {
+    try {
+      console.log(window.portkey, '=window.portkey');
+      setProvider(await detectProvider());
+    } catch (error) {
+      console.log(error, '=====error');
+    }
+  }, []);
+  const accountsChanged = (accounts: Accounts) => {
+    console.log(accounts, '====accountsChanged');
+  };
+  const chainChanged = (chainIds: ChainIds) => {
+    console.log(chainIds, '====chainChanged');
+  };
+  const networkChanged = (networkType: NetworkType) => {
+    console.log(networkType, '====networkChanged');
+  };
+  const connected = (connectInfo: NetworkType) => {
+    console.log(connectInfo, '====networkChanged');
+  };
+  const disconnected = (error: ProviderErrorType) => {
+    console.log(error, '====networkChanged');
+  };
+
+  const initListener = () => {
+    provider.on(NotificationEvents.ACCOUNTS_CHANGED, accountsChanged);
+    provider.on(NotificationEvents.CHAIN_CHANGED, chainChanged);
+    provider.on(NotificationEvents.NETWORK_CHANGED, networkChanged);
+    provider.on(NotificationEvents.CONNECTED, connected);
+    provider.on(NotificationEvents.DISCONNECTED, disconnected);
+  };
+  const removeListener = () => {
+    provider.removeListener(NotificationEvents.ACCOUNTS_CHANGED, accountsChanged);
+    provider.removeListener(NotificationEvents.CHAIN_CHANGED, chainChanged);
+    provider.removeListener(NotificationEvents.NETWORK_CHANGED, networkChanged);
+    provider.removeListener(NotificationEvents.CONNECTED, connected);
+    provider.removeListener(NotificationEvents.DISCONNECTED, disconnected);
+  };
+  useEffect(() => {
+    console.log('useEffect');
+    initProvider();
+  }, []);
+  useEffect(() => {
+    if (!provider) return;
+    initListener();
+    return () => {
+      removeListener();
+    };
+  }, [provider]);
   return (
     <div>
+      <button onClick={initProvider}>init provider</button>
       <button
         onClick={async () => {
           try {
-            console.log(window.portkey, '=window.portkey');
-            setProvider(await detectProvider());
+            const _chain = await provider.getChain('AELF');
+            setChain(_chain);
+            setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
           } catch (error) {
-            console.log(error, '=====error');
+            console.log(error, '=====getChain');
           }
         }}>
-        init provider
+        getChain
       </button>
       <button
         onClick={async () => {
-          const _chain = provider.getChain('AELF');
+          const _chain = await provider.getChain('tDVV');
           setChain(_chain);
           setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
         }}>
-        getChain
+        getChain Error
       </button>
       <button
         onClick={async () => {
@@ -58,32 +120,47 @@ function App() {
       <button
         onClick={async () => {
           try {
-            console.log(tokenContract, '=====tokenContract');
-
             const balance = await tokenContract.callSendMethod(
               'Transfer',
               '',
               {
                 symbol: 'ELF',
-                owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                to: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                amount: 1,
               },
               // { onMethod: 'receipt' },
             );
             console.log(balance, '=====balance');
           } catch (error) {
-            console.log(error, '====callSendMethod-error');
+            alert(error.message);
           }
         }}>
-        callSendMethod
+        Transfer
       </button>
       <button
         onClick={async () => {
-          // const result = provider.request({ method: 'requestAccounts' });
-          const result = await window.portkey.request({
-            method: RPCMethodsBase.REQUEST_ACCOUNTS,
-            payload: {
-              a: 1,
-            },
+          try {
+            const balance = await tokenContract.callSendMethod(
+              'Transfer',
+              '',
+              {
+                symbol: 'ELF',
+                to: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                amount: 1,
+              },
+              { onMethod: 'receipt' },
+            );
+            console.log(balance, '=====balance');
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        Transfer receipt
+      </button>
+      <button
+        onClick={async () => {
+          const result = await provider.request({
+            method: MethodsBase.REQUEST_ACCOUNTS,
           });
           console.log(result, 'result=====onConnect');
         }}>
@@ -92,7 +169,7 @@ function App() {
       <button
         onClick={async () => {
           const result = await provider.request({
-            method: RPCMethodsBase.ACCOUNTS,
+            method: MethodsBase.ACCOUNTS,
           });
           console.log(result, 'result=====onConnect');
         }}>
@@ -101,12 +178,22 @@ function App() {
       <button
         onClick={async () => {
           const result = await provider.request({
-            method: RPCMethodsBase.CHAIN_ID,
+            method: MethodsBase.CHAIN_ID,
           });
           console.log(result, 'result=====onConnect');
         }}>
         CHAIN_ID
       </button>
+      <button
+        onClick={async () => {
+          const result = await provider.request({
+            method: MethodsBase.CHAINS_INFO,
+          });
+          console.log(result, 'result=====onConnect');
+        }}>
+        CHAINS_INFO
+      </button>
+      <button onClick={removeListener}>removeListener</button>
     </div>
   );
 }

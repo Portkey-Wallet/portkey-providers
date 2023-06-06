@@ -44,7 +44,7 @@ export class ContentPostStream extends DappInteractionStream {
       if (!data || typeof data !== 'object') return;
       if (data.target && data.target !== this._name) return;
 
-      if (!data.payload || typeof data.payload !== 'object') return;
+      if (data.payload !== undefined && typeof data.payload !== 'object' && data.payload !== null) return;
 
       this.push(msg);
     } catch (error) {

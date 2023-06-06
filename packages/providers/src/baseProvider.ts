@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 import {
   EventId,
-  IProvider,
+  IInternalProvider,
   DappEvents,
-  RPCMethods,
+  MethodsType,
   ConsoleLike,
   ResponseCode,
   BaseProviderOptions,
@@ -11,22 +11,27 @@ import {
   IResponseInfo,
   ProviderError,
   NotificationEvents,
-  RPCMethodsUnimplemented,
+  MethodsUnimplemented,
   RequestOption,
+  Accounts,
+  SendTransactionParams,
+  ResponseMessagePreset,
+  MethodsBase,
+  WalletState,
+  Transaction,
+  ChainIds,
+  ChainsInfo,
 } from '@portkey/provider-types';
-import { isNotificationEvents, isRPCMethodsBase, isRPCMethodsUnimplemented } from './utils';
-
-type Chain = string; //  Chain:ChainId
-type IAccounts = { [x: Chain]: string[] }; // {AELF: ['ELF_xxxxx_AELF'],
+import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 
 export interface BaseProviderState {
-  accounts: null | IAccounts;
+  accounts: null | Accounts;
   isConnected: boolean;
   isUnlocked: boolean;
   initialized: boolean;
 }
 
-export default abstract class BaseProvider extends EventEmitter implements IProvider {
+export default abstract class BaseProvider extends EventEmitter implements IInternalProvider {
   private _companionStream: IDappInteractionStream;
   protected state: BaseProviderState;
   protected static _defaultState: BaseProviderState = {
@@ -41,15 +46,14 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this._companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
-    this._companionStream.on('data', this._onData.bind(this));
+    this._companionStream.on('data', this._onData);
     this.state = BaseProvider._defaultState;
+    this.request = this.request.bind(this);
   }
 
-  private _onData(buffer: Buffer): void {
-    console.log(buffer, JSON.parse(buffer.toString()), '=====buffer');
-
+  protected _onData = (buffer: Buffer): void => {
     try {
-      const { eventName, info } = JSON.parse(buffer.toString());
+      const { eventName, info } = JSON.parse(buffer?.toString());
       if (isNotificationEvents(eventName)) {
         switch (eventName) {
           case NotificationEvents.CONNECTED:
@@ -64,6 +68,9 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
           case NotificationEvents.NETWORK_CHANGED:
             this.handleNetworkChanged(info);
             return;
+          case NotificationEvents.MESSAGE:
+            this.handleMessage(info);
+            return;
           default:
             if (eventName && info?.data) this.emit(eventName, info.data);
             break;
@@ -74,15 +81,15 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     } catch (error) {
       this._log.log(error, '====error');
     }
-  }
+  };
 
   /**
    * @override
    * creates a listener on the provider
-   * @param {DappEvents} eventName event name that the listener will listen to
+   * @param {string} event event name that the listener will listen to
    * @param {Function} listener callback function
    */
-  public on(event: DappEvents, listener: (...args: any[]) => void): this {
+  public on(event: string, listener: (...args: any[]) => void): this {
     super.on(event, listener);
     return this;
   }
@@ -90,10 +97,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * @override
    * creates a listener on the provider, the listener will be removed after the first time it is triggered
-   * @param {DappEvents} eventName event name that the listener will listen to
+   * @param {string} event event name that the listener will listen to
    * @param {Function} listener callback function
    */
-  public once(event: DappEvents | EventId, listener: (...args: any[]) => void): this {
+  public once(event: string, listener: (...args: any[]) => void): this {
     super.once(event, listener);
     return this;
   }
@@ -101,20 +108,20 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * @override
    * alias for ```BaseProvider.on()```
-   * @param {DappEvents} eventName event name that the listener will listen to
+   * @param {string} event event name that the listener will listen to
    * @param {Function} listener callback function
    */
-  public addListener(eventName: DappEvents, listener: (...args: any[]) => void): this {
-    return this.on(eventName, listener);
+  public addListener(event: string, listener: (...args: any[]) => void): this {
+    return this.on(event, listener);
   }
 
   /**
    * remove a listener from the provider
-   * @param eventName  event name that the listener used to listen to
+   * @param {string} event event name that the listener used to listen to
    * @param {Function} listener callback function
    */
-  public removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    super.removeListener(eventName, listener);
+  public removeListener(event: string, listener: (...args: any[]) => void): this {
+    super.removeListener(event, listener);
     return this;
   }
 
@@ -127,13 +134,31 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     return super.emit(event, response);
   }
 
-  public request = async <T = any>(params: RequestOption): Promise<T> => {
+  public async request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
+  public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
+  public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
+  public async request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
+  public async request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
+  public async request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
+  public async request<T = Transaction>(params: {
+    method: typeof MethodsBase.SEND_TRANSACTION;
+    payload: SendTransactionParams;
+  }): Promise<T>;
+  public async request<T = any>(params: RequestOption): Promise<T> {
     this._log.log(params, 'request,=======params');
+
+    if (!params || typeof params !== 'object' || Array.isArray(params))
+      throw new ProviderError('Expected a single, non-array, object argument.', ResponseCode.ERROR_IN_PARAMS);
+
     const eventName = this.getEventName();
     const { method, payload } = params || {};
-    // if (!this.methodCheck(method)) {
-    //   throw new ProviderError('method not found!', ResponseCode.ERROR_IN_PARAMS);
-    // }
+    if (!this.methodCheck(method)) {
+      throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
+    }
+
+    if (payload !== undefined && typeof payload !== 'object' && payload !== null)
+      throw new ProviderError(`'params.payload' must be an object if provided.`, ResponseCode.UNKNOWN_METHOD);
+
     this._companionStream.write(
       JSON.stringify({
         method,
@@ -151,14 +176,10 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
         }
       });
     });
-  };
+  }
 
-  protected methodCheck = (method: string): method is RPCMethods => {
-    return isRPCMethodsBase(method) || isRPCMethodsUnimplemented(method);
-  };
-
-  setupStream = (_companionStream: IDappInteractionStream) => {
-    this._companionStream = _companionStream;
+  protected methodCheck = (method: string): method is MethodsType => {
+    return isMethodsBase(method) || isMethodsUnimplemented(method);
   };
 
   onConnectionDisconnect = (error: Error) => {
@@ -178,12 +199,8 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     if (this.state.initialized === true) {
       throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
     }
-    const initialResponse = await this.request<{
-      accounts: IAccounts;
-      isConnected: boolean;
-      isUnlocked: boolean;
-    }>({
-      method: RPCMethodsUnimplemented.GET_WALLET_STATE,
+    const initialResponse = await this.request({
+      method: MethodsUnimplemented.GET_WALLET_STATE,
     });
     if (initialResponse) {
       this.state = { ...this.state, ...initialResponse, initialized: true };
@@ -218,7 +235,7 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
   /**
    * When the account is updated or the network is switched
    */
-  protected handleAccountsChanged(response: IResponseInfo<IAccounts>) {
+  protected handleAccountsChanged(response: IResponseInfo<Accounts>) {
     const { data } = response;
     if (!data) return;
     // TODO accounts !== this.state.accounts
@@ -236,5 +253,12 @@ export default abstract class BaseProvider extends EventEmitter implements IProv
     this.state.accounts = data?.accounts;
     this.initializeState();
     this.emit(NotificationEvents.NETWORK_CHANGED, response.data);
+  }
+
+  /**
+   * When something unexpected happens, the dapp will receive a notification
+   */
+  protected handleMessage(response: IResponseInfo) {
+    this.emit(NotificationEvents.MESSAGE, response?.data ?? response?.msg);
   }
 }
