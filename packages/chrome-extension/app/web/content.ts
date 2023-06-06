@@ -24,15 +24,11 @@ class Content {
     pageStream.on('data', (data: Buffer) => {
       const params = JSON.parse(data.toString());
       console.log(params, location.origin, 'params===setupPageStream');
-      if (params.method === 'requestAccounts') {
-        pageStream.send({
-          eventName: 'connected',
-          info: { code: 0, data: { accounts: ['accounts'] }, msg: 'hello servers' },
-        });
-      }
+
       pageStream.send({
         eventName: params.eventName,
-        info: { code: 0, data: { transactionId: 'transactionId' }, msg: 'hello servers' },
+        target: 'inpage-script',
+        info: { code: 0, data: { transactionId: 'transactionId' }, msg: 'send back' },
       });
     });
   }

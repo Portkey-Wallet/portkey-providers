@@ -1,6 +1,6 @@
 {
   "name": "@portkey/detect-provider",
-  "version": "0.0.1-alpha.13",
+  "version": "0.0.1-alpha.14",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -31,6 +31,6 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/provider-types": "^0.0.1-alpha.13"
+    "@portkey/provider-types": "^0.0.1-alpha.14"
   }
 }
