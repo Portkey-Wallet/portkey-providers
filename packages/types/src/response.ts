@@ -38,9 +38,11 @@ export type ProviderMessage = {
 };
 
 export type WalletState = {
-  accounts: Accounts;
   isConnected: boolean;
   isUnlocked: boolean;
+  accounts?: Accounts;
+  chainIds?: ChainIds | null;
+  networkType?: string | null;
 };
 
 export type Transaction = {
