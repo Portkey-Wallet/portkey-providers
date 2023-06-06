@@ -15,20 +15,24 @@ import {
   RequestOption,
   Accounts,
   SendTransactionParams,
-  ResponseMessagePreset,
   MethodsBase,
   WalletState,
   Transaction,
   ChainIds,
   ChainsInfo,
+  ConnectInfo,
+  ProviderErrorType,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
+import isEqual from 'lodash/isEqual';
 
 export interface BaseProviderState {
   accounts: null | Accounts;
   isConnected: boolean;
   isUnlocked: boolean;
   initialized: boolean;
+  chainIds: ChainIds | null;
+  networkType: string | null;
 }
 
 export default abstract class BaseProvider extends EventEmitter implements IInternalProvider {
@@ -39,6 +43,8 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     isConnected: false,
     isUnlocked: false,
     initialized: false,
+    chainIds: null,
+    networkType: null,
   };
   protected readonly _log: ConsoleLike;
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
@@ -54,25 +60,28 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   protected _onData = (buffer: Buffer): void => {
     try {
       const { eventName, info } = JSON.parse(buffer?.toString());
-      if (isNotificationEvents(eventName)) {
+      if (isNotificationEvents(eventName) && info) {
         switch (eventName) {
           case NotificationEvents.CONNECTED:
-            this.handleConnect(info);
+            this.handleConnect(info.data);
             return;
           case NotificationEvents.DISCONNECTED:
-            this.handleDisconnect(info);
-            return;
-          case NotificationEvents.ACCOUNTS_CHANGED:
-            this.handleAccountsChanged(info);
-            return;
-          case NotificationEvents.NETWORK_CHANGED:
-            this.handleNetworkChanged(info);
+            this.handleDisconnect(info.data);
             return;
           case NotificationEvents.MESSAGE:
-            this.handleMessage(info);
+            this.handleMessage(info.data);
+            return;
+          case NotificationEvents.ACCOUNTS_CHANGED:
+            this.handleAccountsChanged(info.data);
+            return;
+          case NotificationEvents.NETWORK_CHANGED:
+            this.handleNetworkChanged(info.data);
+            return;
+          case NotificationEvents.CHAIN_CHANGED:
+            this.handleChainChanged(info.data);
             return;
           default:
-            if (eventName && info?.data) this.emit(eventName, info.data);
+            if (eventName) this.emit(eventName, info.data);
             break;
         }
       } else {
@@ -152,9 +161,9 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
 
     const eventName = this.getEventName();
     const { method, payload } = params || {};
-    if (!this.methodCheck(method)) {
-      throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
-    }
+    // if (!this.methodCheck(method)) {
+    //   throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
+    // }
 
     if (payload !== undefined && typeof payload !== 'object' && payload !== null)
       throw new ProviderError(`'params.payload' must be an object if provided.`, ResponseCode.UNKNOWN_METHOD);
@@ -205,17 +214,19 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     if (initialResponse) {
       this.state = { ...this.state, ...initialResponse, initialized: true };
     }
-    // this.handleAccountsChanged()
+    initialResponse.accounts && this.handleAccountsChanged(initialResponse.accounts);
+    initialResponse.chainIds && this.handleChainChanged(initialResponse.chainIds);
+    initialResponse.networkType && this.handleNetworkChanged(initialResponse.networkType);
   };
   /**
    * When the provider becomes connected, updates internal state and emits required events.
    * @param event connected
    * @param response
    */
-  protected handleConnect(response: IResponseInfo) {
+  protected handleConnect(response: ConnectInfo) {
     if (!this.state.isConnected) {
       this.state.isConnected = true;
-      this.emit(NotificationEvents.CONNECTED, response.data);
+      this.emit(NotificationEvents.CONNECTED, response);
     }
   }
   /**
@@ -223,11 +234,13 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * @param event disconnected
    * @param response
    */
-  protected handleDisconnect(response: IResponseInfo) {
+  protected handleDisconnect(response: IResponseInfo<ProviderErrorType>) {
     if (this.state.isConnected) {
       this.state.isConnected = false;
       this.state.accounts = null;
       this.state.isUnlocked = false;
+      this.state.chainIds = null;
+      this.state.networkType = null;
       this.emit(NotificationEvents.DISCONNECTED, response.data);
     }
   }
@@ -235,30 +248,39 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   /**
    * When the account is updated or the network is switched
    */
-  protected handleAccountsChanged(response: IResponseInfo<Accounts>) {
-    const { data } = response;
-    if (!data) return;
-    // TODO accounts !== this.state.accounts
-    this.state.accounts = data;
+  protected handleAccountsChanged(response: Accounts) {
+    if (!response) return;
 
-    this.emit(NotificationEvents.ACCOUNTS_CHANGED, data);
+    if (isEqual(this.state.accounts, response)) return;
+    this.state.accounts = response;
+
+    this.emit(NotificationEvents.ACCOUNTS_CHANGED, response);
   }
   /**
    * When the network switches, updates internal state and emits required events
    */
-  protected handleNetworkChanged(response: IResponseInfo) {
-    const { data } = response;
+  protected handleNetworkChanged(response: string) {
+    if (!response) return;
+    if (isEqual(this.state.networkType, response)) return;
+    this.state.networkType = response;
 
-    // TODO accounts !== this.state.accounts
-    this.state.accounts = data?.accounts;
     this.initializeState();
-    this.emit(NotificationEvents.NETWORK_CHANGED, response.data);
+    this.emit(NotificationEvents.NETWORK_CHANGED, response);
   }
 
   /**
    * When something unexpected happens, the dapp will receive a notification
    */
-  protected handleMessage(response: IResponseInfo) {
+  protected handleMessage(response: any) {
     this.emit(NotificationEvents.MESSAGE, response?.data ?? response?.msg);
+  }
+
+  protected handleChainChanged(response: ChainIds) {
+    if (!response) return;
+
+    if (isEqual(this.state.chainIds, response)) return;
+    this.state.chainIds = response;
+
+    this.emit(NotificationEvents.CHAIN_CHANGED, response);
   }
 }
