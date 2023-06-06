@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Accounts,
@@ -12,11 +12,23 @@ import {
   ProviderErrorType,
 } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
+import { Actions, State, useExampleState } from './hooks';
 import './index.css';
 function App() {
   const [provider, setProvider] = useState<IWeb3Provider>();
+  const [state, dispatch] = useExampleState();
+
+  const setState = useCallback((payload: State, actions: Actions = Actions.setState) => {
+    dispatch({ type: actions, payload });
+  }, []);
+
   const [chain, setChain] = useState<IChain>();
   const [tokenContract, setTokenContract] = useState<IContract>();
+
+  const connectEagerly = useCallback(async () => {
+    const accounts = await provider.request({ method: MethodsBase.ACCOUNTS });
+    setState({ accounts });
+  }, [provider]);
 
   const initProvider = useCallback(async () => {
     try {
@@ -27,21 +39,23 @@ function App() {
     }
   }, []);
   const accountsChanged = (accounts: Accounts) => {
-    console.log(accounts, '====accountsChanged');
+    setState({ accounts });
   };
   const chainChanged = (chainIds: ChainIds) => {
-    console.log(chainIds, '====chainChanged');
+    setState({ chainIds });
   };
-  const networkChanged = (networkType: NetworkType) => {
-    console.log(networkType, '====networkChanged');
+  const networkChanged = async (networkType: NetworkType) => {
+    console.log(networkType, '=====networkType');
+    const _chain = await provider.getChain('AELF');
+    setChain(_chain);
   };
   const connected = (connectInfo: NetworkType) => {
-    console.log(connectInfo, '====networkChanged');
+    console.log(connectInfo, '====connected');
   };
   const disconnected = (error: ProviderErrorType) => {
-    console.log(error, '====networkChanged');
+    console.log(error, '=====disconnected');
+    connectEagerly();
   };
-
   const initListener = () => {
     provider.on(NotificationEvents.ACCOUNTS_CHANGED, accountsChanged);
     provider.on(NotificationEvents.CHAIN_CHANGED, chainChanged);
@@ -57,18 +71,26 @@ function App() {
     provider.removeListener(NotificationEvents.DISCONNECTED, disconnected);
   };
   useEffect(() => {
-    console.log('useEffect');
     initProvider();
   }, []);
   useEffect(() => {
     if (!provider) return;
     initListener();
+    connectEagerly();
     return () => {
       removeListener();
     };
   }, [provider]);
   return (
     <div>
+      {Object.entries(state).map(([key, value]) => {
+        return (
+          <p>
+            <h4>{key}</h4>
+            {JSON.stringify(value)}
+          </p>
+        );
+      })}
       <button onClick={initProvider}>init provider</button>
       <button
         onClick={async () => {
@@ -116,20 +138,14 @@ function App() {
         }}>
         GetBalance
       </button>
-
       <button
         onClick={async () => {
           try {
-            const balance = await tokenContract.callSendMethod(
-              'Transfer',
-              '',
-              {
-                symbol: 'ELF',
-                to: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
-                amount: 1,
-              },
-              // { onMethod: 'receipt' },
-            );
+            const balance = await tokenContract.callSendMethod('Transfer', '', {
+              symbol: 'ELF',
+              to: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+              amount: 1,
+            });
             console.log(balance, '=====balance');
           } catch (error) {
             alert(error.message);
@@ -159,10 +175,14 @@ function App() {
       </button>
       <button
         onClick={async () => {
-          const result = await provider.request({
-            method: MethodsBase.REQUEST_ACCOUNTS,
-          });
-          console.log(result, 'result=====onConnect');
+          try {
+            const result = await provider.request({
+              method: MethodsBase.REQUEST_ACCOUNTS,
+            });
+            setState({ accounts: result });
+          } catch (error) {
+            alert(error.message);
+          }
         }}>
         onConnect
       </button>
@@ -171,7 +191,7 @@ function App() {
           const result = await provider.request({
             method: MethodsBase.ACCOUNTS,
           });
-          console.log(result, 'result=====onConnect');
+          setState({ accounts: result });
         }}>
         ACCOUNTS
       </button>
@@ -180,7 +200,7 @@ function App() {
           const result = await provider.request({
             method: MethodsBase.CHAIN_ID,
           });
-          console.log(result, 'result=====onConnect');
+          setState({ chainIds: result });
         }}>
         CHAIN_ID
       </button>
@@ -189,7 +209,7 @@ function App() {
           const result = await provider.request({
             method: MethodsBase.CHAINS_INFO,
           });
-          console.log(result, 'result=====onConnect');
+          setState({ chainsInfo: result });
         }}>
         CHAINS_INFO
       </button>

@@ -234,14 +234,14 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * @param event disconnected
    * @param response
    */
-  protected handleDisconnect(response: IResponseInfo<ProviderErrorType>) {
+  protected handleDisconnect(response: ProviderErrorType) {
     if (this.state.isConnected) {
       this.state.isConnected = false;
       this.state.accounts = null;
       this.state.isUnlocked = false;
       this.state.chainIds = null;
       this.state.networkType = null;
-      this.emit(NotificationEvents.DISCONNECTED, response.data);
+      this.emit(NotificationEvents.DISCONNECTED, response);
     }
   }
 
