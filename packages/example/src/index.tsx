@@ -14,6 +14,7 @@ import {
 import detectProvider from '@portkey/detect-provider';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
+
 function App() {
   const [provider, setProvider] = useState<IPortkeyProvider>();
   const [state, dispatch] = useExampleState();
@@ -124,6 +125,7 @@ function App() {
       <button
         onClick={async () => {
           try {
+            const contract = await chain.contractAt('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', '' as any);
             const height = await chain.getBlockHeight();
             console.log(height, '====height');
             alert(height);

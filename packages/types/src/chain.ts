@@ -1,4 +1,4 @@
-import { AElfChainMethods } from './aelf';
+import { AElfChainMethods, AElfWallet, ChainMethodResult } from './aelf';
 import { IContract } from './contract';
 import { IProvider } from './provider';
 export type ChainId = 'AELF' | 'tDVV' | 'tDVW';
@@ -9,6 +9,8 @@ export interface IChain extends AElfChainMethods {
   type: ChainType;
   chainId: ChainId;
   getContract(contractAddress: string): IContract;
+  /** @deprecated use getContract */
+  contractAt<T = any>(address: string, wallet: AElfWallet): Promise<ChainMethodResult<T>>;
 }
 
 export type IChainProvider = AElfChainMethods;

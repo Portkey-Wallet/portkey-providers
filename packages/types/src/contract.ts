@@ -44,4 +44,5 @@ export interface BaseContractOptions {
   contractAddress: string;
   type: ChainType;
   request: IProvider['request'];
+  rpcUrl: string;
 }

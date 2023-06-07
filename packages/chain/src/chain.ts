@@ -27,6 +27,7 @@ export class Chain extends BaseChain implements IChain {
       chainProvider: this.chainProvider,
       type: this.type,
       request: this._request,
+      rpcUrl: this.rpcUrl,
     });
   }
   contractAt(address: string, wallet: AElfWallet): Promise<any> {

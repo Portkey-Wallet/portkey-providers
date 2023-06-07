@@ -66,6 +66,7 @@ export interface KeyPairJSON {
 }
 
 export interface SendTransactionParams {
+  rpcUrl: string;
   chainId: ChainId;
   contractAddress: string;
   method: string;

@@ -21,6 +21,7 @@ export abstract class BaseContract {
   public chainId: ChainId;
   public chainProvider: IChainProvider;
   public type: ChainType;
+  public rpcUrl: string;
   protected _request: BaseContractOptions['request'];
   constructor(options: BaseContractOptions) {
     Object.assign(this, options);
@@ -91,6 +92,7 @@ export class AELFContract extends BaseContract implements IContract {
     const { transactionId } = await this._request<Transaction>({
       method: MethodsBase.SEND_TRANSACTION,
       payload: {
+        rpcUrl: this.rpcUrl,
         chainId: this.chainId,
         contractAddress: this.address,
         method: functionName,

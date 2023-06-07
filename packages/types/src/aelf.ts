@@ -107,76 +107,11 @@ export type ExtensionInfo = {
 };
 
 export type ChainMethodResult<T> = T & NightElfResult<T> & AElfSDKError;
-/**
- * More method references
- * aelf-web-extension ({@link https://github.com/AElfProject/aelf-web-extension}) and
- * aelf-bridge ({@link https://github.com/AElfProject/aelf-bridge}).
- */
-export interface AElfDappBridge {
-  chain: AElfChainMethods;
-
-  /** NightElf only*/
-  chainId?: string;
-  /** NightElf only*/
-  appName?: string;
-  /** NightElf only*/
-  pure?: boolean;
-  /** NightElf only*/
-  httpProvider?: string[];
-
-  /** aelf-bridge only*/
-  connected?: boolean;
-  /** aelf-bridge only*/
-  options?: { endpoint: string };
-
-  /**
-   * Get signature
-   * User will get a prompt to confirm
-   */
-  getSignature: (options: { address: string; hexToBeSign: string }) => Promise<any>;
-  /** Get version */
-  getVersion: () => string;
-  /** Get address */
-  getAddress: (...args: unknown[]) => any;
-  /** Get extension info */
-  getExtensionInfo?: () => Promise<ExtensionInfo | undefined>;
-  /** login */
-  login: (
-    options: LoginOptions,
-    ...args: unknown[]
-  ) => Promise<{
-    error: string | number;
-    errorMessage: {
-      message: string | Error;
-    };
-    detail: string;
-  }>;
-  /** logout */
-  logout: (options: LogOutOptions, ...args: unknown[]) => Promise<any>;
-  callAElfChain: (...args: unknown[]) => Promise<any>;
-
-  /** @deprecated will be removed */
-  checkPermission: (...args: unknown[]) => Promise<any>;
-
-  /** @deprecated will be removed */
-  setContractPermission: (...args: unknown[]) => Promise<any>;
-
-  /** @deprecated will be removed */
-  removeMethodsWhitelist: (...args: unknown[]) => Promise<any>;
-
-  /** @deprecated will be removed */
-  removeContractPermission: (...args: unknown[]) => Promise<any>;
-
-  /** aelf-bridge only*/
-  sendMessage?: (...args: unknown[]) => Promise<any>;
-
-  /** aelf-bridge only*/
-  connect?: (...args: unknown[]) => void;
-}
 
 // aelf-bridge returns the result directly NightElf will return the result in the result
 export interface AElfChainMethods {
   /**
+   *
    * Get contract instance
    * It is different from the wallet created by Aelf.wallet.getWalletByPrivateKey();
    * There is only one value named address;
