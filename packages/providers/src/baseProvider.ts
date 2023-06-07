@@ -191,10 +191,6 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     return isMethodsBase(method) || isMethodsUnimplemented(method);
   };
 
-  onConnectionDisconnect = (error: Error) => {
-    console.warn('connection disconnected, please re-open this webpage!', error);
-  };
-
   /**
    * create an unduplicated eventId for a request
    * @param {number} seed used to generate random number, default is 999999
@@ -211,9 +207,8 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     const initialResponse = await this.request({
       method: MethodsUnimplemented.GET_WALLET_STATE,
     });
-    if (initialResponse) {
-      this.state = { ...this.state, ...initialResponse, initialized: true };
-    }
+    if (!initialResponse) return;
+    this.state = { ...this.state, ...initialResponse, initialized: true };
     initialResponse.accounts && this.handleAccountsChanged(initialResponse.accounts);
     initialResponse.chainIds && this.handleChainChanged(initialResponse.chainIds);
     initialResponse.networkType && this.handleNetworkChanged(initialResponse.networkType);

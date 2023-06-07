@@ -5,6 +5,9 @@ export type ChainId = 'AELF' | 'tDVV' | 'tDVW';
 export type ChainType = 'aelf' | 'ethereum';
 export type Address = string;
 export interface IChain extends AElfChainMethods {
+  rpcUrl: string;
+  type: ChainType;
+  chainId: ChainId;
   getContract(contractAddress: string): IContract;
 }
 

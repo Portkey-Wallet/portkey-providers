@@ -5,7 +5,7 @@ import {
   ChainIds,
   IChain,
   IContract,
-  IWeb3Provider,
+  IPortkeyProvider,
   MethodsBase,
   NetworkType,
   NotificationEvents,
@@ -15,7 +15,7 @@ import detectProvider from '@portkey/detect-provider';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
 function App() {
-  const [provider, setProvider] = useState<IWeb3Provider>();
+  const [provider, setProvider] = useState<IPortkeyProvider>();
   const [state, dispatch] = useExampleState();
 
   const setState = useCallback((payload: State, actions: Actions = Actions.setState) => {
@@ -94,6 +94,12 @@ function App() {
       <button onClick={initProvider}>init provider</button>
       <button
         onClick={async () => {
+          alert(provider.isConnected());
+        }}>
+        isConnected
+      </button>
+      <button
+        onClick={async () => {
           try {
             const _chain = await provider.getChain('AELF');
             setChain(_chain);
@@ -106,9 +112,12 @@ function App() {
       </button>
       <button
         onClick={async () => {
-          const _chain = await provider.getChain('tDVV');
-          setChain(_chain);
-          setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
+          try {
+            const _chain = await provider.getChain('tDVV');
+            setChain(_chain);
+          } catch (error) {
+            alert(error.message);
+          }
         }}>
         getChain Error
       </button>
