@@ -1,6 +1,6 @@
 {
   "name": "@portkey/providers",
-  "version": "0.0.1-alpha.16",
+  "version": "0.0.1-alpha.17",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -32,9 +32,9 @@
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.1.0",
-    "@portkey/chain": "^0.0.1-alpha.16",
-    "@portkey/provider-types": "^0.0.1-alpha.16",
-    "@portkey/provider-utils": "^0.0.1-alpha.16",
+    "@portkey/chain": "^0.0.1-alpha.17",
+    "@portkey/provider-types": "^0.0.1-alpha.17",
+    "@portkey/provider-utils": "^0.0.1-alpha.17",
     "@types/readable-stream": "^2.3.15",
     "lodash": "^4.17.21",
     "pump": "^3.0.0",
