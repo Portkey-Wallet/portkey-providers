@@ -5,7 +5,7 @@ import {
   CustomerTestBehaviour,
   ICustomerMockStream,
   IProviderMockStream,
-} from './entity/testPlatform';
+} from './entity/TestPlatform';
 import { IRequestParams, NotificationEvents, MethodsBase, ResponseCode } from '@portkey/provider-types';
 import { SubStream } from './entity/backupStream';
 import { generateNormalResponse } from '@portkey/provider-utils';
