@@ -27,12 +27,12 @@ import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './u
 import isEqual from 'lodash/isEqual';
 
 export interface BaseProviderState {
-  accounts: null | Accounts;
   isConnected: boolean;
   isUnlocked: boolean;
   initialized: boolean;
-  chainIds: ChainIds | null;
-  networkType: string | null;
+  chainIds?: ChainIds | null;
+  networkType?: string | null;
+  accounts?: null | Accounts;
 }
 
 export default abstract class BaseProvider extends EventEmitter implements IInternalProvider {
