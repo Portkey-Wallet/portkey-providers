@@ -106,8 +106,8 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   /**
    * @override
    * creates a listener on the provider, the listener will be removed after the first time it is triggered
-   * @param {string} event event name that the listener will listen to
-   * @param {Function} listener callback function
+   * @param {string} event - event name that the listener will listen to
+   * @param {Function} listener - callback function
    */
   public once(event: string, listener: (...args: any[]) => void): this {
     super.once(event, listener);
@@ -205,9 +205,6 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   };
 
   protected initializeState = async () => {
-    if (this.state.initialized === true) {
-      throw new ProviderError('Provider already initialized.', ResponseCode.INTERNAL_ERROR);
-    }
     const initialResponse = await this.request({
       method: MethodsUnimplemented.GET_WALLET_STATE,
     });
