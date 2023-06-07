@@ -25,6 +25,9 @@ export interface SendResult<T = any> extends ViewResult<T> {
 }
 
 export interface IContract {
+  address: string;
+  chainId: ChainId;
+  type: ChainType;
   callViewMethod<T = any>(functionName: string, paramsOption?: any, callOptions?: CallOptions): Promise<ViewResult<T>>;
   callSendMethod<T = any>(
     functionName: string,

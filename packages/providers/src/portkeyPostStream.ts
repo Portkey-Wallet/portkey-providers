@@ -29,9 +29,6 @@ export class PortkeyPostStream extends DappInteractionStream {
     return cb();
   };
   _onMessage(event) {
-    console.log(this._origin, '======this._origin');
-    console.log(event.data, '======this._name');
-
     try {
       const msg = event.data;
       if (typeof msg !== 'string') return;
@@ -48,7 +45,7 @@ export class PortkeyPostStream extends DappInteractionStream {
 
       this.push(msg);
     } catch (error) {
-      console.log(error, 'Portkey send message error');
+      return;
     }
   }
 }

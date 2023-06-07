@@ -1,8 +1,8 @@
 import BaseProvider from './baseProvider';
-import { BaseProviderOptions } from '@portkey/provider-types';
+import { BaseProviderOptions, IPortkeyProvider } from '@portkey/provider-types';
 import { Web3Provider } from './web3Provider';
 
-export class PortkeyProvider extends Web3Provider {
+export class PortkeyProvider extends Web3Provider implements IPortkeyProvider {
   public readonly isPortkey: true;
   constructor(props: BaseProviderOptions) {
     super(props);

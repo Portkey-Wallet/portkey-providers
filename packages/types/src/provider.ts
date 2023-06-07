@@ -13,11 +13,7 @@ import {
   WalletState,
 } from './response';
 
-export interface IStreamBehaviour {
-  onConnectionDisconnect: (error: Error) => void;
-}
-
-export interface IProvider extends IStreamBehaviour {
+export interface IProvider {
   // on
   on(event: typeof NotificationEvents.CONNECTED, listener: (connectInfo: ConnectInfo) => void): this;
   on(event: typeof NotificationEvents.NETWORK_CHANGED, listener: (networkType: NetworkType) => void): this;
@@ -51,6 +47,11 @@ export interface IProvider extends IStreamBehaviour {
 
 export interface IWeb3Provider extends IProvider {
   getChain(chainId: ChainId): Promise<IChain>;
+}
+
+export interface IPortkeyProvider extends IWeb3Provider {
+  isPortkey: true;
+  isConnected(): boolean;
 }
 
 export interface IInternalProvider extends IProvider {
