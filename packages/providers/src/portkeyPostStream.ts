@@ -2,13 +2,10 @@ import { DappInteractionStream } from './dappStream';
 
 const noop = () => undefined;
 
-declare const window: {
-  ReactNativeWebView: WindowLike;
-} & Window;
 export type PortkeyPostOptions = {
   name: string;
   targetWindow?: any;
-  postWindow?: WindowLike;
+  postWindow: WindowLike;
 };
 
 // At least one window should meet those requirements
@@ -19,12 +16,16 @@ interface WindowLike {
   };
 }
 
+export interface PostWindow {
+  postMessage(message: any): void;
+}
+
 export class PortkeyPostStream extends DappInteractionStream {
   protected _name: string;
   protected _origin: string;
-  protected _postWindow: any;
+  protected _postWindow: PostWindow;
   _read = noop;
-  constructor({ postWindow = window.ReactNativeWebView, targetWindow, name }: PortkeyPostOptions) {
+  constructor({ postWindow, targetWindow, name }: PortkeyPostOptions) {
     super();
     this._name = name;
     this._origin = targetWindow ? '*' : window.location.origin;

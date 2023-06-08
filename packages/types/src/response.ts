@@ -48,3 +48,5 @@ export type WalletState = {
 export type Transaction = {
   transactionId: string;
 };
+
+export type WalletName = string;

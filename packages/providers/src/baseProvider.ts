@@ -23,17 +23,18 @@ import {
   ConnectInfo,
   ProviderErrorType,
   ResponseMessagePreset,
+  WalletName,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import isEqual from 'lodash/isEqual';
 
 export interface BaseProviderState {
-  accounts: null | Accounts;
   isConnected: boolean;
   isUnlocked: boolean;
   initialized: boolean;
-  chainIds: ChainIds | null;
-  networkType: string | null;
+  chainIds?: ChainIds | null;
+  networkType?: string | null;
+  accounts?: null | Accounts;
 }
 
 export default abstract class BaseProvider extends EventEmitter implements IInternalProvider {
@@ -150,6 +151,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   public async request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
   public async request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
   public async request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
+  public async request<T = WalletName>(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<T>;
   public async request<T = Transaction>(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;

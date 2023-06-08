@@ -78,9 +78,9 @@ const producer = new ProducerTestBehaviour(providerStream);
 mTestPlatform.registerProducer(producer);
 mTestPlatform.setWindow(fakeWindow);
 
-const testWrapper = ({ name, targetWindow }: PortkeyPostOptions) => {
+const testWrapper = ({ name, targetWindow }: Partial<PortkeyPostOptions>) => {
   global.window = fakeWindow as any;
-  const testStream = new TestStream({ name, postWindow: fakeWindow, targetWindow });
+  const testStream = new TestStream({ name: name ?? '*', postWindow: fakeWindow, targetWindow });
   const customer = new CustomerTestBehaviour({
     connectionStream: testStream,
   });
@@ -126,7 +126,7 @@ const testWrapper = ({ name, targetWindow }: PortkeyPostOptions) => {
   });
 };
 describe('PortkeyPostStream test', () => {
-  const configs: Array<PortkeyPostOptions> = [
+  const configs: Array<Partial<PortkeyPostOptions>> = [
     { name: 'default stream' },
     { name: '* origin stream', targetWindow: 'any' },
     { name: targetName },

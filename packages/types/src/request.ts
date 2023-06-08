@@ -73,11 +73,7 @@ export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
 
 export const MethodsUnimplemented = {
   GET_WALLET_STATE: 'wallet_getWalletState',
-  ADD_CHAIN: 'wallet_addEthereumChain',
-  SWITCH_CHAIN: 'wallet_switchEthereumChain',
-  REQUEST_PERMISSIONS: 'wallet_requestPermissions',
-  GET_PERMISSIONS: 'wallet_getPermissions',
-  NET_VERSION: 'net_version',
+  GET_WALLET_NAME: 'wallet_getWalletName',
 } as const;
 
 export type MethodsUnimplementedType = (typeof MethodsUnimplemented)[keyof typeof MethodsUnimplemented];

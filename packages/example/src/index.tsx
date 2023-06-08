@@ -125,7 +125,6 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const contract = await chain.contractAt('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', '' as any);
             const height = await chain.getBlockHeight();
             console.log(height, '====height');
             alert(height);
