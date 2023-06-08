@@ -9,7 +9,7 @@ describe('utils describe', () => {
     expect(isMethodsBase('')).toBe(false);
   });
   test('test isMethodsUnimplemented', async () => {
-    expect(isMethodsUnimplemented(MethodsUnimplemented.ADD_CHAIN)).toBe(true);
+    expect(isMethodsUnimplemented(MethodsUnimplemented.GET_WALLET_STATE)).toBe(true);
     expect(isMethodsUnimplemented('')).toBe(false);
   });
   test('test isNotificationEvents', async () => {

@@ -37,9 +37,9 @@ export default {
 
   // The directory where Jest should output its coverage files
   coverageDirectory: 'coverage',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: ['/node_modules/', '/__generated__/', '/dist/', 'index.ts', 'TestPlatform.ts'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/__generated__/', '/dist/', 'index.ts', '/entity/'],
 
   // Indicates which provider should be used to instrument code for coverage
   // coverageProvider: "babel",
@@ -51,6 +51,7 @@ export default {
   //   "lcov",
   //   "clover"
   // ],
+  setupFilesAfterEnv: ['./jest-setup/setup.ts'],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
