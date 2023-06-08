@@ -5,6 +5,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const projectRoot = __dirname;
+const ROOT = path.resolve(__dirname, '.');
+const { version, name } = require(path.resolve(ROOT, './package.json'));
+const banner = `${name} v${version}\n(c) 2023-${new Date().getFullYear()} Portkey\nReleased under ISC License`;
+
 
 const outputDir = 'dist';
 // module.exports =
@@ -18,8 +22,8 @@ let config = {
   output: {
     path: path.resolve(projectRoot, outputDir),
     filename: 'index.js',
-    library: "my-library",
-    libraryTarget: "umd"
+    library: 'my-library',
+    libraryTarget: 'umd',
   },
 
   resolve: {
@@ -75,11 +79,14 @@ let config = {
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     }),
+    new webpack.BannerPlugin({
+      banner,
+      entryOnly: true,
+    }),
   ],
 };
 
 module.exports = (env, argv) => {
-
   if (argv.mode === 'production') {
     config.plugins.push(
       new TerserPlugin({
