@@ -22,6 +22,7 @@ import {
   ChainsInfo,
   ConnectInfo,
   ProviderErrorType,
+  WalletName,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import isEqual from 'lodash/isEqual';
@@ -149,6 +150,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   public async request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
   public async request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
   public async request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
+  public async request<T = WalletName>(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<T>;
   public async request<T = Transaction>(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
