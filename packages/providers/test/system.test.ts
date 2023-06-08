@@ -6,7 +6,13 @@ import {
   ICustomerMockStream,
   IProviderMockStream,
 } from './entity/TestPlatform';
-import { IRequestParams, NotificationEvents, MethodsBase, ResponseCode } from '@portkey/provider-types';
+import {
+  IRequestParams,
+  NotificationEvents,
+  MethodsBase,
+  ResponseCode,
+  ResponseMessagePreset,
+} from '@portkey/provider-types';
 import { SubStream } from './entity/backupStream';
 import { generateNormalResponse } from '@portkey/provider-utils';
 
@@ -58,9 +64,19 @@ describe('system describe', () => {
   test('use unimplemented method will receive a rejection', async () => {
     expect.assertions(1);
     try {
-      await customer.request({ method: 'sendTransaction', payload: {} as any });
+      const result = await customer.request({ method: 'sendTransaction', payload: {} as any });
+      throw new Error('should not be here, result: ' + result);
     } catch (e) {
-      expect(e.message).toMatch('This method is not implemented yet.');
+      expect(e.message).toMatch(ResponseMessagePreset['UNIMPLEMENTED']);
+    }
+  });
+
+  test('use unknown method name will be rejected', async () => {
+    expect.assertions(1);
+    try {
+      await customer.request({ method: 'unknownMethod' as any, payload: {} as any });
+    } catch (e) {
+      expect(e.message).toMatch(ResponseMessagePreset['UNKNOWN_METHOD']);
     }
   });
 
@@ -153,16 +169,4 @@ describe('system describe', () => {
   test('operator handles wrong data', () => {
     expect(() => producer.handleRequestMessage('{{{')).not.toThrow();
   });
-
-  // describe('system check', () => {
-  //   test('use unimplemented method will receive an rejection', async () => {
-  //     expect.assertions(1);
-  //     try {
-  //       const res = await customer.request({ method: MethodsUnimplemented.ADD_CHAIN });
-  //       console.log('res', res);
-  //     } catch (e) {
-  //       expect(e.message).toMatch('method not found!');
-  //     }
-  //   });
-  // });
 });

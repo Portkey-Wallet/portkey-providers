@@ -22,6 +22,7 @@ import {
   ChainsInfo,
   ConnectInfo,
   ProviderErrorType,
+  ResponseMessagePreset,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import isEqual from 'lodash/isEqual';
@@ -161,9 +162,9 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
 
     const eventName = this.getEventName();
     const { method, payload } = params || {};
-    // if (!this.methodCheck(method)) {
-    //   throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
-    // }
+    if (!this.methodCheck(method)) {
+      throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
+    }
 
     if (payload !== undefined && typeof payload !== 'object' && payload !== null)
       throw new ProviderError(`'params.payload' must be an object if provided.`, ResponseCode.UNKNOWN_METHOD);

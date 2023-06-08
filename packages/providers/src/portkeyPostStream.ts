@@ -2,18 +2,29 @@ import { DappInteractionStream } from './dappStream';
 
 const noop = () => undefined;
 
+declare const window: {
+  ReactNativeWebView: WindowLike;
+} & Window;
 export type PortkeyPostOptions = {
   name: string;
   targetWindow?: any;
-  postWindow?: any;
+  postWindow?: WindowLike;
 };
 
+// At least one window should meet those requirements
+interface WindowLike {
+  postMessage: (message: string) => void;
+  location: {
+    origin: string;
+  };
+}
+
 export class PortkeyPostStream extends DappInteractionStream {
-  private _name: string;
-  private _origin: string;
-  private _postWindow: any;
+  protected _name: string;
+  protected _origin: string;
+  protected _postWindow: any;
   _read = noop;
-  constructor({ postWindow = window, targetWindow, name }: PortkeyPostOptions) {
+  constructor({ postWindow = window.ReactNativeWebView, targetWindow, name }: PortkeyPostOptions) {
     super();
     this._name = name;
     this._origin = targetWindow ? '*' : window.location.origin;
@@ -22,7 +33,7 @@ export class PortkeyPostStream extends DappInteractionStream {
   }
   _write = (msg, _encoding, cb) => {
     try {
-      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.origin }));
+      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg.toString()), origin: window.location.origin }));
     } catch (err) {
       return cb(new Error('PortkeyPostStream - disconnected'));
     }
