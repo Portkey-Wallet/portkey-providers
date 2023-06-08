@@ -39,7 +39,7 @@ export default {
   coverageDirectory: 'coverage',
   testEnvironment: 'jsdom',
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: ['/node_modules/', '/__generated__/', '/dist/', 'index.ts', '/entity/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/__generated__/', '/dist/', '/entity/', '/chain/'],
 
   // Indicates which provider should be used to instrument code for coverage
   // coverageProvider: "babel",

@@ -15,17 +15,18 @@ export abstract class Operator implements IOperator {
    * @param message the message from the dapp
    */
   public handleRequestMessage = async (message: string) => {
-    if (!(message?.length > 0)) {
+    if (!message) {
       this._stream.createMessageEvent('invalid message');
       return;
-    }
-    try {
-      const requestObj = JSON.parse(message) as IRequestParams;
-      const result = await this.handleRequest(requestObj);
-      this._stream.write(JSON.stringify(result));
-    } catch (e) {
-      console.error('error when parsing message:' + message, 'error:', e);
-      this._stream.createMessageEvent('operation failed:' + e?.message);
+    } else {
+      try {
+        const requestObj = JSON.parse(message) as IRequestParams;
+        const result = await this.handleRequest(requestObj);
+        this._stream.write(JSON.stringify(result));
+      } catch (e) {
+        console.error('error when parsing message:' + message, 'error:', e);
+        this._stream.createMessageEvent('operation failed:' + e);
+      }
     }
   };
 

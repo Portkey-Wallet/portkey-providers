@@ -14,9 +14,8 @@ import {
  */
 export const getHostName = (url: string): string => {
   const regex = /^(https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(:\d+)?(\/.*)?$/;
-  return regex.test(url)
-    ? regex.exec(url)?.reduce((acc, cur, index) => acc + (index === 1 || index === 2 ? cur : ''), '') ?? 'unknown'
-    : 'unknown';
+  const res = regex.exec(url);
+  return res?.reduce((acc, cur, index) => acc + (index === 1 || index === 2 ? cur : ''), '') ?? 'unknown';
 };
 
 export function isMethodsBase(method: string): method is MethodsBaseType {

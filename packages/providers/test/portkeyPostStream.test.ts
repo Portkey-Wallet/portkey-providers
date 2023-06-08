@@ -94,8 +94,10 @@ const testWrapper = ({ name, targetWindow }: Partial<PortkeyPostOptions>) => {
       })
       .catch(e => done(e));
   });
-  test('exception will throw', () => {
-    expect(() => testStream.write({ data: rejectMark })).toThrow();
+  test('exception will throw', done => {
+    testStream._write(JSON.stringify({ data: rejectMark }), 'utf8', _e => {
+      done();
+    });
   });
   test('exception created by error message will be caught and not be thrown', () => {
     ['i-am-error', {}, undefined, null, 'undefined', 'null'].forEach(errorMsg => {
@@ -123,6 +125,16 @@ const testWrapper = ({ name, targetWindow }: Partial<PortkeyPostOptions>) => {
       .then(() => done())
       .catch(e => done(e));
     producer.publishEvent({ eventName: unknownMethod, info: { code: ResponseCode.SUCCESS }, target: targetName });
+  });
+  test('non-complete message will not be received', done => {
+    doNotHappen(reject => {
+      customer.addListener(unknownMethod, () => {
+        reject('should not be called');
+      });
+    })
+      .then(() => done())
+      .catch(e => done(e));
+    producer.publishEvent({ eventName: unknownMethod, info: undefined as any, target: targetName });
   });
 };
 describe('PortkeyPostStream test', () => {

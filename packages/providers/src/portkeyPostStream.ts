@@ -16,14 +16,10 @@ interface WindowLike {
   };
 }
 
-export interface PostWindow {
-  postMessage(message: any): void;
-}
-
 export class PortkeyPostStream extends DappInteractionStream {
   protected _name: string;
   protected _origin: string;
-  protected _postWindow: PostWindow;
+  protected _postWindow: WindowLike;
   _read = noop;
   constructor({ postWindow, targetWindow, name }: PortkeyPostOptions) {
     super();
