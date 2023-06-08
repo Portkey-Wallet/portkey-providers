@@ -5,15 +5,19 @@ const noop = () => undefined;
 export type PortkeyPostOptions = {
   name: string;
   targetWindow?: any;
-  postWindow?: any;
+  postWindow: PostWindow;
 };
+
+export interface PostWindow {
+  postMessage(message: any): void;
+}
 
 export class PortkeyPostStream extends DappInteractionStream {
   private _name: string;
   private _origin: string;
-  private _postWindow: any;
+  private _postWindow: PostWindow;
   _read = noop;
-  constructor({ postWindow = window, targetWindow, name }: PortkeyPostOptions) {
+  constructor({ postWindow, targetWindow, name }: PortkeyPostOptions) {
     super();
     this._name = name;
     this._origin = targetWindow ? '*' : window.location.origin;

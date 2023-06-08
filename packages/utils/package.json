@@ -25,6 +25,8 @@
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
     "build": "tsc",
+    "tsc:esm": "tsc --project tsconfig.json --module es2015 --outDir tsc-esm",
+    "tsc:cjs": "tsc --project tsconfig.json --outDir tsc-cjs",
     "lint": "eslint --ext .js,.ts .",
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier --write '**/*'",
