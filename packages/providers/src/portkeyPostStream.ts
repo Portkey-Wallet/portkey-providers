@@ -6,23 +6,33 @@ export type PortkeyPostOptions = {
   name: string;
   targetWindow?: any;
   postWindow: PostWindow;
+  originWindow: OriginWindow;
 };
 
 export interface PostWindow {
   postMessage(message: any): void;
 }
 
+interface OriginWindow {
+  addEventListener(
+    type: string,
+    listener: (event: MessageEvent<any>) => any,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
+}
 export class PortkeyPostStream extends DappInteractionStream {
   private _name: string;
   private _origin: string;
   private _postWindow: PostWindow;
+  private _originWindow: OriginWindow;
   _read = noop;
-  constructor({ postWindow, targetWindow, name }: PortkeyPostOptions) {
+  constructor({ postWindow, targetWindow, name, originWindow }: PortkeyPostOptions) {
     super();
     this._name = name;
     this._origin = targetWindow ? '*' : window.location.origin;
     this._postWindow = postWindow;
-    window.addEventListener('message', this._onMessage.bind(this), false);
+    this._originWindow = originWindow;
+    this._originWindow.addEventListener('message', this._onMessage.bind(this), false);
   }
   _write = (msg, _encoding, cb) => {
     try {
