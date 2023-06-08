@@ -80,7 +80,12 @@ mTestPlatform.setWindow(fakeWindow);
 
 const testWrapper = ({ name, targetWindow }: Partial<PortkeyPostOptions>) => {
   global.window = fakeWindow as any;
-  const testStream = new TestStream({ name: name ?? '*', postWindow: fakeWindow, targetWindow });
+  const testStream = new TestStream({
+    name: name ?? '*',
+    postWindow: fakeWindow,
+    targetWindow,
+    originWindow: window,
+  });
   const customer = new CustomerTestBehaviour({
     connectionStream: testStream,
   });

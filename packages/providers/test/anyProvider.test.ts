@@ -8,7 +8,8 @@ describe('PortkeyProvider test', () => {
     portkeyProvider = new PortkeyProvider({
       connectionStream: new PortkeyPostStream({
         name: 'test stream',
-        postWindow: { postMessage: jest.fn(), location: { origin: '*' } },
+        postWindow: { postMessage: jest.fn() },
+        originWindow: { addEventListener: jest.fn() },
       }),
     });
     expect(portkeyProvider).toBeTruthy();

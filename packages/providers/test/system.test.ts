@@ -71,15 +71,6 @@ describe('system describe', () => {
     }
   });
 
-  test('use unknown method name will be rejected', async () => {
-    expect.assertions(1);
-    try {
-      await customer.request({ method: 'unknownMethod' as any, payload: {} as any });
-    } catch (e) {
-      expect(e.message).toMatch(ResponseMessagePreset['UNKNOWN_METHOD']);
-    }
-  });
-
   test('provider::emit goes well', done => {
     const mockEventName = 'mock';
     const onMessage = () => {

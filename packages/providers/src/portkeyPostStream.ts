@@ -21,10 +21,10 @@ interface OriginWindow {
   ): void;
 }
 export class PortkeyPostStream extends DappInteractionStream {
-  private _name: string;
-  private _origin: string;
-  private _postWindow: PostWindow;
-  private _originWindow: OriginWindow;
+  protected _name: string;
+  protected _origin: string;
+  protected _postWindow: PostWindow;
+  protected _originWindow: OriginWindow;
   _read = noop;
   constructor({ postWindow, targetWindow, name, originWindow }: PortkeyPostOptions) {
     super();
