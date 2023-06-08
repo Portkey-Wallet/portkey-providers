@@ -7,6 +7,7 @@ import {
   IContract,
   IPortkeyProvider,
   MethodsBase,
+  MethodsUnimplemented,
   NetworkType,
   NotificationEvents,
   ProviderErrorType,
@@ -72,6 +73,13 @@ function App() {
     provider.removeListener(NotificationEvents.DISCONNECTED, disconnected);
   };
   useEffect(() => {
+    window.addEventListener(
+      'message',
+      event => {
+        console.log(event.data, '===event.data');
+      },
+      true,
+    );
     initProvider();
   }, []);
   useEffect(() => {
@@ -222,6 +230,19 @@ function App() {
           setState({ chainsInfo: result });
         }}>
         CHAINS_INFO
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            const walletName = await provider.request({
+              method: MethodsUnimplemented.GET_WALLET_NAME,
+            });
+            setState({ walletName });
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_WALLET_NAME
       </button>
       <button onClick={removeListener}>removeListener</button>
     </div>

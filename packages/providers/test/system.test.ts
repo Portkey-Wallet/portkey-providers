@@ -104,15 +104,6 @@ describe('system describe', () => {
     }
   });
 
-  test('use unknown method name will be rejected', async () => {
-    expect.assertions(1);
-    try {
-      await customer.request({ method: 'unknownMethod' as any, payload: {} as any });
-    } catch (e) {
-      expect(e.message).toMatch(ResponseMessagePreset['UNKNOWN_METHOD']);
-    }
-  });
-
   test('provider::emit goes well', done => {
     const mockEventName = 'mock';
     const onMessage = () => {
@@ -213,7 +204,8 @@ describe('PortkeyProvider test', () => {
     portkeyProvider = new PortkeyProvider({
       connectionStream: new PortkeyPostStream({
         name: 'test stream',
-        postWindow: { postMessage: jest.fn(), location: { origin: '*' } },
+        postWindow: { postMessage: jest.fn() },
+        originWindow: { addEventListener: jest.fn() },
       }),
     });
     expect(portkeyProvider).toBeTruthy();

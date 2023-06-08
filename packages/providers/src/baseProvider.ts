@@ -22,7 +22,6 @@ import {
   ChainsInfo,
   ConnectInfo,
   ProviderErrorType,
-  ResponseMessagePreset,
   WalletName,
   IResponseType,
 } from '@portkey/provider-types';
@@ -164,10 +163,10 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
       throw new ProviderError('Expected a single, non-array, object argument.', ResponseCode.ERROR_IN_PARAMS);
 
     const eventName = this.getEventName();
-    const { method, payload } = params;
-    if (!this.methodCheck(method)) {
-      throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
-    }
+    const { method, payload } = params || {};
+    // if (!this.methodCheck(method)) {
+    //   throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
+    // }
 
     if (payload !== undefined && typeof payload !== 'object' && payload !== null)
       throw new ProviderError(`'params.payload' must be an object if provided.`, ResponseCode.UNKNOWN_METHOD);

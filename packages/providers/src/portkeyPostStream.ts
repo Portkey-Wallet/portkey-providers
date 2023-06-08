@@ -5,32 +5,38 @@ const noop = () => undefined;
 export type PortkeyPostOptions = {
   name: string;
   targetWindow?: any;
-  postWindow: WindowLike;
+  postWindow: PostWindow;
+  originWindow: OriginWindow;
 };
 
-// At least one window should meet those requirements
-interface WindowLike {
-  postMessage: (message: string) => void;
-  location: {
-    origin: string;
-  };
+export interface PostWindow {
+  postMessage(message: any): void;
 }
 
+interface OriginWindow {
+  addEventListener(
+    type: string,
+    listener: (event: MessageEvent<any>) => any,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
+}
 export class PortkeyPostStream extends DappInteractionStream {
   protected _name: string;
   protected _origin: string;
-  protected _postWindow: WindowLike;
+  protected _postWindow: PostWindow;
+  protected _originWindow: OriginWindow;
   _read = noop;
-  constructor({ postWindow, targetWindow, name }: PortkeyPostOptions) {
+  constructor({ postWindow, targetWindow, name, originWindow }: PortkeyPostOptions) {
     super();
     this._name = name;
     this._origin = targetWindow ? '*' : window.location.origin;
     this._postWindow = postWindow;
-    window.addEventListener('message', this._onMessage.bind(this), false);
+    this._originWindow = originWindow;
+    this._originWindow.addEventListener('message', this._onMessage.bind(this), false);
   }
   _write = (msg, _encoding, cb) => {
     try {
-      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg.toString()), origin: window.location.origin }));
+      this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.origin }));
     } catch (err) {
       return cb(new Error('PortkeyPostStream - disconnected'));
     }

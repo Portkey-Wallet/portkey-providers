@@ -1,4 +1,4 @@
-import { Accounts, ChainIds, ChainsInfo } from '@portkey/provider-types';
+import { Accounts, ChainIds, ChainsInfo, WalletName } from '@portkey/provider-types';
 import { useReducer } from 'react';
 
 export enum Actions {
@@ -7,6 +7,7 @@ export enum Actions {
 }
 
 export type State = {
+  walletName?: WalletName;
   chainIds?: ChainIds;
   accounts?: Accounts;
   chainsInfo?: ChainsInfo;
