@@ -5,9 +5,9 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
   constructor() {
     super();
   }
-  createSubStream = (_name: String) => {};
+  createSubStream = (_name: String) => undefined;
 
-  _read = (_size?: number | undefined): void => {};
+  _read = (_size?: number | undefined): void => undefined;
 
   /**
    *
@@ -21,10 +21,6 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
       } as IResponseType),
     );
   };
-
-  public push(chunk: any, encoding?: BufferEncoding | undefined): boolean {
-    return super.push(chunk, encoding);
-  }
 
   /**
    * this method is abstract, so it must be implemented by the subclass.

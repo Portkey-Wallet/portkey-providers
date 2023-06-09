@@ -20,14 +20,13 @@ class Content {
    * Establish communication between pages
    */
   setupPageStream() {
-    pageStream = new ContentPostStream({ name: CONTENT_SCRIPT, postWindow: window });
+    pageStream = new ContentPostStream({ name: CONTENT_SCRIPT });
     pageStream.on('data', (data: Buffer) => {
       const params = JSON.parse(data.toString());
       console.log(params, location.origin, 'params===setupPageStream');
 
       pageStream.send({
         eventName: params.eventName,
-        target: 'inpage-script',
         info: { code: 0, data: { transactionId: 'transactionId' }, msg: 'send back' },
       });
     });

@@ -1,8 +1,16 @@
 // Provides a virtual platform for test
 
-import { ResponseCode, IResponseType, IRequestParams, MethodsBase } from '@portkey/provider-types';
+import {
+  ResponseCode,
+  IResponseType,
+  IRequestParams,
+  MethodsBase,
+  ChainsInfo,
+  MethodsUnimplemented,
+  WalletState,
+} from '@portkey/provider-types';
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
-import { DappInteractionStream } from './backupStream';
+import { DappInteractionStream } from '../../src/dappStream';
 import BaseProvider from '../../src/baseProvider';
 import { Operator } from '../../src/Operator';
 
@@ -73,6 +81,8 @@ export interface InjectDataMethod {
 }
 
 export class ProducerTestBehaviour extends Operator {
+  public init = false;
+
   onMessage = async (message: IRequestParams): Promise<void> => {
     console.log('testOperator=======onMessage', message);
     this.handleRequestMessage(JSON.stringify(message));
@@ -86,6 +96,34 @@ export class ProducerTestBehaviour extends Operator {
         return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName, data: { test: null } });
       case MethodsBase.SEND_TRANSACTION:
         return generateErrorResponse({ code: ResponseCode.UNIMPLEMENTED, eventName });
+      case MethodsBase.CHAINS_INFO:
+        return generateNormalResponse({
+          code: ResponseCode.SUCCESS,
+          eventName,
+          data: { AELF: [{ chainId: 'AELF', chainName: 'AELF', endPoint: 'mock', explorerUrl: 'mock' }] } as ChainsInfo,
+        });
+      case MethodsUnimplemented.GET_WALLET_STATE: {
+        if (!this.init) {
+          this.init = true;
+          return generateNormalResponse({
+            code: ResponseCode.SUCCESS,
+            eventName,
+            data: {
+              isConnected: true,
+              isUnlocked: true,
+              accounts: { AELF: ['123'] },
+              chainIds: ['AELF'],
+              networkType: 'AELF',
+            } as WalletState,
+          });
+        } else {
+          return generateNormalResponse({
+            code: ResponseCode.SUCCESS,
+            eventName,
+            data: null,
+          });
+        }
+      }
       default:
         return generateNormalResponse({ code: ResponseCode.SUCCESS, eventName });
     }
