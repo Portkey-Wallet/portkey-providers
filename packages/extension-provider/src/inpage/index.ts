@@ -1,2 +1,3 @@
 export * from './initializeInpageProvider';
-export * from './PortKeyProvider';
+export * from './InpagePortkeyProvider';
+export * from './InpagePostStream';

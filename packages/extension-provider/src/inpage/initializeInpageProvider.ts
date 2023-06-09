@@ -1,5 +1,5 @@
 import { BaseProviderOptions } from '@portkey/provider-types';
-import PortKeyProvider from './PortKeyProvider';
+import PortkeyProvider from './InpagePortkeyProvider';
 
 export class InitializeProvider {
   constructor(props: BaseProviderOptions) {
@@ -9,7 +9,7 @@ export class InitializeProvider {
   }
 
   initPortKey(props: BaseProviderOptions) {
-    const provider = new PortKeyProvider(props);
+    const provider = new PortkeyProvider(props);
     provider.getInitialize();
     const proxyProvider = new Proxy(provider, {
       deleteProperty: () => true,
@@ -22,7 +22,7 @@ export class InitializeProvider {
  * Sets the given provider instance as window.Portkey and dispatches the
  * 'Portkey#initialized' event on window.
  */
-export function setGlobalProvider(providerInstance: PortKeyProvider): void {
+export function setGlobalProvider(providerInstance: PortkeyProvider): void {
   console.log('dispatchEvent', 'Portkey#initialized');
   (window as Record<string, any>).portkey = providerInstance;
   document.dispatchEvent(
