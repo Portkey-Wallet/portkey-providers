@@ -23,6 +23,7 @@ import {
   ConnectInfo,
   ProviderErrorType,
   WalletName,
+  IResponseType,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import isEqual from 'lodash/isEqual';
@@ -60,7 +61,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
 
   protected _onData = (buffer: Buffer): void => {
     try {
-      const { eventName, info } = JSON.parse(buffer?.toString());
+      const { eventName, info } = JSON.parse(buffer?.toString()) as IResponseType;
       if (isNotificationEvents(eventName) && info) {
         switch (eventName) {
           case NotificationEvents.CONNECTED:
@@ -70,7 +71,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
             this.handleDisconnect(info.data);
             return;
           case NotificationEvents.MESSAGE:
-            this.handleMessage(info.data);
+            this.handleMessage(info.msg);
             return;
           case NotificationEvents.ACCOUNTS_CHANGED:
             this.handleAccountsChanged(info.data);
@@ -179,7 +180,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     );
     return new Promise((resolve, reject) => {
       this.once(eventName, (response: IResponseInfo) => {
-        const { code, data } = response || {};
+        const { code, data } = response;
         if (code == ResponseCode.SUCCESS) {
           resolve(data);
         } else {
@@ -243,8 +244,6 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * When the account is updated or the network is switched
    */
   protected handleAccountsChanged(response: Accounts) {
-    if (!response) return;
-
     if (isEqual(this.state.accounts, response)) return;
     this.state.accounts = response;
 
@@ -254,7 +253,6 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * When the network switches, updates internal state and emits required events
    */
   protected handleNetworkChanged(response: string) {
-    if (!response) return;
     if (isEqual(this.state.networkType, response)) return;
     this.state.networkType = response;
 
@@ -266,15 +264,12 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * When something unexpected happens, the dapp will receive a notification
    */
   protected handleMessage(response: any) {
-    this.emit(NotificationEvents.MESSAGE, response?.data ?? response?.msg);
+    this.emit(NotificationEvents.MESSAGE, response);
   }
 
   protected handleChainChanged(response: ChainIds) {
-    if (!response) return;
-
     if (isEqual(this.state.chainIds, response)) return;
     this.state.chainIds = response;
-
     this.emit(NotificationEvents.CHAIN_CHANGED, response);
   }
 }

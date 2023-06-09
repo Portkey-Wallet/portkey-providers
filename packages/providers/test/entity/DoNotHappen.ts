@@ -1,4 +1,4 @@
-const defaultWaitTime = 1000;
+const defaultWaitTime = 200;
 
 export const doNotHappen = async (
   testMethod: (rejectHandler: (reason?: string) => void) => void,

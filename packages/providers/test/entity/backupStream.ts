@@ -10,9 +10,6 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
 
   private _subStreamMap: Map<String, SubStream> = new Map();
 
-  /**
-   * this method is not implemented yet.
-   */
   public createSubStream = (name: string): SubStream => {
     if (this._subStreamMap.has(name)) {
       return this._subStreamMap.get(name) ?? new SubStream(this, name);
