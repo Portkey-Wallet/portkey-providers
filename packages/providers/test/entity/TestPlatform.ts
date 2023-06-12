@@ -12,7 +12,7 @@ import {
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
 import { DappInteractionStream } from '../../src/dappStream';
 import BaseProvider from '../../src/baseProvider';
-import { Operator } from '../../src/Operator';
+import { Operator } from '../../src/operator';
 
 export const UNKNOWN_METHOD = '42' as any;
 
@@ -141,5 +141,9 @@ export class CustomerTestBehaviour extends BaseProvider {
 
   public mockBlankMessage = () => {
     this._onData('' as any);
+  };
+
+  public exposeMethodCheck = (method: string) => {
+    return this.methodCheck(method);
   };
 }

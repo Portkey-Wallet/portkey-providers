@@ -6,7 +6,13 @@ import {
   ICustomerMockStream,
   IProviderMockStream,
 } from './entity/TestPlatform';
-import { NotificationEvents, MethodsBase, ResponseCode, ResponseMessagePreset } from '@portkey/provider-types';
+import {
+  NotificationEvents,
+  MethodsBase,
+  ResponseCode,
+  ResponseMessagePreset,
+  MethodsUnimplemented,
+} from '@portkey/provider-types';
 import { generateNormalResponse } from '@portkey/provider-utils';
 import { PortkeyProvider } from '../src/portkeyProvider';
 import { PortkeyPostStream } from '../src/portkeyPostStream';
@@ -24,6 +30,10 @@ class TestPortkeyProviderBehaviour extends PortkeyProvider {
   public mockBlankMessage = () => {
     this._onData('' as any);
   };
+
+  public exposeMethodCheck = (method: string) => {
+    return this.methodCheck(method);
+  };
 }
 
 class TestWeb3ProviderBehaviour extends Web3Provider {
@@ -37,6 +47,10 @@ class TestWeb3ProviderBehaviour extends Web3Provider {
 
   public mockBlankMessage = () => {
     this._onData('' as any);
+  };
+
+  public exposeMethodCheck = (method: string) => {
+    return this.methodCheck(method);
   };
 }
 
@@ -174,6 +188,12 @@ describe('system describe', () => {
   test('handle error response', () => {
     expect(() => customer.mockNullMessage()).not.toThrow();
     expect(() => customer.mockBlankMessage()).not.toThrow();
+  });
+
+  test('handle methodCheck', () => {
+    expect(customer.exposeMethodCheck('')).toBeFalsy();
+    expect(customer.exposeMethodCheck(MethodsBase.ACCOUNTS)).toBeTruthy();
+    expect(customer.exposeMethodCheck(MethodsUnimplemented.GET_WALLET_NAME)).toBeTruthy();
   });
 
   test('handle uncovered notification', done => {
