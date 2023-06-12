@@ -47,7 +47,7 @@ function App() {
     setState({ chainIds });
   };
   const networkChanged = async (networkType: NetworkType) => {
-    console.log(networkType, '=====networkType');
+    setState({ network: networkType });
     const _chain = await provider.getChain('AELF');
     setChain(_chain);
   };
@@ -188,10 +188,10 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const sin = await provider.request({
+            const network = await provider.request({
               method: MethodsBase.NETWORK,
             });
-            console.log(sin, '=======sin');
+            setState({ network });
           } catch (error) {
             alert(error.message);
           }
