@@ -94,7 +94,7 @@ function App() {
     <div>
       {Object.entries(state).map(([key, value]) => {
         return (
-          <p>
+          <p key={key}>
             <h4>{key}</h4>
             {JSON.stringify(value)}
           </p>
@@ -174,6 +174,33 @@ function App() {
       <button
         onClick={async () => {
           try {
+            const sin = await provider.request({
+              method: MethodsUnimplemented.GET_WALLET_SIGNATURE,
+              payload: { data: Date.now() },
+            });
+            console.log(sin, '=======sin');
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_WALLET_SIGNATURE
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            const sin = await provider.request({
+              method: MethodsBase.NETWORK,
+            });
+            console.log(sin, '=======sin');
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        NETWORK
+      </button>
+      <button
+        onClick={async () => {
+          try {
             const balance = await tokenContract.callSendMethod(
               'Transfer',
               '',
@@ -231,7 +258,7 @@ function App() {
         }}>
         CHAINS_INFO
       </button>
-      <button
+      {/* <button
         onClick={async () => {
           try {
             const walletName = await provider.request({
@@ -243,7 +270,7 @@ function App() {
           }
         }}>
         GET_WALLET_NAME
-      </button>
+      </button> */}
       <button onClick={removeListener}>removeListener</button>
     </div>
   );

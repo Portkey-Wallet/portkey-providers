@@ -65,6 +65,7 @@ export const MethodsBase = {
   ACCOUNTS: 'accounts',
   CHAIN_IDS: 'chainIds',
   CHAINS_INFO: 'chainsInfo',
+  NETWORK: 'network',
   SEND_TRANSACTION: 'sendTransaction',
   REQUEST_ACCOUNTS: 'requestAccounts',
 } as const;
@@ -74,6 +75,7 @@ export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
 export const MethodsUnimplemented = {
   GET_WALLET_STATE: 'wallet_getWalletState',
   GET_WALLET_NAME: 'wallet_getWalletName',
+  GET_WALLET_SIGNATURE: 'wallet_getSignature',
 } as const;
 
 export type MethodsUnimplementedType = (typeof MethodsUnimplemented)[keyof typeof MethodsUnimplemented];

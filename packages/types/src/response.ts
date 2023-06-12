@@ -1,3 +1,4 @@
+import type { ec } from 'elliptic';
 import { Address, ChainId } from './chain';
 
 export type ChainItemType = {
@@ -48,5 +49,7 @@ export type WalletState = {
 export type Transaction = {
   transactionId: string;
 };
+
+export type Signature = ec.Signature;
 
 export type WalletName = string;
