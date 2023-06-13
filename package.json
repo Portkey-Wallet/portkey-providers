@@ -22,7 +22,8 @@
     "test": "jest",
     "test:browser": "jest --config=jest.browser.config.ts",
     "make-badges": "istanbul-badges-readme",
-    "example": "yarn workspace @portkey/example run"
+    "example": "yarn workspace @portkey/example run",
+    "coverage": "npm run test -- --coverage --watchAll=false || exit 0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -61,6 +62,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run test && istanbul-badges-readme && git add 'README.md'"
+    }
   },
   "version": "0.0.0"
 }

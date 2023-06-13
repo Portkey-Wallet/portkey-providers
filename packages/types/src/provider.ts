@@ -9,6 +9,7 @@ import {
   ConnectInfo,
   NetworkType,
   ProviderErrorType,
+  Signature,
   Transaction,
   WalletName,
   WalletState,
@@ -40,9 +41,14 @@ export interface IProvider {
   request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
   request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
   request<T = WalletName>(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<T>;
+  request<T = NetworkType>(params: { method: typeof MethodsBase.NETWORK }): Promise<T>;
   request<T = Transaction>(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
+  }): Promise<T>;
+  request<T = Signature>(params: {
+    method: typeof MethodsUnimplemented.GET_WALLET_SIGNATURE;
+    payload: GetSignatureParams;
   }): Promise<T>;
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 }
@@ -73,6 +79,10 @@ export interface SendTransactionParams {
   contractAddress: string;
   method: string;
   params?: readonly unknown[] | object;
+}
+
+export interface GetSignatureParams {
+  data: string;
 }
 
 export type MethodResponse = Accounts | ChainIds | ChainsInfo | WalletState | Transaction | null | undefined;
