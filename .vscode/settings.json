@@ -4,7 +4,9 @@
         "Behaviour",
         "Inpage",
         "keypair",
+        "mainchain",
         "portkey",
+        "sidechain",
         "unduplicated"
     ]
 }
