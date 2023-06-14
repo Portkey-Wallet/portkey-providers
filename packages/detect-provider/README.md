@@ -15,28 +15,28 @@
   - [2. isPortkeyProvider(provider)](#2-isportkeyproviderprovider)
     - [Parameters](#parameters-1)
     - [Returns](#returns-1)
-- [__Basic Type Definition__](#basic-type-definition)
-  - [__Provider__](#provider)
-    - [__1. `isPortkey : boolean`__](#1-isportkey--boolean)
-    - [__2. `isConnected()`__](#2-isconnected)
-    - [__3. `on(event,callback)` / `once(event,callback)`__](#3-oneventcallback--onceeventcallback)
-    - [__`4. removeListener(event,callback)`__](#4-removelistenereventcallback)
-    - [__5. `request<T>(params)`__](#5-requesttparams)
-    - [__6. `getChain(chainId)`__](#6-getchainchainid)
-  - [__DappEvents__](#dappevents)
-  - [__IChain__](#ichain)
-    - [__1. `rpcUrl : string`__](#1-rpcurl--string)
-    - [__2. `type : ChainType`__](#2-type--chaintype)
-    - [__3. `chainId : ChainId`__](#3-chainid--chainid)
-    - [__4. `getContract(contractAddress)`__](#4-getcontractcontractaddress)
-- [__Request Method \& Generic Types__](#request-method--generic-types)
-  - [__1. `method:'chainId'` / `method:'chainIds'`__](#1-methodchainid--methodchainids)
-  - [__2. `method:'chainsInfo'`__](#2-methodchainsinfo)
-  - [__3. `method:'requestAccounts'`__](#3-methodrequestaccounts)
-  - [__4. `method:'accounts'`__](#4-methodaccounts)
-  - [__5. `method:'wallet_getWalletState'`__](#5-methodwallet_getwalletstate)
-  - [__6. `method:'wallet_getWalletName'`__](#6-methodwallet_getwalletname)
-  - [__7. `{method:'sendTransaction',payload:SendTransactionParams}`__](#7-methodsendtransactionpayloadsendtransactionparams)
+- [Basic Type Definition](#basic-type-definition)
+  - [Provider](#provider)
+    - [1. `isPortkey : boolean`](#1-isportkey--boolean)
+    - [2. `isConnected()`](#2-isconnected)
+    - [3. `on(event,callback)` / `once(event,callback)`](#3-oneventcallback--onceeventcallback)
+    - [4. `removeListener(event,callback)`](#4-removelistenereventcallback)
+    - [5. `request<T>(params)`](#5-requesttparams)
+    - [6. `getChain(chainId)`](#6-getchainchainid)
+  - [DappEvents](#dappevents)
+  - [IChain](#ichain)
+    - [1. `rpcUrl : string`](#1-rpcurl--string)
+    - [2. `type : ChainType`](#2-type--chaintype)
+    - [3. `chainId : ChainId`](#3-chainid--chainid)
+    - [4. `getContract(contractAddress)`](#4-getcontractcontractaddress)
+- [Request Method \& Generic Types](#request-method--generic-types)
+    - [1. `method:'chainId'` / `method:'chainIds'`](#1-methodchainid--methodchainids)
+    - [2. `method:'chainsInfo'`](#2-methodchainsinfo)
+    - [3. `method:'requestAccounts'`](#3-methodrequestaccounts)
+    - [4. `method:'accounts'`](#4-methodaccounts)
+    - [5. `method:'wallet_getWalletState'`](#5-methodwallet_getwalletstate)
+    - [6. `method:'wallet_getWalletName'`](#6-methodwallet_getwalletname)
+    - [7. `{method:'sendTransaction',payload:SendTransactionParams}`](#7-methodsendtransactionpayloadsendtransactionparams)
 
 # Installation
 
@@ -117,9 +117,9 @@ provider is T // effect like boolean
 
 See the above example for usage.
 
-# __Basic Type Definition__
+# Basic Type Definition
 
-## __Provider__
+## Provider
 
 ```typescript
 interface Provider {
@@ -133,11 +133,11 @@ interface Provider {
 }
 ```
 
-### __1. `isPortkey : boolean`__
+### 1. `isPortkey : boolean`
 
 Determines whether the current environment is Portkey, if everything works well, it is `true`.
 
-### __2. `isConnected()`__
+### 2. `isConnected()`
 
 Use it to detect if current Portkey APP's wallet is connected.
 
@@ -149,7 +149,7 @@ if(!provider.isConnected()){
 }
 ```
 
-### __3. `on(event,callback)` / `once(event,callback)`__
+### 3. `on(event,callback)` / `once(event,callback)`
 
 on(event,callback) is used to listen to the events triggered by Portkey APP.
 once(event,callback) works in a similar way, but it will only be triggered once.  
@@ -165,7 +165,7 @@ provider.once('accountsChanged',(accounts)=>{
 });
 ```
 
-### __`4. removeListener(event,callback)`__
+### 4. `removeListener(event,callback)`
 
 Use this method to remove the listener you added before.  
 If you wish your listener to be removed after it is triggered, use `once(event,callback)` will be more efficient.  
@@ -180,7 +180,7 @@ provider.on('connected',listener);
 provider.removeListener('connected',listener);
 ```
 
-### __5. `request<T>(params)`__
+### 5. `request<T>(params)`
 
 See [Request Method & Generic Type](#request-method--generic-types) for more details.
 
@@ -195,7 +195,7 @@ provider.request({ method: "chainIds" }).then((result: ChainId[]) => {
 });
 ```
 
-### __6. `getChain(chainId)`__
+### 6. `getChain(chainId)`
 
 This method provides a way to get the `chain` ( type of `IChain` ) object, which handles the on-chain operations.  
 
@@ -210,7 +210,7 @@ See [IChain](#ichain) section for more details.
 
 ------
 
-## __DappEvents__
+## DappEvents
 
 `DappEvents` will be triggered when the corresponding event occurs.
 
@@ -219,11 +219,11 @@ type DappEvents = 'connected'  | 'message' | 'disconnected' | 'accountsChanged' 
 ```
 
 Use [provider.on(event,callback)](#3-oneventcallback--onceeventcallback) to listen to those events.  
-You can see the detailed type definition in [__@portkey/provider-types__](../types/src/provider.ts) project .
+You can see the detailed type definition in [@portkey/provider-types__](../types/src/provider.ts) project .
 
 ------
 
-## __IChain__
+## IChain
 
 ```typescript
 interface IChain extends AElfChainMethods {
@@ -236,22 +236,22 @@ interface IChain extends AElfChainMethods {
 }
 ```
 
-### __1. `rpcUrl : string`__
+### 1. `rpcUrl : string`
 
 `rpcUrl` is the url of the chain's rpc server.  
 You can use it to send rpc requests to the chain directly.
 
-### __2. `type : ChainType`__
+### 2. `type : ChainType`
 
 `type` describes the type of the chain, for now it is either `'aelf'` or `'ethereum'`.  
 You can use it to determine which chain the APP are using.
 
-### __3. `chainId : ChainId`__
+### 3. `chainId : ChainId`
 
 if `type` is `'aelf'` , `chainId` shows which chain type the APP is on.  
 For example, `'AELF'` means mainchain, `'tDVV'` means sidechain.
 
-### __4. `getContract(contractAddress)`__
+### 4. `getContract(contractAddress)`
 
 `getContract` creates a way to get the `contract` ( type of `IContract` ) object, which handles the contract operations.
 
@@ -269,7 +269,7 @@ try{
 
 You can see detailed type definition in [source code](../types/src/chain.ts) .
 
-# __Request Method & Generic Types__
+# Request Method & Generic Types
 
 ```typescript
   request<T = Accounts>(params: { method: 'accounts' }): Promise<T>;
@@ -288,7 +288,7 @@ You can see detailed type definition in [source code](../types/src/chain.ts) .
 
 You can find the complete type definition like `Accounts` in [source code](../types/src/provider.ts) .
 
-### __1. `method:'chainId'` / `method:'chainIds'`__
+### 1. `method:'chainId'` / `method:'chainIds'`
 
   Returns the current chainId of the Portkey APP's wallet.  
   Need to know that `'chainId'` gets the current chainId, while `'chainIds'` gets all the supported chainIds.  
@@ -302,7 +302,7 @@ You can find the complete type definition like `Accounts` in [source code](../ty
   });
   ```
 
-### __2. `method:'chainsInfo'`__
+### 2. `method:'chainsInfo'`
 
 Gets all the supported chains' information.  
 
@@ -312,7 +312,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
 });
 ```
 
-### __3. `method:'requestAccounts'`__
+### 3. `method:'requestAccounts'`
 
   Request the Portkey APP's wallet to connect to your dapp, this method is the bridge to get the permission required by the following methods below.  
   If the user has not connected to your dapp, the Portkey APP's wallet will pop up a window to ask the user to connect to your dapp.  
@@ -327,7 +327,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### __4. `method:'accounts'`__
+### 4. `method:'accounts'`
 
   Returns the current account addresses of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
@@ -338,7 +338,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### __5. `method:'wallet_getWalletState'`__
+### 5. `method:'wallet_getWalletState'`
 
   Returns the current wallet state of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
@@ -349,7 +349,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### __6. `method:'wallet_getWalletName'`__
+### 6. `method:'wallet_getWalletName'`
 
   Returns the current wallet name of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
@@ -360,7 +360,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### __7. `{method:'sendTransaction',payload:SendTransactionParams}`__
+### 7. `{method:'sendTransaction',payload:SendTransactionParams}`
   
   Send a transaction to the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
