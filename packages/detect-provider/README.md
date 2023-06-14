@@ -37,6 +37,7 @@
   - [5. method:'wallet\_getWalletState'](#5-methodwallet_getwalletstate)
   - [6. method:'wallet\_getWalletName'](#6-methodwallet_getwalletname)
   - [7. {method:'sendTransaction',payload:SendTransactionParams}](#7-methodsendtransactionpayloadsendtransactionparams)
+  - [8. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#8-methodwallet_getsignaturepayload-getsignatureparams)
 
 # Installation
 
@@ -283,6 +284,10 @@ You can see detailed type definition in [source code](../types/src/chain.ts) .
     method: 'sendTransaction';
     payload: SendTransactionParams;
   }): Promise<T>;
+  request<T = Signature>(params: {
+    method: 'wallet_getSignature';
+    payload: GetSignatureParams;
+  }): Promise<T>;
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 ```
 
@@ -375,6 +380,23 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
     if(!transaction?.transactionId){
       console.error('transaction failed!');
     }
+  }).catch( e => {
+    // User denied your request or other issues
+  });
+  ```
+
+### 8. {method:'wallet_getSignature',payload: GetSignatureParams;}
+
+  Get a signature from the Portkey APP's wallet.  
+  __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
+  
+  ```typescript
+  const signatureParams: GetSignatureParams = {
+    ...
+    // You can see the detailed type definition in @portkey/provider-types
+  };
+  provider.request({ method: "wallet_getSignature", payload: signatureParams }).then((signature: Signature) => {
+    console.log('the signature:',signature);
   }).catch( e => {
     // User denied your request or other issues
   });
