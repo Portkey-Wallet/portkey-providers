@@ -32,17 +32,22 @@
 - [Request Method \& Generic Types](#request-method--generic-types)
   - [1. method:'chainId' / method:'chainIds'](#1-methodchainid--methodchainids)
   - [2. method:'chainsInfo'](#2-methodchainsinfo)
-  - [3. method:'requestAccounts'](#3-methodrequestaccounts)
-  - [4. method:'accounts'](#4-methodaccounts)
-  - [5. method:'wallet\_getWalletState'](#5-methodwallet_getwalletstate)
-  - [6. method:'wallet\_getWalletName'](#6-methodwallet_getwalletname)
-  - [7. {method:'sendTransaction',payload:SendTransactionParams}](#7-methodsendtransactionpayloadsendtransactionparams)
-  - [8. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#8-methodwallet_getsignaturepayload-getsignatureparams)
+  - [3. method:'network'](#3-methodnetwork)
+  - [4. method:'requestAccounts'](#4-methodrequestaccounts)
+  - [5. method:'accounts'](#5-methodaccounts)
+  - [6. method:'wallet\_getWalletState'](#6-methodwallet_getwalletstate)
+  - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
+  - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
+  - [9. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#9-methodwallet_getsignaturepayload-getsignatureparams)
 
 # Installation
 
 ```bash
-npm install --save-dev @portkey/detect-provider
+# for npm user
+npm install @portkey/detect-provider
+
+#for yarn user
+yarn add @portkey/detect-provider
 ```
 
 # Basic Usage
@@ -276,6 +281,7 @@ You can see detailed type definition in [source code](../types/src/chain.ts) .
   request<T = Accounts>(params: { method: 'accounts' }): Promise<T>;
   request<T = ChainIds>(params: { method: 'chainId' }): Promise<T>;
   request<T = ChainIds>(params: { method: 'chainIds' }): Promise<T>;
+  request<T = NetworkType>(params: { method:'network' }): Promise<T>;
   request<T = ChainsInfo>(params: { method: 'chainsInfo' }): Promise<T>;
   request<T = Accounts>(params: { method: 'requestAccounts' }): Promise<T>;
   request<T = WalletState>(params: { method: 'wallet_getWalletState' }): Promise<T>;
@@ -317,7 +323,18 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
 });
 ```
 
-### 3. method:'requestAccounts'
+### 3. method:'network'
+  
+  Returns the current network type of the Portkey APP's wallet.  
+  For now it's either `'MAIN'` or `'TESTNET'` .
+  
+  ```typescript
+  provider.request({ method: "network" }).then((network: NetworkType) => {
+    console.log('current network type is:',network);
+  });
+  ```
+
+### 4. method:'requestAccounts'
 
   Request the Portkey APP's wallet to connect to your dapp, this method is the bridge to get the permission required by the following methods below.  
   If the user has not connected to your dapp, the Portkey APP's wallet will pop up a window to ask the user to connect to your dapp.  
@@ -332,7 +349,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### 4. method:'accounts'
+### 5. method:'accounts'
 
   Returns the current account addresses of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
@@ -343,7 +360,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### 5. method:'wallet_getWalletState'
+### 6. method:'wallet_getWalletState'
 
   Returns the current wallet state of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
@@ -354,7 +371,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### 6. method:'wallet_getWalletName'
+### 7. method:'wallet_getWalletName'
 
   Returns the current wallet name of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
@@ -365,7 +382,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### 7. {method:'sendTransaction',payload:SendTransactionParams}
+### 8. {method:'sendTransaction',payload:SendTransactionParams}
   
   Send a transaction to the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
@@ -385,7 +402,7 @@ provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
   });
   ```
 
-### 8. {method:'wallet_getSignature',payload: GetSignatureParams;}
+### 9. {method:'wallet_getSignature',payload: GetSignatureParams;}
 
   Get a signature from the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
