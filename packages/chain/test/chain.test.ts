@@ -5,7 +5,7 @@ describe('chain describe', () => {
   const chainOptions = {
     request: () => {},
     // mock
-    rpcUrl: 'https://aelf-public-node.aelf.io',
+    rpcUrl: 'https://aelf-test-node.aelf.io',
     chainType: 'aelf',
     chainId: 'AELF',
   } as any;
