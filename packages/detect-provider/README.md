@@ -278,22 +278,22 @@ You can see detailed type definition in [source code](../types/src/chain.ts) .
 # Request Method & Generic Types
 
 ```typescript
-  request<T = Accounts>(params: { method: 'accounts' }): Promise<T>;
-  request<T = ChainIds>(params: { method: 'chainId' }): Promise<T>;
-  request<T = ChainIds>(params: { method: 'chainIds' }): Promise<T>;
-  request<T = NetworkType>(params: { method:'network' }): Promise<T>;
-  request<T = ChainsInfo>(params: { method: 'chainsInfo' }): Promise<T>;
-  request<T = Accounts>(params: { method: 'requestAccounts' }): Promise<T>;
-  request<T = WalletState>(params: { method: 'wallet_getWalletState' }): Promise<T>;
-  request<T = WalletName>(params: { method: 'wallet_getWalletName' }): Promise<T>;
-  request<T = Transaction>(params: {
+  request(params: { method: 'accounts' }): Promise<Accounts>;
+  request(params: { method: 'chainId' }): Promise<ChainIds>;
+  request(params: { method: 'chainIds' }): Promise<ChainIds>;
+  request(params: { method: 'chainsInfo' }): Promise<ChainsInfo>;
+  request(params: { method: 'requestAccounts'}): Promise<Accounts>;
+  request(params: { method: 'wallet_getWalletState' }): Promise<WalletState>;
+  request(params: { method: 'wallet_getWalletName' }): Promise<WalletName>;
+  request(params: { method: 'network' }): Promise<NetworkType>;
+  request(params: {
     method: 'sendTransaction';
     payload: SendTransactionParams;
-  }): Promise<T>;
-  request<T = Signature>(params: {
-    method: 'wallet_getSignature';
-    payload: GetSignatureParams;
-  }): Promise<T>;
+  }): Promise<Transaction>;
+  request(params: {
+    method: 'wallet_getSignature',
+    payload: GetSignatureParams,
+  }): Promise<Signature>;
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 ```
 

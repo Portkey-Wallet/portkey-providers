@@ -34,6 +34,11 @@ export interface IProvider {
    * @param event - event name that the listener will listen to
    * @param listener - callback function
    */
+  once(event: typeof NotificationEvents.CONNECTED, listener: (connectInfo: ConnectInfo) => void): this;
+  once(event: typeof NotificationEvents.NETWORK_CHANGED, listener: (networkType: NetworkType) => void): this;
+  once(event: typeof NotificationEvents.CHAIN_CHANGED, listener: (chainIds: ChainIds) => void): this;
+  once(event: typeof NotificationEvents.ACCOUNTS_CHANGED, listener: (accounts: Accounts) => void): this;
+  once(event: typeof NotificationEvents.DISCONNECTED, listener: (error: ProviderErrorType) => void): this;
   once(event: DappEvents, listener: (...args: any[]) => void): this;
 
   /**
@@ -56,24 +61,23 @@ export interface IProvider {
    *   // Do something with the result
    * }).catch(error => console.error('error occurred :', error));
    * ```
-   * @param params - RequestOption
    */
-  request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
-  request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
-  request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
-  request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
-  request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
-  request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
-  request<T = WalletName>(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<T>;
-  request<T = NetworkType>(params: { method: typeof MethodsBase.NETWORK }): Promise<T>;
-  request<T = Transaction>(params: {
+  request(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<Accounts>;
+  request(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<ChainIds>;
+  request(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<ChainIds>;
+  request(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<ChainsInfo>;
+  request(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<Accounts>;
+  request(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<WalletState>;
+  request(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<WalletName>;
+  request(params: { method: typeof MethodsBase.NETWORK }): Promise<NetworkType>;
+  request(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
-  }): Promise<T>;
-  request<T = Signature>(params: {
+  }): Promise<Transaction>;
+  request(params: {
     method: typeof MethodsUnimplemented.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
-  }): Promise<T>;
+  }): Promise<Signature>;
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 }
 
