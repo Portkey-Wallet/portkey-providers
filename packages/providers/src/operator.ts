@@ -11,8 +11,8 @@ export abstract class Operator implements IOperator {
     this._stream = stream;
   }
   /**
-   * use this method to handle the message from the dapp
-   * @param message the message from the dapp
+   * This method is used to handle the message from the dapp.
+   * @param message - raw data string from the dapp
    */
   public handleRequestMessage = async (message: string) => {
     if (!message) {
@@ -30,32 +30,15 @@ export abstract class Operator implements IOperator {
     }
   };
 
-  // Crypto Behaviour is not fully implemented yet
-  // public useCryptoData = async (origin: AnyOriginMark, data: Object): Promise<string> => {
-  //   const originRecord = this.origins.find(item => item.origin === origin);
-  //   if (!originRecord) return JSON.stringify(data);
-  //   return originRecord.useCrypto && originRecord.publicKey
-  //     ? this._cryptoManager.encrypt(originRecord.publicKey, JSON.stringify(data))
-  //     : JSON.stringify(data);
-  // };
-
-  // public readCryptoData = async (origin: AnyOriginMark, data: string): Promise<string> => {
-  //   const originRecord = this.origins.find(item => item.origin === origin);
-  //   if (!originRecord) return data;
-  //   return originRecord.useCrypto && originRecord.publicKey
-  //     ? this._cryptoManager.decrypt(originRecord.publicKey, data)
-  //     : data;
-  // };
-
   /**
-   * implement this method to handle the request from the dapp
-   * @param request the request from the dapp
+   * Implement this method to handle the request from the dapp.
+   * @param request - the request from the dapp
    */
   public abstract handleRequest(request: IRequestParams): Promise<IResponseType>;
 
   /**
-   * expose it to your server code, it creates an event to the dapp
-   * @param event the event data you want to publish to the dapp
+   * Expose it to your service code, it creates an event to the dapp.
+   * @param event - the event data you want to publish to the dapp
    */
   public publishEvent = (event: IResponseType): void => {
     this._stream.write(JSON.stringify(event));

@@ -3,15 +3,10 @@ import { IPortkeyProvider, portkeyInitEvent } from '@portkey/provider-types';
 export type DetectProviderOptions = { timeout?: number };
 
 /**
- * Returns a Promise that resolves to the value of window.portkey if it is
- * An error will be thrown if timeout.
- * are provided.
- *
- * @param options - Options bag.
- * @param options.timeout - Milliseconds to wait for 'portkeyInitEvent' to
- * be dispatched. Default: 3000
- * @returns A Promise that resolves with the Provider if it is detected within
- * and judge whether it is a portkey provider, otherwise null.
+ * This API provides a way to detect the provider object injected to the environment.
+ * @param options - determine the timeout of the detection.
+ * @returns A promise that resolves to the provider object, or null if the provider is not detected.
+ * @see {@link IPortkeyProvider} provider type definition
  */
 export default async function detectProvider<T extends IPortkeyProvider = IPortkeyProvider>(
   options?: DetectProviderOptions,
@@ -22,7 +17,7 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
   if (window.portkey) return isPortkeyProvider<T>(window.portkey) ? window.portkey : null;
 
   return new Promise((resolve, reject) => {
-    let timedOut;
+    let timedOut = false;
     const handlePortkey = () => {
       clearTimeout(timerId);
       window.removeEventListener(portkeyInitEvent, handlePortkey);
@@ -44,6 +39,11 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
   });
 }
 
+/**
+ * This method is used to check if the provided object is a Portkey provider.
+ * @param provider - the object that need to be checked
+ * @returns provider is IPortkeyProvider
+ */
 export function isPortkeyProvider<T extends IPortkeyProvider = IPortkeyProvider>(provider: unknown): provider is T {
   return !!(
     provider &&

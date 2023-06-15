@@ -16,7 +16,11 @@ import {
 } from './response';
 
 export interface IProvider {
-  // on
+  /**
+   * Creates a listener on the provider.
+   * @param event - event name that the listener will listen to
+   * @param listener - callback function
+   */
   on(event: typeof NotificationEvents.CONNECTED, listener: (connectInfo: ConnectInfo) => void): this;
   on(event: typeof NotificationEvents.NETWORK_CHANGED, listener: (networkType: NetworkType) => void): this;
   on(event: typeof NotificationEvents.CHAIN_CHANGED, listener: (chainIds: ChainIds) => void): this;
@@ -24,8 +28,19 @@ export interface IProvider {
   on(event: typeof NotificationEvents.DISCONNECTED, listener: (error: ProviderErrorType) => void): this;
   on(event: DappEvents, listener: (...args: any[]) => void): this;
 
+  /**
+   * @override
+   * Creates a listener on the provider, the listener will be removed after the first time it is triggered
+   * @param event - event name that the listener will listen to
+   * @param listener - callback function
+   */
   once(event: DappEvents, listener: (...args: any[]) => void): this;
-  // remove
+
+  /**
+   * Remove a listener from the provider
+   * @param event - event name that the listener used to listen to
+   * @param listener - callback function
+   */
   removeListener(event: typeof NotificationEvents.CONNECTED, listener: (connectInfo: ConnectInfo) => void): this;
   removeListener(event: typeof NotificationEvents.NETWORK_CHANGED, listener: (networkType: NetworkType) => void): this;
   removeListener(event: typeof NotificationEvents.CHAIN_CHANGED, listener: (chainIds: ChainIds) => void): this;
@@ -33,7 +48,16 @@ export interface IProvider {
   removeListener(event: typeof NotificationEvents.DISCONNECTED, listener: (error: ProviderErrorType) => void): this;
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
 
-  // request
+  /**
+   * Request(params) is used to call DAPP service, returns a promise that will be fulfilled later.
+   * @example basic usage:
+   * ```
+   * provider.request({ method: "requestAccounts" }).then((result: any) => {
+   *   // Do something with the result
+   * }).catch(error => console.error('error occurred :', error));
+   * ```
+   * @param params - RequestOption
+   */
   request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
   request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
   request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
@@ -54,23 +78,29 @@ export interface IProvider {
 }
 
 export interface IWeb3Provider extends IProvider {
+  /**
+   * Returns a chain object that contains chain information and APIs.
+   * @param chainId - chain type that you mean to get
+   * @returns a chain object
+   */
   getChain(chainId: ChainId): Promise<IChain>;
 }
 
 export interface IPortkeyProvider extends IWeb3Provider {
-  isPortkey: true;
+  /**
+   * Determines whether the current environment is Portkey, if everything works well, it is `true`.
+   */
+  isPortkey: boolean;
+  /**
+   * Use it to detect if current Portkey APP's wallet is connected.
+   * @returns `true` if connected, otherwise `false`.
+   */
   isConnected(): boolean;
 }
 
 export interface IInternalProvider extends IProvider {
   emit(event: DappEvents | EventId, response: IResponseInfo): boolean;
-  once(event: DappEvents, listener: (...args: any[]) => void): this;
   addListener(event: DappEvents, listener: (...args: any[]) => void): this;
-}
-
-export interface KeyPairJSON {
-  publicKey: JsonWebKey;
-  privateKey: JsonWebKey;
 }
 
 export interface SendTransactionParams {
@@ -85,7 +115,16 @@ export interface GetSignatureParams {
   data: string;
 }
 
-export type MethodResponse = Accounts | ChainIds | ChainsInfo | WalletState | Transaction | null | undefined;
+export type MethodResponse =
+  | Accounts
+  | ChainIds
+  | ChainsInfo
+  | WalletState
+  | NetworkType
+  | Transaction
+  | Signature
+  | null
+  | undefined;
 
 export type ConsoleLike = Pick<Console, 'log' | 'warn' | 'error' | 'debug' | 'info' | 'trace'>;
 
@@ -93,6 +132,8 @@ export type BaseProviderOptions = {
   connectionStream: IDappInteractionStream;
   /**
    * The logging API to use.
+   *
+   * If not provided, it will be `console`.
    */
   logger?: ConsoleLike;
 
@@ -100,7 +141,6 @@ export type BaseProviderOptions = {
    * The maximum number of event listeners.
    */
   maxEventListeners?: number;
-  // useCrypto?: boolean;
 };
 
 export const portkeyInitEvent = 'portkeyInitEvent';

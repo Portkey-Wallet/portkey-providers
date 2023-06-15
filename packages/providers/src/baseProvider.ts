@@ -30,6 +30,7 @@ import {
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import isEqual from 'lodash/isEqual';
+import { DappInteractionStream } from './dappStream';
 
 export interface BaseProviderState {
   isConnected: boolean;
@@ -40,28 +41,46 @@ export interface BaseProviderState {
   accounts?: null | Accounts;
 }
 
+const defaultState: BaseProviderState = {
+  accounts: null,
+  isConnected: false,
+  isUnlocked: false,
+  initialized: false,
+  chainIds: null,
+  networkType: null,
+};
+
 export default abstract class BaseProvider extends EventEmitter implements IInternalProvider {
-  private _companionStream: IDappInteractionStream;
-  protected state: BaseProviderState;
-  protected static _defaultState: BaseProviderState = {
-    accounts: null,
-    isConnected: false,
-    isUnlocked: false,
-    initialized: false,
-    chainIds: null,
-    networkType: null,
-  };
+  /**
+   * default console object.
+   */
   protected readonly _log: ConsoleLike;
+  /**
+   * _companionStream is used to create a connection - between the provider and the operator, which exists on the other side of service.
+   * Read {@link DappInteractionStream} for more information.
+   */
+  private _companionStream: IDappInteractionStream;
+
+  /**
+   * state property is used to store the current state of the provider.
+   */
+  protected state: BaseProviderState;
+
   constructor({ connectionStream, logger = console, maxEventListeners = 100 }: BaseProviderOptions) {
     super();
     this._companionStream = connectionStream;
     this.setMaxListeners(maxEventListeners);
     this._log = logger;
     this._companionStream.on('data', this._onData);
-    this.state = BaseProvider._defaultState;
+    this.state = defaultState;
     this.request = this.request.bind(this);
   }
 
+  /**
+   * This method will be registered to the window object, providing basic service based on the event name.
+   * If the event name is not regarded as an event name, it will be regarded as a request eventId since they share the same way to communicate.
+   * @param buffer - Raw Buffer data from the stream
+   */
   protected _onData = (buffer: Buffer): void => {
     try {
       const { eventName, info } = JSON.parse(buffer?.toString()) as IResponseType;
@@ -98,10 +117,9 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   };
 
   /**
-   * @override
-   * creates a listener on the provider
-   * @param {string} event event name that the listener will listen to
-   * @param {Function} listener callback function
+   * Creates a listener on the provider
+   * @param event - event name that the listener will listen to
+   * @param listener - callback function
    */
   public on(event: string, listener: (...args: any[]) => void): this {
     super.on(event, listener);
@@ -109,10 +127,9 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }
 
   /**
-   * @override
-   * creates a listener on the provider, the listener will be removed after the first time it is triggered
-   * @param {string} event - event name that the listener will listen to
-   * @param {Function} listener - callback function
+   * Creates a listener on the provider, the listener will be removed after the first time it is triggered
+   * @param event - event name that the listener will listen to
+   * @param listener - callback function
    */
   public once(event: string, listener: (...args: any[]) => void): this {
     super.once(event, listener);
@@ -120,19 +137,18 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }
 
   /**
-   * @override
-   * alias for ```BaseProvider.on()```
-   * @param {string} event event name that the listener will listen to
-   * @param {Function} listener callback function
+   * Alias for BaseProvider.on()
+   * @param event - event name that the listener will listen to
+   * @param listener - callback function
    */
   public addListener(event: string, listener: (...args: any[]) => void): this {
     return this.on(event, listener);
   }
 
   /**
-   * remove a listener from the provider
-   * @param {string} event event name that the listener used to listen to
-   * @param {Function} listener callback function
+   * Remove a listener from the provider
+   * @param event - event name that the listener used to listen to
+   * @param listener - callback function
    */
   public removeListener(event: string, listener: (...args: any[]) => void): this {
     super.removeListener(event, listener);
@@ -140,14 +156,24 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }
 
   /**
-   * emit method to create a event on the provider
-   * @param event ```DappEvents | EventId``` event name or eventId
-   * @param response ```IResponseInfo``` response data
+   * Emit method to create a event on the provider
+   * @param event - DappEvents | EventId event name or eventId
+   * @param response - IResponseInfo response data
    */
   public emit(event: DappEvents | EventId, response: IResponseInfo | any): boolean {
     return super.emit(event, response);
   }
 
+  /**
+   * Request(params) is used to call DAPP service, returns a promise that will be fulfilled later.
+   * @example basic usage:
+   * ```
+   * provider.request({ method: "requestAccounts" }).then((result: any) => {
+   *   // Do something with the result
+   * }).catch(error => console.error('error occurred :', error));
+   * ```
+   * @param params - RequestOption
+   */
   public async request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
   public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
   public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
@@ -172,9 +198,6 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
 
     const eventName = this.getEventName();
     const { method, payload } = params;
-    // if (!this.methodCheck(method)) {
-    //   throw new ProviderError(ResponseMessagePreset['UNKNOWN_METHOD'], ResponseCode.UNKNOWN_METHOD);
-    // }
 
     if (payload !== undefined && typeof payload !== 'object' && payload !== null)
       throw new ProviderError(`'params.payload' must be an object if provided.`, ResponseCode.UNKNOWN_METHOD);
@@ -203,9 +226,9 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   };
 
   /**
-   * create an unduplicated eventId for a request
-   * @param {number} seed used to generate random number, default is 999999
-   * @returns {string} eventId
+   * Create an unduplicated eventId for a request
+   * @param seed - used to generate random number, default is 999999
+   * @returns eventId used for request() operation
    */
   protected getEventName = (seed: number = 999999): string => {
     return new Date().getTime() + '_' + Math.floor(Math.random() * seed);
@@ -223,8 +246,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   };
   /**
    * When the provider becomes connected, updates internal state and emits required events.
-   * @param event connected
-   * @param response
+   * @param response - contains chainId
    */
   protected handleConnect(response: ConnectInfo) {
     if (!this.state.isConnected) {
@@ -233,9 +255,8 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     }
   }
   /**
-   * When the provider becomes disconnected, updates internal state and emits required events
-   * @param event disconnected
-   * @param response
+   * When the provider becomes disconnected, updates internal state and emits required events.
+   * @param response - reason why the provider is disconnected
    */
   protected handleDisconnect(response: ProviderErrorType) {
     if (this.state.isConnected) {
@@ -249,7 +270,8 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }
 
   /**
-   * When the account is updated or the network is switched
+   * Will be triggered when the account is updated or the network is switched.
+   * @param response - contains accounts address
    */
   protected handleAccountsChanged(response: Accounts) {
     if (isEqual(this.state.accounts, response)) return;
@@ -258,7 +280,8 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     this.emit(NotificationEvents.ACCOUNTS_CHANGED, response);
   }
   /**
-   * When the network switches, updates internal state and emits required events
+   * When the network switches, updates internal state and emits required events.
+   * @param response - contains network type like 'MAIN'
    */
   protected handleNetworkChanged(response: string) {
     if (isEqual(this.state.networkType, response)) return;
@@ -269,12 +292,17 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }
 
   /**
-   * When something unexpected happens, the dapp will receive a notification
+   * When something unexpected happens, the dapp will receive a notification.
+   * @param response - contains error message
    */
   protected handleMessage(response: any) {
     this.emit(NotificationEvents.MESSAGE, response);
   }
 
+  /**
+   * When the current chainId changes, updates internal state and emits required events.
+   * @param response - contains chainId
+   */
   protected handleChainChanged(response: ChainIds) {
     if (isEqual(this.state.chainIds, response)) return;
     this.state.chainIds = response;

@@ -10,8 +10,8 @@ export abstract class DappInteractionStream extends Duplex implements IDappInter
   _read = (_size?: number | undefined): void => undefined;
 
   /**
-   *
-   * @param message the message content you want to send to the dapp
+   * Creates a message event to the other side, based on which side the stream is on - provider or operator.
+   * @param message - the message content you want to send to the dapp
    */
   createMessageEvent = (msg: string) => {
     this.write(
