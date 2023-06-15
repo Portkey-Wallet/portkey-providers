@@ -35,7 +35,7 @@ yarn test
 
 ```bash
 # run your test
-npx jest ./packages/providers/test/Web3Provider.test.ts
+npx jest ./packages/providers/test/web3Provider.test.ts
 # if passed, success
 ```
 
