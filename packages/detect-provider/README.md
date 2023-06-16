@@ -38,7 +38,7 @@
   - [6. method:'wallet\_getWalletState'](#6-methodwallet_getwalletstate)
   - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
   - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
-  - [9. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#9-methodwallet_getsignaturepayload-getsignatureparams)
+  - [9. {method:'wallet\_getSignature',payload:GetSignatureParams}](#9-methodwallet_getsignaturepayloadgetsignatureparams)
 
 # Installation
 
@@ -58,12 +58,8 @@ import detectProvider, {isPortkeyProvider} from '@portkey/detect-provider';
 const provider:IPortkeyProvider = await detectProvider();
 // ES6 Promise syntax
 detectProvider().then((provider:IPortkeyProvider) => {
-    const result = provider as unknown;
-    if (isPortkeyProvider(result)) {
-        // Portkey is injected
-    } else {
-        // Portkey is not injected
-    }
+  // do something with provider
+  provider.request({method: ... })
 }).catch((error:Error) => {
   // Handle error
 });
@@ -225,7 +221,7 @@ type DappEvents = 'connected'  | 'message' | 'disconnected' | 'accountsChanged' 
 ```
 
 Use [provider.on(event,callback)](#3-oneventcallback--onceeventcallback) to listen to those events.  
-You can see the detailed type definition in [@portkey/provider-types__](../types/src/provider.ts) project .
+You can see the detailed type definition in [@portkey/provider-types](../types/src/provider.ts) project .
 
 ------
 
@@ -297,124 +293,147 @@ You can see detailed type definition in [source code](../types/src/chain.ts) .
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 ```
 
-You can find the complete type definition like `Accounts` in [source code](../types/src/provider.ts) .
+You can find the complete type definition like `Accounts` in [source code](../types/src/provider.ts) .  
 
-### 1. method:'chainId' / method:'chainIds'
+We recommend you to use the Async/Await syntax to call those methods.  
+It helps you find out errors more effectively.
+
+```typescript
+try {
+  const result = provider.request({method:'sth'});
+  ...
+} catch (e) {
+  // when the promise is rejected, an error will be thrown
+  ...
+}
+
+// you can still use the promise syntax
+provider.request({method:'sth'}).then((result)=>{
+  ...
+}).catch((e)=>{
+  ...
+});
+
+```
+
+## 1. method:'chainId' / method:'chainIds'
 
   Returns the current chainId of the Portkey APP's wallet.  
   Need to know that `'chainId'` gets the current chainId, while `'chainIds'` gets all the supported chainIds.  
 
   ```typescript
-  provider.request({ method: "chainId" }).then((chainId: ChainId[]) => {
-    console.log('current chainId is:',chainId);
-  });
-  provider.request({ method: "chainIds" }).then((chainIds: ChainId[]) => {
-    console.log('current APP supports:',chainIds);
-  });
+  const chainId = await provider.request({ method: 'chainId' });
+  // Although the chainId object is an array, it only contains one chainId.
+  console.log('current chainId:',chainId[0]);
+
+  const chainIds = await provider.request({ method: 'chainIds' });
+  console.log('all the supported chainIds:',chainIds);
   ```
 
-### 2. method:'chainsInfo'
+## 2. method:'chainsInfo'
 
-Gets all the supported chains' information.  
+  Gets all the supported chains' information.  
 
-```typescript
-provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
-  console.log('mainchain info',chainsInfo.AELF);
-});
-```
+  ```typescript
+  const chainsInfo = await provider.request({ method: 'chainsInfo' });
+  console.log('all the on-chain info:', chainsInfo);
+  ```
 
-### 3. method:'network'
-  
+## 3. method:'network'
+
   Returns the current network type of the Portkey APP's wallet.  
   For now it's either `'MAIN'` or `'TESTNET'` .
-  
+
   ```typescript
-  provider.request({ method: "network" }).then((network: NetworkType) => {
-    console.log('current network type is:',network);
-  });
+  const networkType = await provider.request({ method: 'network' });
+  console.log('current network type is :',networkType);
   ```
 
-### 4. method:'requestAccounts'
+## 4. method:'requestAccounts'
 
   Request the Portkey APP's wallet to connect to your dapp, this method is the bridge to get the permission required by the following methods below.  
   If the user has not connected to your dapp, the Portkey APP's wallet will pop up a window to ask the user to connect to your dapp.  
   If the user has connected to your dapp and hasn't remove the permission, this method returns info without a second confirmation.
 
   ```typescript
-  provider.request({ method: "requestAccounts" }).then((accounts: Accounts) => {
-    // User confirmed
-    console.log('your current mainchain address is:',accounts.AELF[0]);
-  }).catch( e => {
-    // User denied your request or other issues
-  });
+  try {
+    const accounts = await provider.request({ method: 'requestAccounts' });
+    console.log(accounts);
+  }catch (e) {
+    // An error will be thrown if the user denies the permission request.
+    console.log('user denied the permission request');
+  }
   ```
 
-### 5. method:'accounts'
+## 5. method:'accounts'
 
   Returns the current account addresses of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
 
   ```typescript
-  provider.request({ method: "accounts" }).then((accounts: Accounts) => {
-    console.log('the aelf mainchain account:',accounts.AELF);
-  });
+  const accounts = await provider.request({ method: 'accounts' });
+  console.log(accounts);
   ```
 
-### 6. method:'wallet_getWalletState'
+## 6. method:'wallet_getWalletState'
 
   Returns the current wallet state of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
 
   ```typescript
-  provider.request({ method: "wallet_getWalletState" }).then((walletState: WalletState) => {
-    console.log('the current wallet state:',walletState);
-  });
+  const walletState = await provider.request({ method: 'wallet_getWalletState' });
+  console.log('walletState:', walletState);
   ```
 
-### 7. method:'wallet_getWalletName'
+## 7. method:'wallet_getWalletName'
 
   Returns the current wallet name of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
   
   ```typescript
-  provider.request({ method: "wallet_getWalletName" }).then((walletName: WalletName) => {
-    console.log('the current wallet name:',walletName);
-  });
+    const walletName = await provider.request({ method: 'wallet_getWalletName' });
+    console.log('walletName:', walletName);
   ```
 
-### 8. {method:'sendTransaction',payload:SendTransactionParams}
+## 8. {method:'sendTransaction',payload:SendTransactionParams}
   
   Send a transaction to the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
   
   ```typescript
-  const txParams: SendTransactionParams = {
-    ...
-    // You can see the detailed type definition in @portkey/provider-types
-  };
-  provider.request({ method: "sendTransaction", payload: txParams }).then((transaction: Transaction) => {
-    console.log('the transaction:',transaction);
-    if(!transaction?.transactionId){
-      console.error('transaction failed!');
-    }
-  }).catch( e => {
-    // User denied your request or other issues
-  });
+  try {
+    const txId = await provider.request({
+      method: 'sendTransaction',
+      payload: {
+        to: '0x...',
+        ...
+      },
+    });
+    if(!txId) throw new Error('transaction failed!');
+    console.log('transaction success! transaction id:', txId);
+   } catch (e) {
+   // An error will be thrown if the user denies the permission request, or other issues.
+   ...
+   }
   ```
 
-### 9. {method:'wallet_getSignature',payload: GetSignatureParams;}
+## 9. {method:'wallet_getSignature',payload:GetSignatureParams}
 
   Get a signature from the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
   
   ```typescript
-  const signatureParams: GetSignatureParams = {
-    ...
-    // You can see the detailed type definition in @portkey/provider-types
-  };
-  provider.request({ method: "wallet_getSignature", payload: signatureParams }).then((signature: Signature) => {
-    console.log('the signature:',signature);
-  }).catch( e => {
-    // User denied your request or other issues
-  });
+  try {
+    const signature = await provider.request({
+      method: 'wallet_getSignature',
+      payload: {
+        message: '0x...',
+     },
+    });
+    if (!signature) throw new Error('sign failed!');
+    console.log('sign success! signature:', signature);
+  } catch (e) {
+  // An error will be thrown if the user denies the permission request, or other issues.
+  ...
+  }
   ```
