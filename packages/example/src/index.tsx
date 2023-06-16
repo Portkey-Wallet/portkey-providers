@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import {
   Accounts,
   ChainIds,
-  IChain,
+  IAElfChain,
   IContract,
   IPortkeyProvider,
   MethodsBase,
@@ -24,7 +24,7 @@ function App() {
     dispatch({ type: actions, payload });
   }, []);
 
-  const [chain, setChain] = useState<IChain>();
+  const [chain, setChain] = useState<IAElfChain>();
   const [tokenContract, setTokenContract] = useState<IContract>();
 
   const connectEagerly = useCallback(async () => {

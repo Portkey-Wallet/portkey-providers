@@ -1,7 +1,7 @@
 import { DappEvents, EventId, NotificationEvents } from './event';
 import { IResponseInfo, MethodsBase, MethodsUnimplemented, RequestOption } from './request';
 import type { IDappInteractionStream } from './stream';
-import { ChainId, IChain } from './chain';
+import { ChainId, IAElfChain, IChain } from './chain';
 import {
   Accounts,
   ChainIds,
@@ -54,7 +54,7 @@ export interface IProvider {
 }
 
 export interface IWeb3Provider extends IProvider {
-  getChain(chainId: ChainId): Promise<IChain>;
+  getChain<T extends IChain = IAElfChain>(chainId: ChainId): Promise<T>;
 }
 
 export interface IPortkeyProvider extends IWeb3Provider {
