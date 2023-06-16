@@ -1,8 +1,8 @@
 import {
   MethodsBaseType,
   MethodsBase,
-  MethodsUnimplemented,
-  MethodsUnimplementedType,
+  MethodsWallet,
+  MethodsWalletType,
   DappEvents,
   NotificationEvents,
 } from '@portkey/provider-types';
@@ -22,8 +22,8 @@ export function isMethodsBase(method: string): method is MethodsBaseType {
   return Object.values(MethodsBase).indexOf(method as any) !== -1;
 }
 
-export function isMethodsUnimplemented(method: string): method is MethodsUnimplementedType {
-  return Object.values(MethodsUnimplemented).indexOf(method as any) !== -1;
+export function isMethodsUnimplemented(method: string): method is MethodsWalletType {
+  return Object.values(MethodsWallet).indexOf(method as any) !== -1;
 }
 
 export function isNotificationEvents(eventName: string): eventName is DappEvents {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { NotificationEvents, MethodsBase, MethodsUnimplemented } from '@portkey/provider-types';
+import { NotificationEvents, MethodsBase, MethodsWallet } from '@portkey/provider-types';
 import { isMethodsBase, isMethodsUnimplemented } from '../src/utils';
 import { getHostName, isNotificationEvents } from '../src/utils';
 
@@ -9,7 +9,7 @@ describe('utils describe', () => {
     expect(isMethodsBase('')).toBe(false);
   });
   test('test isMethodsUnimplemented', async () => {
-    expect(isMethodsUnimplemented(MethodsUnimplemented.GET_WALLET_STATE)).toBe(true);
+    expect(isMethodsUnimplemented(MethodsWallet.GET_WALLET_STATE)).toBe(true);
     expect(isMethodsUnimplemented('')).toBe(false);
   });
   test('test isNotificationEvents', async () => {

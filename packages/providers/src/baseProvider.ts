@@ -11,7 +11,7 @@ import {
   IResponseInfo,
   ProviderError,
   NotificationEvents,
-  MethodsUnimplemented,
+  MethodsWallet,
   RequestOption,
   Accounts,
   SendTransactionParams,
@@ -153,14 +153,14 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   public async request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
   public async request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
   public async request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
-  public async request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
-  public async request<T = WalletName>(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<T>;
+  public async request<T = WalletState>(params: { method: typeof MethodsWallet.GET_WALLET_STATE }): Promise<T>;
+  public async request<T = WalletName>(params: { method: typeof MethodsWallet.GET_WALLET_NAME }): Promise<T>;
   public async request<T = Transaction>(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
   }): Promise<T>;
   public async request<T = Signature>(params: {
-    method: typeof MethodsUnimplemented.GET_WALLET_SIGNATURE;
+    method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
   }): Promise<T>;
   public async request<T = NetworkType>(params: { method: typeof MethodsBase.NETWORK }): Promise<T>;
@@ -213,7 +213,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
 
   protected initializeState = async () => {
     const initialResponse = await this.request({
-      method: MethodsUnimplemented.GET_WALLET_STATE,
+      method: MethodsWallet.GET_WALLET_STATE,
     });
     if (!initialResponse) return;
     this.state = { ...this.state, ...initialResponse, initialized: true };
