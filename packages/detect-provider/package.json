@@ -1,16 +1,16 @@
 {
   "name": "@portkey/detect-provider",
-  "version": "0.0.1-alpha.23",
+  "version": "0.0.1-alpha.24",
   "description": "",
   "main": "./dist/commonjs/index.js",
-	"module": "./dist/esm/index.js",
-	"exports": {
-		".": {
-			"types": "./dist/types/index.d.ts",
-			"import": "./dist/esm/index.js",
-			"require": "./dist/commonjs/index.js"
-		}
-	},
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/commonjs/index.js"
+    }
+  },
   "author": "",
   "license": "ISC",
   "publishConfig": {
@@ -39,6 +39,6 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/provider-types": "^0.0.1-alpha.22"
+    "@portkey/provider-types": "^0.0.1-alpha.24"
   }
 }
