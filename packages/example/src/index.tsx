@@ -176,7 +176,7 @@ function App() {
           try {
             const sin = await provider.request({
               method: MethodsUnimplemented.GET_WALLET_SIGNATURE,
-              payload: { data: Date.now() },
+              payload: { data: Date.now().toString() },
             });
             console.log(sin, '=======sin');
           } catch (error) {
