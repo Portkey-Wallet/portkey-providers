@@ -29,6 +29,7 @@
     - [2. type: ChainType](#2-type-chaintype)
     - [3. chainId: ChainId](#3-chainid-chainid)
     - [4. getContract(contractAddress)](#4-getcontractcontractaddress)
+  - [Error](#error)
 - [Request Method \& Generic Types](#request-method--generic-types)
   - [1. method:'chainId' / method:'chainIds'](#1-methodchainid--methodchainids)
   - [2. method:'chainsInfo'](#2-methodchainsinfo)
@@ -39,6 +40,16 @@
   - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
   - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
   - [9. {method:'wallet\_getSignature',payload:GetSignatureParams}](#9-methodwallet_getsignaturepayloadgetsignatureparams)
+- [Error Code Enumeration](#error-code-enumeration)
+  - [1. SUCCESS(0)](#1-success0)
+  - [2. USER\_DENIED(4001)](#2-user_denied4001)
+  - [3. ERROR\_IN\_PARAMS(4002)](#3-error_in_params4002)
+  - [4. UNKNOWN\_METHOD(4003)](#4-unknown_method4003)
+  - [5. UNIMPLEMENTED(4004)](#5-unimplemented4004)
+  - [6. UNAUTHENTICATED(4005)](#6-unauthenticated4005)
+  - [7. TIMEOUT(4006)](#7-timeout4006)
+  - [8. CONTRACT\_ERROR(4007)](#8-contract_error4007)
+  - [9. INTERNAL\_ERROR(5001)](#9-internal_error5001)
 
 # Installation
 
@@ -274,6 +285,34 @@ try{
 
 You can see detailed type definition in [source code](../types/src/chain.ts) .
 
+## Error
+
+```typescript
+interface IProviderError extends Error {
+  code: number;
+  data?: unknown;
+}
+
+// Those codes may change in the future, see the source file for the latest version.
+export enum ResponseCode {
+  SUCCESS = 0,
+
+  USER_DENIED = 4001,
+  ERROR_IN_PARAMS = 4002,
+  UNKNOWN_METHOD = 4003,
+  UNIMPLEMENTED = 4004,
+
+  UNAUTHENTICATED = 4005,
+  TIMEOUT = 4006,
+  CONTRACT_ERROR = 4007,
+  INTERNAL_ERROR = 5001,
+}
+```
+
+`IProviderError` is the error object that will be thrown when an error occurs.  
+
+See [Error Code Enumeration](#error-code-enumeration) for more details.
+
 # Request Method & Generic Types
 
 ```typescript
@@ -440,3 +479,50 @@ provider.request({method:'sth'}).then((result)=>{
   ...
   }
   ```
+
+# Error Code Enumeration
+
+## 1. SUCCESS(0)
+
+It means nothing wrong happened, and the result is exactly what you want.  
+
+## 2. USER_DENIED(4001)
+
+It means the user denied the permission request, when you call methods like `request({ method: 'requestAccounts' })` that needs the user's permission.  
+The Wallet will show a dialog that asks the user to make a decision, if the user clicks the "cancel" button, this error will be thrown.  
+It is recommended to catch this error when you call those methods(for now):  
+
+  1. requestAccounts ;
+  2. sendTransaction ;
+  3. wallet_getSignature .
+
+## 3. ERROR_IN_PARAMS(4002)
+
+It means the parameters you passed in are invalid, you should check them again.  
+If you think your params may cause this trouble, you should catch this error and handle it.  
+If you are using a method that doesn't need any params, you can ignore this error.
+
+## 4. UNKNOWN_METHOD(4003)
+
+It means the method you called is not supported by the wallet, check it again.
+
+## 5. UNIMPLEMENTED(4004)
+
+You are using a method that is not implemented yet, or removed in current version because it is deprecated.
+Check the Wallet's version before calling those methods.
+
+## 6. UNAUTHENTICATED(4005)
+
+It means the user has not connected to your dapp, you should call `request({ method: 'requestAccounts' })` first to get the permission.
+
+## 7. TIMEOUT(4006)
+
+The wallet can not provide your expected result in time, you should try again later.
+
+## 8. CONTRACT_ERROR(4007)
+
+There's some issues happened when the wallet is calling the contract, you should check your params and try again.
+
+## 9. INTERNAL_ERROR(5001)
+
+The wallet is facing some internal issues which results in the failure of your request, you should try again later or refresh your page.
