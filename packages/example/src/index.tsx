@@ -3,11 +3,11 @@ import { createRoot } from 'react-dom/client';
 import {
   Accounts,
   ChainIds,
-  IChain,
+  IAElfChain,
   IContract,
   IPortkeyProvider,
   MethodsBase,
-  MethodsUnimplemented,
+  MethodsWallet,
   NetworkType,
   NotificationEvents,
   ProviderErrorType,
@@ -24,7 +24,7 @@ function App() {
     dispatch({ type: actions, payload });
   }, []);
 
-  const [chain, setChain] = useState<IChain>();
+  const [chain, setChain] = useState<IAElfChain>();
   const [tokenContract, setTokenContract] = useState<IContract>();
 
   const connectEagerly = useCallback(async () => {
@@ -175,8 +175,8 @@ function App() {
         onClick={async () => {
           try {
             const sin = await provider.request({
-              method: MethodsUnimplemented.GET_WALLET_SIGNATURE,
-              payload: { data: Date.now() },
+              method: MethodsWallet.GET_WALLET_SIGNATURE,
+              payload: { data: Date.now().toString() },
             });
             console.log(sin, '=======sin');
           } catch (error) {
@@ -262,7 +262,7 @@ function App() {
         onClick={async () => {
           try {
             const walletName = await provider.request({
-              method: MethodsUnimplemented.GET_WALLET_NAME,
+              method: MethodsWallet.GET_WALLET_NAME,
             });
             setState({ walletName });
           } catch (error) {

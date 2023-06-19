@@ -11,7 +11,7 @@ import {
   MethodsBase,
   ResponseCode,
   ResponseMessagePreset,
-  MethodsUnimplemented,
+  MethodsWallet,
 } from '@portkey/provider-types';
 import { generateNormalResponse } from '@portkey/provider-utils';
 import { PortkeyProvider } from '../src/portkeyProvider';
@@ -193,7 +193,7 @@ describe('system describe', () => {
   test('handle methodCheck', () => {
     expect(customer.exposeMethodCheck('')).toBeFalsy();
     expect(customer.exposeMethodCheck(MethodsBase.ACCOUNTS)).toBeTruthy();
-    expect(customer.exposeMethodCheck(MethodsUnimplemented.GET_WALLET_NAME)).toBeTruthy();
+    expect(customer.exposeMethodCheck(MethodsWallet.GET_WALLET_NAME)).toBeTruthy();
   });
 
   test('handle uncovered notification', done => {

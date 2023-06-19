@@ -1,25 +1,37 @@
 import AElf from 'aelf-sdk';
-import { BaseChainOptions, ChainId, ChainType, IChain, IChainProvider, IContract } from '@portkey/provider-types';
+import {
+  BaseChainOptions,
+  ChainId,
+  ChainType,
+  IAElfChain,
+  IChain,
+  IChainProvider,
+  IContract,
+} from '@portkey/provider-types';
 import { Contract } from './contract';
 import { AElfWallet, ChainMethodResult, Block, ChainStatus, TransactionResult } from '@portkey/provider-types/src/aelf';
 
-export abstract class BaseChain {
+export abstract class BaseChain implements IChain {
   protected _request: BaseChainOptions['request'];
-  public chainProvider: IChainProvider;
   public rpcUrl: string;
   public type: ChainType;
   public chainId: ChainId;
   constructor({ request, rpcUrl, chainType = 'aelf', chainId }: BaseChainOptions) {
     if (chainType !== 'aelf') throw new Error(`chain type${chainType} is not supported`);
-    this.chainProvider = new AElf(new AElf.providers.HttpProvider(rpcUrl)).chain;
     this.rpcUrl = rpcUrl;
     this._request = request;
     this.chainId = chainId;
     this.type = chainType;
   }
+  public abstract getContract(contractAddress: string): IContract;
 }
 
-export class Chain extends BaseChain implements IChain {
+export class AElfChain extends BaseChain implements IAElfChain {
+  public chainProvider: IChainProvider;
+  constructor(options: BaseChainOptions) {
+    super(options);
+    this.chainProvider = new AElf(new AElf.providers.HttpProvider(options.rpcUrl)).chain;
+  }
   getContract(contractAddress: string): IContract {
     return new Contract({
       contractAddress: contractAddress,

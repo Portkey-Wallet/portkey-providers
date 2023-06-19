@@ -1,7 +1,7 @@
 import { DappEvents, EventId, NotificationEvents } from './event';
-import { IResponseInfo, MethodsBase, MethodsUnimplemented, RequestOption } from './request';
+import { IResponseInfo, MethodsBase, MethodsWallet, RequestOption } from './request';
 import type { IDappInteractionStream } from './stream';
-import { ChainId, IChain } from './chain';
+import { ChainId, IAElfChain, IChain } from './chain';
 import {
   Accounts,
   ChainIds,
@@ -100,140 +100,21 @@ export interface IProvider {
   removeListener(event: typeof NotificationEvents.DISCONNECTED, listener: (error: ProviderErrorType) => void): this;
   removeListener(event: DappEvents, listener: (...args: any[]) => void): this;
 
-  /**
-   * Used for requesting the current chainId.
-   * ```
-   * const chainId = await provider.request({ method: 'chainId' });
-   * // Although the chainId object is an array, it only contains one chainId.
-   * console.log('current chainId:',chainId[0]);
-   * ```
-   */
-  request(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<ChainIds>;
-  /**
-   * Used for requesting the supported chainIds.
-   * ```
-   * const chainIds = await provider.request({ method: 'chainIds' });
-   * console.log('all the supported chainIds:',chainIds);
-   * ```
-   */
-  request(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<ChainIds>;
-  /**
-   * Used for requesting the on-chain info.
-   * ```
-   * const chainsInfo = await provider.request({ method: 'chainsInfo' });
-   * console.log('all the on-chain info:', chainsInfo);
-   * ```
-   */
-  request(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<ChainsInfo>;
-  /**
-   * Used for detecting which type of network the APP is using.
-   * ```
-   * const networkType = await provider.request({ method: 'network' });
-   * console.log('current network type is :',networkType);
-   * ```
-   */
-  request(params: { method: typeof MethodsBase.NETWORK }): Promise<NetworkType>;
-  /**
-   * Used for the `CONNECT` permission, if so, returns the `Accounts` info.
-   *
-   * ```
-   * try {
-   *  const accounts = await provider.request({ method: 'requestAccounts' });
-   *  console.log(accounts);
-   * }catch(e){
-   *  // An error will be thrown if the user denies the permission request.
-   *  console.log('user denied the permission request');
-   * }
-   * ```
-   */
-  request(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<Accounts>;
-  /**
-   * Used for requesting the current accounts, and it requires the `CONNECT` permission.
-   *
-   * __NOTICE__: You must call `request({ method:'requestMethod' })` first for the permission.
-   * If not, this method will throw an exception.
-   *
-   * ```
-   * const accounts = await provider.request({ method: 'accounts' });
-   * console.log(accounts);
-   * ```
-   */
-  request(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<Accounts>;
-  /**
-   * Returns an object representing the current state of the wallet.
-   *
-   * __NOTICE__: You must call `request({ method:'requestMethod' })` first for the permission.
-   * If not, this method will throw an exception.
-   *
-   * ```
-   * const walletState = await provider.request({ method: 'wallet_getWalletState' });
-   * console.log('walletState:', walletState);
-   * ```
-   */
-  request(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<WalletState>;
-  /**
-   * Returns current wallet's name.
-   *
-   * __NOTICE__: You must call `request({ method:'requestMethod' })` first for the permission.
-   * If not, this method will throw an exception.
-   *
-   * ```
-   * const walletName = await provider.request({ method: 'wallet_getWalletName' });
-   * console.log('walletName:', walletName);
-   * ```
-   */
-  request(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<WalletName>;
-  /**
-   * Send a transaction to the blockchain, and returns its id.
-   *
-   * __NOTICE__: You must call `request({ method:'requestMethod' })` first for the permission.
-   * If not, this method will throw an exception.
-   *
-   * ```
-   * try {
-   *  const txId = await provider.request({
-   *    method: 'sendTransaction',
-   *    payload: {
-   *      to: '0x...',
-   *      ...
-   *    },
-   *  });
-   *  if(!txId) throw new Error('transaction failed!');
-   *  console.log('transaction success! transaction id:', txId);
-   * } catch (e) {
-   * // An error will be thrown if the user denies the permission request, or other issues.
-   * ...
-   * }
-   * ```
-   */
-  request(params: {
+  // request
+  request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
+  request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
+  request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
+  request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
+  request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
+  request<T = WalletState>(params: { method: typeof MethodsWallet.GET_WALLET_STATE }): Promise<T>;
+  request<T = WalletName>(params: { method: typeof MethodsWallet.GET_WALLET_NAME }): Promise<T>;
+  request<T = NetworkType>(params: { method: typeof MethodsBase.NETWORK }): Promise<T>;
+  request<T = Transaction>(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
-  }): Promise<Transaction>;
-  /**
-   * Used for signing a message, and returns the signature.
-   *
-   * __NOTICE__: You must call `request({ method:'requestMethod' })` first for the permission.
-   * If not, this method will throw an exception.
-   *
-   * ```
-   * try {
-   *  const signature = await provider.request({
-   *    method: 'wallet_getSignature',
-   *    payload: {
-   *      message: '0x...',
-   *    },
-   *  });
-   *  if (!signature) throw new Error('sign failed!');
-   *  console.log('sign success! signature:', signature);
-   * } catch (e) {
-   * // An error will be thrown if the user denies the permission request, or other issues.
-   * ...
-   * }
-   * ```
-   */
-  request(params: {
-    method: typeof MethodsUnimplemented.GET_WALLET_SIGNATURE;
+  }): Promise<T>;
+  request<T = Signature>(params: {
+    method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
   }): Promise<Signature>;
   /**
@@ -245,12 +126,7 @@ export interface IProvider {
 }
 
 export interface IWeb3Provider extends IProvider {
-  /**
-   * Returns a chain object that contains chain information and APIs.
-   * @param chainId - chain type that you mean to get
-   * @returns a chain object, see: {@link IChain}
-   */
-  getChain(chainId: ChainId): Promise<IChain>;
+  getChain<T extends IChain = IAElfChain>(chainId: ChainId): Promise<T>;
 }
 
 export interface IPortkeyProvider extends IWeb3Provider {

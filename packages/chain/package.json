@@ -1,6 +1,6 @@
 {
   "name": "@portkey/chain",
-  "version": "0.0.1-alpha.22",
+  "version": "0.0.1-alpha.24",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -31,7 +31,7 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/provider-types": "^0.0.1-alpha.22",
+    "@portkey/provider-types": "^0.0.1-alpha.24",
     "aelf-sdk": "^3.2.44"
   }
 }

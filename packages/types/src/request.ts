@@ -68,12 +68,12 @@ export const MethodsBase = {
 
 export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
 
-export const MethodsUnimplemented = {
+export const MethodsWallet = {
   GET_WALLET_STATE: 'wallet_getWalletState',
   GET_WALLET_NAME: 'wallet_getWalletName',
   GET_WALLET_SIGNATURE: 'wallet_getSignature',
 } as const;
 
-export type MethodsUnimplementedType = (typeof MethodsUnimplemented)[keyof typeof MethodsUnimplemented];
+export type MethodsWalletType = (typeof MethodsWallet)[keyof typeof MethodsWallet];
 
-export type MethodsType = MethodsBaseType | MethodsUnimplementedType | string;
+export type MethodsType = MethodsBaseType | MethodsWalletType | string;

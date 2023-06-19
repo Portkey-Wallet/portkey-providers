@@ -228,11 +228,14 @@ You can see the detailed type definition in [@portkey/provider-types](../types/s
 ## IChain
 
 ```typescript
-interface IChain extends AElfChainMethods {
+interface IChain {
   rpcUrl: string;
   type: ChainType;
   chainId: ChainId;
   getContract(contractAddress: string): IContract;
+}
+
+interface IAElfChain extends IAElfRPCMethods, IChain {
   /** @deprecated use getContract */
   contractAt<T = any>(address: string, wallet: AElfWallet): Promise<ChainMethodResult<T>>;
 }
