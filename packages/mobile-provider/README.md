@@ -6,19 +6,19 @@
 <h1 align="center">@portkey/mobile-provider</h1>
 
 - [__Usage__](#usage)
-  - [1. Use __@portkey/detect-provider__](#1-use-portkeydetect-provider)
-  - [2. Detect __mobile-provider__ by your own code (not recommended)](#2-detect-mobile-provider-by-your-own-code-not-recommended)
+  - [1. Use @portkey/detect-provider](#1-use-portkeydetect-provider)
+  - [2. Detect mobile-provider by your own code (not recommended)](#2-detect-mobile-provider-by-your-own-code-not-recommended)
 
 This project creates javascript code that will be injected into Portkey Extension's WebView environment, for providing basic functions for DApp developers.
 
 # __Usage__
 
-## 1. Use __@portkey/detect-provider__
+## 1. Use @portkey/detect-provider
 
 We recommend to use the __[@portkey/detect-provider](../detect-provider/README.md)__ package to detect if Portkey is injected.  
 Click the link above to learn more.  
 
-## 2. Detect __mobile-provider__ by your own code (not recommended)
+## 2. Detect mobile-provider by your own code (not recommended)
 
 __mobile-provider__ will be injected to the `window` or `globalThis.window` object, providing you a way to detect it directly.  
 Also, when __mobile-provider__ is injected, an event named `portkeyInitEvent` will be triggered on the host object (`window`).

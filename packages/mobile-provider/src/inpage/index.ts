@@ -8,7 +8,7 @@ const CONTENT_SCRIPT = 'portkey-contentscript';
 Object.defineProperty(window, '_portkeySetupProvider', {
   value: () => {
     setupProviderStreams();
-    document.dispatchEvent(
+    window.dispatchEvent(
       new CustomEvent(portkeyInitEvent, {
         detail: {
           error: 0,

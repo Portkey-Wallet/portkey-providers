@@ -28,10 +28,6 @@ export interface IResponseInfo<T = any> {
   msg?: string;
 }
 
-/**
- * Code values that under zero are unexpected.
- * Those above zero are some issues that your code may have to face
- */
 export enum ResponseCode {
   SUCCESS = 0,
 

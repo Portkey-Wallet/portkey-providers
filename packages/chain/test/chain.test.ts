@@ -1,6 +1,6 @@
 import 'isomorphic-fetch';
 import { describe, expect, test } from '@jest/globals';
-import { Chain } from '../src/chain';
+import { AElfChain } from '../src/chain';
 describe('chain describe', () => {
   const chainOptions = {
     request: () => {},
@@ -9,7 +9,7 @@ describe('chain describe', () => {
     chainType: 'aelf',
     chainId: 'AELF',
   } as any;
-  const chain = new Chain(chainOptions);
+  const chain = new AElfChain(chainOptions);
   test('test chain properties', () => {
     expect(chain.type).toBe(chainOptions.chainType);
     expect(chain.chainId).toBe(chainOptions.chainId);

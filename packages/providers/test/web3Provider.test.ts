@@ -2,7 +2,8 @@ import 'isomorphic-fetch';
 import { describe, expect, test } from '@jest/globals';
 import { Web3Provider, DappInteractionStream } from '../src';
 import { EventEmitter } from 'stream';
-import { IChain, MethodsBase } from '@portkey/provider-types';
+import { MethodsBase } from '@portkey/provider-types';
+import { AElfChain } from '@portkey/chain';
 const noop = () => undefined;
 
 // mock post message
@@ -124,10 +125,13 @@ const stream = new MockStream();
 
 describe('chain describe', () => {
   const provider = new MockProvider({ connectionStream: stream });
-  let chain: IChain | undefined;
+  let chain: AElfChain | undefined;
   test('init chain', async () => {
-    chain = await provider.getChain('AELF');
+    chain = (await provider.getChain('AELF')) as AElfChain;
     expect(1).toBe(1);
+  });
+  test('init chain with number will be rejected', async () => {
+    expect(() => provider.getChain(123 as any)).rejects.toBeTruthy();
   });
   test('test getChain', async () => {
     const height = await chain!.getBlockHeight();

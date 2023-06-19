@@ -29,16 +29,27 @@
     - [2. type: ChainType](#2-type-chaintype)
     - [3. chainId: ChainId](#3-chainid-chainid)
     - [4. getContract(contractAddress)](#4-getcontractcontractaddress)
+  - [Error](#error)
 - [Request Method \& Generic Types](#request-method--generic-types)
-    - [1. method:'chainId' / method:'chainIds'](#1-methodchainid--methodchainids)
-    - [2. method:'chainsInfo'](#2-methodchainsinfo)
-    - [3. method:'network'](#3-methodnetwork)
-    - [4. method:'requestAccounts'](#4-methodrequestaccounts)
-    - [5. method:'accounts'](#5-methodaccounts)
-    - [6. method:'wallet\_getWalletState'](#6-methodwallet_getwalletstate)
-    - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
-    - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
-    - [9. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#9-methodwallet_getsignaturepayload-getsignatureparams)
+  - [1. method:'chainId' / method:'chainIds'](#1-methodchainid--methodchainids)
+  - [2. method:'chainsInfo'](#2-methodchainsinfo)
+  - [3. method:'network'](#3-methodnetwork)
+  - [4. method:'requestAccounts'](#4-methodrequestaccounts)
+  - [5. method:'accounts'](#5-methodaccounts)
+  - [6. method:'wallet\_getWalletState'](#6-methodwallet_getwalletstate)
+  - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
+  - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
+  - [9. {method:'wallet\_getSignature',payload:GetSignatureParams}](#9-methodwallet_getsignaturepayloadgetsignatureparams)
+- [Error Code Enumeration](#error-code-enumeration)
+  - [1. SUCCESS(0)](#1-success0)
+  - [2. USER\_DENIED(4001)](#2-user_denied4001)
+  - [3. ERROR\_IN\_PARAMS(4002)](#3-error_in_params4002)
+  - [4. UNKNOWN\_METHOD(4003)](#4-unknown_method4003)
+  - [5. UNIMPLEMENTED(4004)](#5-unimplemented4004)
+  - [6. UNAUTHENTICATED(4005)](#6-unauthenticated4005)
+  - [7. TIMEOUT(4006)](#7-timeout4006)
+  - [8. CONTRACT\_ERROR(4007)](#8-contract_error4007)
+  - [9. INTERNAL\_ERROR(5001)](#9-internal_error5001)
 
 # Installation
 
@@ -58,12 +69,8 @@ import detectProvider, {isPortkeyProvider} from '@portkey/detect-provider';
 const provider:IPortkeyProvider = await detectProvider();
 // ES6 Promise syntax
 detectProvider().then((provider:IPortkeyProvider) => {
-    const result = provider as unknown;
-    if (isPortkeyProvider(result)) {
-        // Portkey is injected
-    } else {
-        // Portkey is not injected
-    }
+  // do something with provider
+  provider.request({method: ... })
 }).catch((error:Error) => {
   // Handle error
 });
@@ -225,7 +232,7 @@ type DappEvents = 'connected'  | 'message' | 'disconnected' | 'accountsChanged' 
 ```
 
 Use [provider.on(event,callback)](#3-oneventcallback--onceeventcallback) to listen to those events.  
-You can see the detailed type definition in [@portkey/provider-types__](../types/src/provider.ts) project .
+You can see the detailed type definition in [@portkey/provider-types](../types/src/provider.ts) project .
 
 ------
 
@@ -267,7 +274,7 @@ For example, `'AELF'` means mainchain, `'tDVV'` means sidechain.
 ```typescript
 try{
   const chain = await provider.getChain('AELF');
-  const contract = chain.getContract('mockContractAddress');
+  const contract = chain.getContract('your-contract-address');
   // Do something with the contract object
   const result = await contract.callViewMethod('how-much-token-do-i-have', 'aelf0x12345678');
   console.log('result:', result);
@@ -278,146 +285,244 @@ try{
 
 You can see detailed type definition in [source code](../types/src/chain.ts) .
 
+## Error
+
+```typescript
+interface IProviderError extends Error {
+  code: number;
+  data?: unknown;
+}
+
+// Those codes may change in the future, see the source file for the latest version.
+export enum ResponseCode {
+  SUCCESS = 0,
+
+  USER_DENIED = 4001,
+  ERROR_IN_PARAMS = 4002,
+  UNKNOWN_METHOD = 4003,
+  UNIMPLEMENTED = 4004,
+
+  UNAUTHENTICATED = 4005,
+  TIMEOUT = 4006,
+  CONTRACT_ERROR = 4007,
+  INTERNAL_ERROR = 5001,
+}
+```
+
+`IProviderError` is the error object that will be thrown when an error occurs.  
+
+See [Error Code Enumeration](#error-code-enumeration) for more details.
+
 # Request Method & Generic Types
 
 ```typescript
-  request<T = Accounts>(params: { method: 'accounts' }): Promise<T>;
-  request<T = ChainIds>(params: { method: 'chainId' }): Promise<T>;
-  request<T = ChainIds>(params: { method: 'chainIds' }): Promise<T>;
-  request<T = NetworkType>(params: { method:'network' }): Promise<T>;
-  request<T = ChainsInfo>(params: { method: 'chainsInfo' }): Promise<T>;
-  request<T = Accounts>(params: { method: 'requestAccounts' }): Promise<T>;
-  request<T = WalletState>(params: { method: 'wallet_getWalletState' }): Promise<T>;
-  request<T = WalletName>(params: { method: 'wallet_getWalletName' }): Promise<T>;
-  request<T = Transaction>(params: {
+  request(params: { method: 'accounts' }): Promise<Accounts>;
+  request(params: { method: 'chainId' }): Promise<ChainIds>;
+  request(params: { method: 'chainIds' }): Promise<ChainIds>;
+  request(params: { method: 'chainsInfo' }): Promise<ChainsInfo>;
+  request(params: { method: 'requestAccounts'}): Promise<Accounts>;
+  request(params: { method: 'wallet_getWalletState' }): Promise<WalletState>;
+  request(params: { method: 'wallet_getWalletName' }): Promise<WalletName>;
+  request(params: { method: 'network' }): Promise<NetworkType>;
+  request(params: {
     method: 'sendTransaction';
     payload: SendTransactionParams;
-  }): Promise<T>;
-  request<T = Signature>(params: {
-    method: 'wallet_getSignature';
-    payload: GetSignatureParams;
-  }): Promise<T>;
+  }): Promise<Transaction>;
+  request(params: {
+    method: 'wallet_getSignature',
+    payload: GetSignatureParams,
+  }): Promise<Signature>;
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 ```
 
-You can find the complete type definition like `Accounts` in [source code](../types/src/provider.ts) .
+You can find the complete type definition like `Accounts` in [source code](../types/src/provider.ts) .  
 
-### 1. method:'chainId' / method:'chainIds'
+We recommend you to use the Async/Await syntax to call those methods.  
+It helps you find out errors more effectively.
+
+```typescript
+try {
+  const result = provider.request({method:'sth'});
+  ...
+} catch (e) {
+  // when the promise is rejected, an error will be thrown
+  ...
+}
+
+// you can still use the promise syntax
+provider.request({method:'sth'}).then((result)=>{
+  ...
+}).catch((e)=>{
+  ...
+});
+
+```
+
+## 1. method:'chainId' / method:'chainIds'
 
   Returns the current chainId of the Portkey APP's wallet.  
   Need to know that `'chainId'` gets the current chainId, while `'chainIds'` gets all the supported chainIds.  
 
   ```typescript
-  provider.request({ method: "chainId" }).then((chainId: ChainId[]) => {
-    console.log('current chainId is:',chainId);
-  });
-  provider.request({ method: "chainIds" }).then((chainIds: ChainId[]) => {
-    console.log('current APP supports:',chainIds);
-  });
+  const chainId = await provider.request({ method: 'chainId' });
+  // Although the chainId object is an array, it only contains one chainId.
+  console.log('current chainId:',chainId[0]);
+
+  const chainIds = await provider.request({ method: 'chainIds' });
+  console.log('all the supported chainIds:',chainIds);
   ```
 
-### 2. method:'chainsInfo'
+## 2. method:'chainsInfo'
 
-Gets all the supported chains' information.  
+  Gets all the supported chains' information.  
 
-```typescript
-provider.request({ method: "chainsInfo" }).then((chainsInfo: ChainsInfo) => {
-  console.log('mainchain info',chainsInfo.AELF);
-});
-```
+  ```typescript
+  const chainsInfo = await provider.request({ method: 'chainsInfo' });
+  console.log('all the on-chain info:', chainsInfo);
+  ```
 
-### 3. method:'network'
-  
+## 3. method:'network'
+
   Returns the current network type of the Portkey APP's wallet.  
   For now it's either `'MAIN'` or `'TESTNET'` .
-  
+
   ```typescript
-  provider.request({ method: "network" }).then((network: NetworkType) => {
-    console.log('current network type is:',network);
-  });
+  const networkType = await provider.request({ method: 'network' });
+  console.log('current network type is :',networkType);
   ```
 
-### 4. method:'requestAccounts'
+## 4. method:'requestAccounts'
 
   Request the Portkey APP's wallet to connect to your dapp, this method is the bridge to get the permission required by the following methods below.  
   If the user has not connected to your dapp, the Portkey APP's wallet will pop up a window to ask the user to connect to your dapp.  
   If the user has connected to your dapp and hasn't remove the permission, this method returns info without a second confirmation.
 
   ```typescript
-  provider.request({ method: "requestAccounts" }).then((accounts: Accounts) => {
-    // User confirmed
-    console.log('your current mainchain address is:',accounts.AELF[0]);
-  }).catch( e => {
-    // User denied your request or other issues
-  });
+  try {
+    const accounts = await provider.request({ method: 'requestAccounts' });
+    console.log(accounts);
+  }catch (e) {
+    // An error will be thrown if the user denies the permission request.
+    console.log('user denied the permission request');
+  }
   ```
 
-### 5. method:'accounts'
+## 5. method:'accounts'
 
   Returns the current account addresses of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
 
   ```typescript
-  provider.request({ method: "accounts" }).then((accounts: Accounts) => {
-    console.log('the aelf mainchain account:',accounts.AELF);
-  });
+  const accounts = await provider.request({ method: 'accounts' });
+  console.log(accounts);
   ```
 
-### 6. method:'wallet_getWalletState'
+## 6. method:'wallet_getWalletState'
 
   Returns the current wallet state of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
 
   ```typescript
-  provider.request({ method: "wallet_getWalletState" }).then((walletState: WalletState) => {
-    console.log('the current wallet state:',walletState);
-  });
+  const walletState = await provider.request({ method: 'wallet_getWalletState' });
+  console.log('walletState:', walletState);
   ```
 
-### 7. method:'wallet_getWalletName'
+## 7. method:'wallet_getWalletName'
 
   Returns the current wallet name of the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.
   
   ```typescript
-  provider.request({ method: "wallet_getWalletName" }).then((walletName: WalletName) => {
-    console.log('the current wallet name:',walletName);
-  });
+    const walletName = await provider.request({ method: 'wallet_getWalletName' });
+    console.log('walletName:', walletName);
   ```
 
-### 8. {method:'sendTransaction',payload:SendTransactionParams}
+## 8. {method:'sendTransaction',payload:SendTransactionParams}
   
   Send a transaction to the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
   
   ```typescript
-  const txParams: SendTransactionParams = {
-    ...
-    // You can see the detailed type definition in @portkey/provider-types
-  };
-  provider.request({ method: "sendTransaction", payload: txParams }).then((transaction: Transaction) => {
-    console.log('the transaction:',transaction);
-    if(!transaction?.transactionId){
-      console.error('transaction failed!');
-    }
-  }).catch( e => {
-    // User denied your request or other issues
-  });
+  try {
+    const txId = await provider.request({
+      method: 'sendTransaction',
+      payload: {
+        to: '0x...',
+        ...
+      },
+    });
+    if(!txId) throw new Error('transaction failed!');
+    console.log('transaction success! transaction id:', txId);
+   } catch (e) {
+   // An error will be thrown if the user denies the permission request, or other issues.
+   ...
+   }
   ```
 
-### 9. {method:'wallet_getSignature',payload: GetSignatureParams;}
+## 9. {method:'wallet_getSignature',payload:GetSignatureParams}
 
   Get a signature from the Portkey APP's wallet.  
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
   
   ```typescript
-  const signatureParams: GetSignatureParams = {
-    ...
-    // You can see the detailed type definition in @portkey/provider-types
-  };
-  provider.request({ method: "wallet_getSignature", payload: signatureParams }).then((signature: Signature) => {
-    console.log('the signature:',signature);
-  }).catch( e => {
-    // User denied your request or other issues
-  });
+  try {
+    const signature = await provider.request({
+      method: 'wallet_getSignature',
+      payload: {
+        message: '0x...',
+     },
+    });
+    if (!signature) throw new Error('sign failed!');
+    console.log('sign success! signature:', signature);
+  } catch (e) {
+  // An error will be thrown if the user denies the permission request, or other issues.
+  ...
+  }
   ```
+
+# Error Code Enumeration
+
+## 1. SUCCESS(0)
+
+It means nothing wrong happened, and the result is exactly what you want.  
+
+## 2. USER_DENIED(4001)
+
+It means the user denied the permission request, when you call methods like `request({ method: 'requestAccounts' })` that needs the user's permission.  
+The Wallet will show a dialog that asks the user to make a decision, if the user clicks the "cancel" button, this error will be thrown.  
+It is recommended to catch this error when you call those methods(for now):  
+
+  1. requestAccounts ;
+  2. sendTransaction ;
+  3. wallet_getSignature .
+
+## 3. ERROR_IN_PARAMS(4002)
+
+It means the parameters you passed in are invalid, you should check them again.  
+If you think your params may cause this trouble, you should catch this error and handle it.  
+If you are using a method that doesn't need any params, you can ignore this error.
+
+## 4. UNKNOWN_METHOD(4003)
+
+It means the method you called is not supported by the wallet, check it again.
+
+## 5. UNIMPLEMENTED(4004)
+
+You are using a method that is not implemented yet, or removed in current version because it is deprecated.
+Check the Wallet's version before calling those methods.
+
+## 6. UNAUTHENTICATED(4005)
+
+It means the user has not connected to your dapp, you should call `request({ method: 'requestAccounts' })` first to get the permission.
+
+## 7. TIMEOUT(4006)
+
+The wallet can not provide your expected result in time, you should try again later.
+
+## 8. CONTRACT_ERROR(4007)
+
+There's some issues happened when the wallet is calling the contract, you should check your params and try again.
+
+## 9. INTERNAL_ERROR(5001)
+
+The wallet is facing some internal issues which results in the failure of your request, you should try again later or refresh your page.

@@ -5,7 +5,6 @@ export * from './stream';
 export * from './chain';
 export * from './contract';
 export * from './operator';
-export * from './origin';
 export * from './error';
 export * from './crypto';
 export * from './response';
