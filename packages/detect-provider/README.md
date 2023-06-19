@@ -274,7 +274,7 @@ For example, `'AELF'` means mainchain, `'tDVV'` means sidechain.
 ```typescript
 try{
   const chain = await provider.getChain('AELF');
-  const contract = chain.getContract('mockContractAddress');
+  const contract = chain.getContract('your-contract-address');
   // Do something with the contract object
   const result = await contract.callViewMethod('how-much-token-do-i-have', 'aelf0x12345678');
   console.log('result:', result);
