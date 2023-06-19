@@ -1,7 +1,7 @@
 import { DappEvents, EventId, NotificationEvents } from './event';
-import { IResponseInfo, MethodsBase, MethodsUnimplemented, RequestOption } from './request';
+import { IResponseInfo, MethodsBase, MethodsWallet, RequestOption } from './request';
 import type { IDappInteractionStream } from './stream';
-import { ChainId, IChain } from './chain';
+import { ChainId, IAElfChain, IChain } from './chain';
 import {
   Accounts,
   ChainIds,
@@ -39,22 +39,22 @@ export interface IProvider {
   request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
   request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
   request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
-  request<T = WalletState>(params: { method: typeof MethodsUnimplemented.GET_WALLET_STATE }): Promise<T>;
-  request<T = WalletName>(params: { method: typeof MethodsUnimplemented.GET_WALLET_NAME }): Promise<T>;
+  request<T = WalletState>(params: { method: typeof MethodsWallet.GET_WALLET_STATE }): Promise<T>;
+  request<T = WalletName>(params: { method: typeof MethodsWallet.GET_WALLET_NAME }): Promise<T>;
   request<T = NetworkType>(params: { method: typeof MethodsBase.NETWORK }): Promise<T>;
   request<T = Transaction>(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
   }): Promise<T>;
   request<T = Signature>(params: {
-    method: typeof MethodsUnimplemented.GET_WALLET_SIGNATURE;
+    method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
   }): Promise<T>;
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
 }
 
 export interface IWeb3Provider extends IProvider {
-  getChain(chainId: ChainId): Promise<IChain>;
+  getChain<T extends IChain = IAElfChain>(chainId: ChainId): Promise<T>;
 }
 
 export interface IPortkeyProvider extends IWeb3Provider {

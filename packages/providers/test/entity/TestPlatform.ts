@@ -6,7 +6,7 @@ import {
   IRequestParams,
   MethodsBase,
   ChainsInfo,
-  MethodsUnimplemented,
+  MethodsWallet,
   WalletState,
 } from '@portkey/provider-types';
 import { generateNormalResponse, generateErrorResponse } from '@portkey/provider-utils';
@@ -102,7 +102,7 @@ export class ProducerTestBehaviour extends Operator {
           eventName,
           data: { AELF: [{ chainId: 'AELF', chainName: 'AELF', endPoint: 'mock', explorerUrl: 'mock' }] } as ChainsInfo,
         });
-      case MethodsUnimplemented.GET_WALLET_STATE: {
+      case MethodsWallet.GET_WALLET_STATE: {
         if (!this.init) {
           this.init = true;
           return generateNormalResponse({

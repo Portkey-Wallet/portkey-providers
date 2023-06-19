@@ -14,16 +14,6 @@ export type AElfWallet = {
   BIP44Path?: string;
   keyPair?: ec.KeyPair;
 };
-export type LoginOptions = {
-  chainId: string;
-  payload: {
-    method: 'LOGIN';
-  };
-};
-export type LogOutOptions = {
-  chainId?: string;
-  address?: string;
-};
 export type Block = {
   BlockHash: string;
   Header: any;
@@ -109,7 +99,7 @@ export type ExtensionInfo = {
 export type ChainMethodResult<T> = T & NightElfResult<T> & AElfSDKError;
 
 // aelf-bridge returns the result directly NightElf will return the result in the result
-export interface AElfChainMethods {
+export interface IAElfRPCMethods {
   /**
    *
    * Get contract instance

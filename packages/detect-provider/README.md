@@ -30,15 +30,15 @@
     - [3. chainId: ChainId](#3-chainid-chainid)
     - [4. getContract(contractAddress)](#4-getcontractcontractaddress)
 - [Request Method \& Generic Types](#request-method--generic-types)
-  - [1. method:'chainId' / method:'chainIds'](#1-methodchainid--methodchainids)
-  - [2. method:'chainsInfo'](#2-methodchainsinfo)
-  - [3. method:'network'](#3-methodnetwork)
-  - [4. method:'requestAccounts'](#4-methodrequestaccounts)
-  - [5. method:'accounts'](#5-methodaccounts)
-  - [6. method:'wallet\_getWalletState'](#6-methodwallet_getwalletstate)
-  - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
-  - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
-  - [9. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#9-methodwallet_getsignaturepayload-getsignatureparams)
+    - [1. method:'chainId' / method:'chainIds'](#1-methodchainid--methodchainids)
+    - [2. method:'chainsInfo'](#2-methodchainsinfo)
+    - [3. method:'network'](#3-methodnetwork)
+    - [4. method:'requestAccounts'](#4-methodrequestaccounts)
+    - [5. method:'accounts'](#5-methodaccounts)
+    - [6. method:'wallet\_getWalletState'](#6-methodwallet_getwalletstate)
+    - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
+    - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
+    - [9. {method:'wallet\_getSignature',payload: GetSignatureParams;}](#9-methodwallet_getsignaturepayload-getsignatureparams)
 
 # Installation
 
@@ -232,11 +232,14 @@ You can see the detailed type definition in [@portkey/provider-types__](../types
 ## IChain
 
 ```typescript
-interface IChain extends AElfChainMethods {
+interface IChain {
   rpcUrl: string;
   type: ChainType;
   chainId: ChainId;
   getContract(contractAddress: string): IContract;
+}
+
+interface IAElfChain extends IAElfRPCMethods, IChain {
   /** @deprecated use getContract */
   contractAt<T = any>(address: string, wallet: AElfWallet): Promise<ChainMethodResult<T>>;
 }
