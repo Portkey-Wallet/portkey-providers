@@ -1,5 +1,5 @@
 /**
- * @remakes
+ * @remarks
  * PostStream By `document.dispatchEvent` / `document.addEventListener`
  */
 import { DappInteractionStream } from '@portkey/providers';
