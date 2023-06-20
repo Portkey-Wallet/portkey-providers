@@ -25,7 +25,7 @@ export class ContentPostStream extends DappInteractionStream {
     this._listenerEventName = listenerEventName;
     this._dispatchEventName = dispatchEventName;
     this._origin = targetWindow ? '*' : location.origin;
-    document.addEventListener(this._listenerEventName, this._onMessage.bind(this), false);
+    document.addEventListener<any>(this._listenerEventName, this._onMessage.bind(this), false);
   }
   _write = (chunk: any, _encoding?: string, cb?: (error?: Error | null | undefined) => void) => {
     try {

@@ -34,7 +34,7 @@ export class PortkeyPostStream extends DappInteractionStream {
     this._originWindow = originWindow;
     this._originWindow.addEventListener('message', this._onMessage.bind(this), false);
   }
-  _write = (msg, _encoding, cb) => {
+  _write = (msg: any, _encoding: string, cb: (error?: Error | null) => void) => {
     try {
       this._postWindow.postMessage(JSON.stringify({ ...JSON.parse(msg), origin: window.location.origin }));
     } catch (err) {
@@ -42,7 +42,7 @@ export class PortkeyPostStream extends DappInteractionStream {
     }
     return cb();
   };
-  _onMessage(event) {
+  _onMessage(event: MessageEvent<any>) {
     try {
       const msg = event.data;
       if (typeof msg !== 'string') return;
