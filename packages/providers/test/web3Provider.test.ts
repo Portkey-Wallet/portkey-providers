@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import { describe, expect, test } from '@jest/globals';
 import { Web3Provider, DappInteractionStream } from '../src';
 import { EventEmitter } from 'stream';
-import { MethodsBase } from '@portkey/provider-types';
+import { IResponseInfo, MethodsBase } from '@portkey/provider-types';
 import { AElfChain } from '@portkey/chain';
 const noop = () => undefined;
 
@@ -50,7 +50,7 @@ const data = {
 };
 
 class MockServer {
-  postMessage(message) {
+  postMessage(message: string) {
     const { eventName, method } = JSON.parse(message);
 
     switch (method) {
@@ -83,7 +83,7 @@ class MockServer {
     }
   }
 
-  pushMessage(eventName, info) {
+  pushMessage(eventName: string, info: IResponseInfo) {
     // react native postMessage
     mockEvent.emit(
       'message',
@@ -93,7 +93,7 @@ class MockServer {
       }),
     );
   }
-  readMessage(message) {
+  readMessage(message: string) {
     this.postMessage(message);
   }
 }
@@ -105,7 +105,7 @@ class MockStream extends DappInteractionStream {
     mockEvent.addListener('message', this._onMessage.bind(this));
   }
   _read = noop;
-  _onMessage(message) {
+  _onMessage(message: string) {
     this.push(message);
   }
   _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
