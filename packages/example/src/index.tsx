@@ -95,7 +95,8 @@ function App() {
       {Object.entries(state).map(([key, value]) => {
         return (
           <p key={key}>
-            <h4>{key}</h4>
+            <a>{key}</a>
+            <br />
             {JSON.stringify(value)}
           </p>
         );

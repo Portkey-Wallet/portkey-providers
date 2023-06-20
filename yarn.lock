@@ -5287,7 +5287,7 @@ commander@^10.0.0, commander@^10.0.1:
 
 commander@^2.20.0, commander@^2.9.0:
   version "2.20.3"
-  resolved "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
+  resolved "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
 commander@^4.0.0:
@@ -7432,6 +7432,13 @@ find-up@^4.0.0, find-up@^4.1.0:
   dependencies:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
+
+fix-esm-import-path@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/fix-esm-import-path/-/fix-esm-import-path-1.4.0.tgz#c0e2fb583bb98eac9a816cd8f52931137ef4bc52"
+  integrity sha512-xTkmzlotSgZwn3mNOZA6R6IK0Ow1uQvtdeGS8hqRa1nl8rwdtxZPWktorKcwvsUDpCPnqFbkfsya9P3MG6rTcg==
+  dependencies:
+    debug "^4.3.2"
 
 flat-cache@^3.0.4:
   version "3.0.4"
