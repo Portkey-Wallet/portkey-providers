@@ -15,9 +15,9 @@
     "pretty": true,
     "sourceMap": true,
     "declarationMap": true,
-    "strict": false,
+    "strict": true,
     "strictNullChecks": true,
     "esModuleInterop": true
   },
-  "include": ["index.d.ts"]
+  "include": ["index.d.ts"],
 }

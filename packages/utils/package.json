@@ -1,7 +1,16 @@
 {
   "name": "@portkey/provider-utils",
-  "version": "0.0.1-alpha.24",
+  "version": "0.0.1-alpha.25",
   "description": "",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/commonjs/index.js"
+    }
+  },
   "author": "",
   "license": "ISC",
   "publishConfig": {
@@ -17,14 +26,14 @@
     "url": "https://github.com/Portkey-Wallet/portkey-providers.git",
     "directory": "packages/utils"
   },
-  "type": "commonjs",
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "exports": "./dist/index.js",
   "scripts": {
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
-    "build": "tsc",
+    "build": "yarn build:cjs & yarn build:esm & yarn build:types",
+    "build:cjs": "tsc && echo '{\"type\": \"commonjs\"}' > ./dist/commonjs/package.json",
+    "build:esm": "tsc --build tsconfig.esm.json && echo '{\"type\": \"module\"}' > ./dist/esm/package.json && yarn esm:fix",
+    "build:types": "tsc --build tsconfig.types.json",
+    "esm:fix": "fix-esm-import-path dist/esm/index.js",
     "tsc:esm": "tsc --project tsconfig.json --module es2015 --outDir tsc-esm",
     "tsc:cjs": "tsc --project tsconfig.json --outDir tsc-cjs",
     "lint": "eslint --ext .js,.ts .",
@@ -33,6 +42,6 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/provider-types": "^0.0.1-alpha.24"
+    "@portkey/provider-types": "^0.0.1-alpha.25"
   }
 }

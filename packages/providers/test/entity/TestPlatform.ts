@@ -17,8 +17,8 @@ import { Operator } from '../../src/operator';
 export const UNKNOWN_METHOD = '42' as any;
 
 export class ITestPlatform implements TestPlatform {
-  private _customer: CustomerTestBehaviour;
-  private _producer: ProducerTestBehaviour;
+  private _customer?: CustomerTestBehaviour;
+  private _producer?: ProducerTestBehaviour;
 
   registerCustomer = (customer: CustomerTestBehaviour) => {
     this._customer = customer;
@@ -28,10 +28,10 @@ export class ITestPlatform implements TestPlatform {
   };
 
   sendMessage = (message: IRequestParams) => {
-    this._producer.onMessage(message);
+    this._producer?.onMessage(message);
   };
   sendResponse = (message: Buffer) => {
-    this._customer.onMessageRaw(message);
+    this._customer?.onMessageRaw(message);
   };
 }
 
@@ -41,7 +41,6 @@ export class IProviderMockStream extends DappInteractionStream implements Inject
     super();
     this._platform = platform;
   }
-  _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     this._platform.sendResponse(chunk);
     return _callback();
@@ -57,7 +56,6 @@ export class ICustomerMockStream extends DappInteractionStream implements Inject
     super();
     this._platform = platform;
   }
-  _read: (_size?: number | undefined) => undefined;
   _write(chunk: ArrayBuffer, _encoding: BufferEncoding, _callback: (error?: Error | null | undefined) => void): void {
     const convertedText: string = new TextDecoder().decode(chunk);
     console.log('ICustomerMockStream::_write', convertedText);

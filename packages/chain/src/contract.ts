@@ -24,6 +24,10 @@ export abstract class BaseContract {
   public rpcUrl: string;
   protected _request: BaseContractOptions['request'];
   constructor(options: BaseContractOptions) {
+    this.rpcUrl = options.rpcUrl;
+    this.chainId = options.chainId;
+    this.chainProvider = options.chainProvider;
+    this.type = options.type;
     Object.assign(this, options);
     this.address = options.contractAddress;
     this._request = options.request;

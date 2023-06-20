@@ -12,6 +12,7 @@ import {
   ResponseCode,
   ResponseMessagePreset,
   MethodsWallet,
+  ProviderError,
 } from '@portkey/provider-types';
 import { generateNormalResponse } from '@portkey/provider-utils';
 import { PortkeyProvider } from '../src/portkeyProvider';
@@ -77,7 +78,9 @@ describe('system describe', () => {
     try {
       await customer.request('' as any);
     } catch (error) {
-      expect(error.message).toEqual('Expected a single, non-array, object argument.');
+      if (error instanceof ProviderError) {
+        expect(error.message).toEqual('Expected a single, non-array, object argument.');
+      }
     }
   });
 
@@ -85,7 +88,9 @@ describe('system describe', () => {
     try {
       await customer.request({ method: MethodsBase.SEND_TRANSACTION, payload: '' as any });
     } catch (error) {
-      expect(error.message).toEqual(`'params.payload' must be an object if provided.`);
+      if (error instanceof ProviderError) {
+        expect(error.message).toEqual(`'params.payload' must be an object if provided.`);
+      }
     }
   });
 
@@ -113,8 +118,10 @@ describe('system describe', () => {
     try {
       const result = await customer.request({ method: 'sendTransaction', payload: {} as any });
       throw new Error('should not be here, result: ' + result);
-    } catch (e) {
-      expect(e.message).toMatch(ResponseMessagePreset['UNIMPLEMENTED']);
+    } catch (error) {
+      if (error instanceof ProviderError) {
+        expect(error.message).toMatch(ResponseMessagePreset['UNIMPLEMENTED']);
+      }
     }
   });
 

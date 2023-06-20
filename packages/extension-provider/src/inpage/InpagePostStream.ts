@@ -25,18 +25,18 @@ export class InpagePostStream extends DappInteractionStream {
     this._origin = targetWindow ? '*' : window.location.origin;
     this._listenerEventName = listenerEventName;
     this._dispatchEventName = dispatchEventName;
-    document.addEventListener(this._listenerEventName, this._onMessage.bind(this), false);
+    document.addEventListener<any>(this._listenerEventName, this._onMessage.bind(this), false);
   }
-  _write = (chunk, _encoding, cb) => {
+  _write = (chunk: any, _encoding?: string, cb?: (error?: Error | null | undefined) => void) => {
     try {
       const event = new CustomEvent(this._dispatchEventName, {
         detail: JSON.stringify({ ...JSON.parse(chunk), origin: window.location.origin }),
       });
       document.dispatchEvent(event);
     } catch (err) {
-      return cb(new Error('InpagePostStream - disconnected'));
+      return cb?.(new Error('InpagePostStream - disconnected'));
     }
-    return cb();
+    return cb?.();
   };
   _onMessage(event: CustomEvent) {
     try {

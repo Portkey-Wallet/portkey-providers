@@ -40,7 +40,7 @@ class PostStreamTestPlatform extends ITestPlatform {
 export class FakeWindow implements PostWindowLike {
   constructor(private _platform: TestPlatform) {}
 
-  public addEventListener = (event: string, callback: (data) => void, option?: boolean) => {
+  public addEventListener = (event: string, callback: (data: any) => void, option?: boolean) => {
     realWindow.addEventListener(event, callback, option);
   };
 
