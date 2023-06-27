@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.1-alpha.26](https://portkey/Portkey-Wallet/portkey-providers/compare/v0.0.1-alpha.25...v0.0.1-alpha.26) (2023-06-27)
+
+### Bug Fixes
+
+- 🐛 script ([54d59a1](https://portkey/Portkey-Wallet/portkey-providers/commits/54d59a16b3e74ddc2f8e05c5f030f11e49ae16cb))
+- 🐛 strict test ([678ec23](https://portkey/Portkey-Wallet/portkey-providers/commits/678ec2396543e6f9575d0e7eaf8c8d26779842d6))
+
+### Features
+
+- 🎸 providerVersion ([ed7257f](https://portkey/Portkey-Wallet/portkey-providers/commits/ed7257ff657395687ec07b1359f3f9b4aaeab54d))
+
 ## [0.0.1-alpha.25](https://portkey/Portkey-Wallet/portkey-providers/compare/v0.0.1-alpha.24...v0.0.1-alpha.25) (2023-06-20)
 
 ### Bug Fixes
