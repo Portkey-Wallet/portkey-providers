@@ -135,6 +135,10 @@ export interface IPortkeyProvider extends IWeb3Provider {
    */
   isPortkey: boolean;
   /**
+   * The version of the current provider
+   */
+  providerVersion: string;
+  /**
    * Use it to detect if current Portkey APP's wallet is connected.
    * @returns `true` if connected, otherwise `false`.
    */

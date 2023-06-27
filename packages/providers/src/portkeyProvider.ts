@@ -3,10 +3,10 @@ import { BaseProviderOptions, IPortkeyProvider } from '@portkey/provider-types';
 import { Web3Provider } from './web3Provider';
 
 export class PortkeyProvider extends Web3Provider implements IPortkeyProvider {
-  public readonly isPortkey: true;
+  public readonly isPortkey: true = true;
+  public readonly providerVersion: string = '0.0.1';
   constructor(props: BaseProviderOptions) {
     super(props);
-    this.isPortkey = true;
   }
   /**
    * **MUST** be called after instantiation to complete initialization.

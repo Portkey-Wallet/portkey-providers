@@ -14,7 +14,7 @@
     "postinstall": "husky install",
     "version": "yarn run bootstrap && yarn build",
     "update": "lerna updated",
-    "publish:npm": "lerna publish --conventional-commits",
+    "publish:npm": "lerna publish --conventional-commits --force-publish",
     "bootstrap": "lerna bootstrap",
     "prebuild": "yarn clean",
     "build": "lerna run build --stream",
