@@ -1,15 +1,8 @@
 import AElf from 'aelf-sdk';
-import {
-  BaseChainOptions,
-  ChainId,
-  ChainType,
-  IAElfChain,
-  IChain,
-  IChainProvider,
-  IContract,
-} from '@portkey/provider-types';
+import { BaseChainOptions, ChainId, ChainType, IAElfChain, IChain, IChainProvider } from '@portkey/provider-types';
+import type { AElfWallet, ChainMethodResult, Block, ChainStatus, TransactionResult, IContract } from '@portkey/types';
+
 import { Contract } from './contract';
-import { AElfWallet, ChainMethodResult, Block, ChainStatus, TransactionResult } from '@portkey/provider-types/src/aelf';
 
 export abstract class BaseChain implements IChain {
   protected _request: BaseChainOptions['request'];

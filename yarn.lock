@@ -2659,6 +2659,29 @@
   resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.21.tgz"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
+"@portkey/contracts@^1.0.0-alpha.4":
+  version "1.0.0-alpha.4"
+  resolved "https://registry.npmjs.org/@portkey/contracts/-/contracts-1.0.0-alpha.4.tgz#eb69538b5188a578794090f2694a5ef3ba1a05bb"
+  integrity sha512-JkIbQwqFOOKMGBEKN9ax//9xJlzLVLvZchod5uhKO9tMQYCUmRS6ZLFUhlS0kwe0xyFoqk2CkPkDw+A8dWJ2xQ==
+  dependencies:
+    "@portkey/types" "^1.0.0-alpha.4"
+    "@portkey/utils" "^1.0.0-alpha.4"
+    aelf-sdk "^3.2.44"
+
+"@portkey/types@1.0.0-alpha.4", "@portkey/types@^1.0.0-alpha.4":
+  version "1.0.0-alpha.4"
+  resolved "https://registry.npmjs.org/@portkey/types/-/types-1.0.0-alpha.4.tgz#2f22a75a1af6df31db15fce1c473ca9e1f07f127"
+  integrity sha512-mOSl89fN+hQ4zun6MF2uuQH5Bz8Owf6eA+N1HJ5fwKUMbQqr+7uI1HJZstoTSLFTLPjVSAIaIauXb2sfdRIm7A==
+  dependencies:
+    "@types/elliptic" "^6.4.14"
+
+"@portkey/utils@^1.0.0-alpha.4":
+  version "1.0.0-alpha.4"
+  resolved "https://registry.npmjs.org/@portkey/utils/-/utils-1.0.0-alpha.4.tgz#54565ff7018cdafb1604ad27ffc95e0a64bcf7fc"
+  integrity sha512-lw1mp6/U74fTHL8IQj9yn8orxDjsvkt1M9Klae0+eFnluudn78ELSP40HN96Ix2uFO5pEueJWIzpnYwCGUiJhA==
+  dependencies:
+    aelf-sdk "^3.2.44"
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz"

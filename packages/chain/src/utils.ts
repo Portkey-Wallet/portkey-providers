@@ -12,10 +12,6 @@ export function getWallet(privateKey = COMMON_PRIVATE) {
   return wallet.getWalletByPrivateKey(privateKey);
 }
 
-export function formatFunctionName(functionName: string) {
-  return functionName.replace(functionName[0], functionName[0].toLocaleUpperCase());
-}
-
 export const sleep = (time: number) => {
   return new Promise<void>(resolve => {
     const timeout = setTimeout(() => {
@@ -65,17 +61,4 @@ export async function getTxResult(
   }
 
   throw new ProviderError(result.Error || `Transaction: ${result.Status}`, ResponseCode.ERROR_IN_PARAMS);
-}
-
-export function handleContractError(error?: any, req?: any) {
-  if (typeof error === 'string') return { message: error };
-  if (error?.message) return error;
-  if (error.Error) {
-    return {
-      message: error.Error.Details || error.Error.Message || error.Error || error.Status,
-    };
-  }
-  return {
-    message: req?.errorMessage?.message || req?.error?.message?.Message,
-  };
 }

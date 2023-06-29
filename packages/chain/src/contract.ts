@@ -1,42 +1,34 @@
 import {
-  CallOptions,
-  ChainId,
-  ChainType,
   BaseContractOptions,
-  IChainProvider,
-  IContract,
-  SendOptions,
-  SendResult,
-  ViewResult,
   MethodsBase,
   SendTransactionParams,
   ProviderError,
   ResponseCode,
   Transaction,
+  IChainProvider,
 } from '@portkey/provider-types';
-import { COMMON_WALLET, formatFunctionName, getTxResult, handleContractError } from './utils';
 
-export abstract class BaseContract {
-  public address: string;
-  public chainId: ChainId;
+import { CallOptions, IContract, SendOptions, SendResult, ViewResult } from '@portkey/types';
+import { BaseContract, handleContractError, handleFunctionName } from '@portkey/contracts';
+
+import { COMMON_WALLET, getTxResult } from './utils';
+
+export abstract class BaseProviderContract extends BaseContract {
   public chainProvider: IChainProvider;
-  public type: ChainType;
-  public rpcUrl: string;
   protected _request: BaseContractOptions['request'];
   constructor(options: BaseContractOptions) {
-    this.rpcUrl = options.rpcUrl;
-    this.chainId = options.chainId;
+    super(options);
     this.chainProvider = options.chainProvider;
-    this.type = options.type;
-    Object.assign(this, options);
-    this.address = options.contractAddress;
     this._request = options.request;
   }
 }
-export class Contract extends BaseContract implements IContract {
+
+export class Contract extends BaseProviderContract implements IContract {
+  public chainProvider: IChainProvider;
   public callContract: IContract;
   constructor(props: BaseContractOptions) {
     super(props);
+    this.chainProvider = props.chainProvider;
     this.callContract = this.type === 'aelf' ? new AELFContract(props) : new WEB3Contract(props);
   }
   public callViewMethod<T = any>(
@@ -56,7 +48,7 @@ export class Contract extends BaseContract implements IContract {
   }
 }
 
-export class AELFContract extends BaseContract implements IContract {
+export class AELFContract extends BaseProviderContract implements IContract {
   public viewContract?: any;
   constructor(props: BaseContractOptions) {
     super(props);
@@ -73,12 +65,12 @@ export class AELFContract extends BaseContract implements IContract {
     functionName: string,
     paramsOption?: any,
     _callOptions?: CallOptions | undefined,
-  ): Promise<T> {
+  ): Promise<ViewResult<T>> {
     await this.checkContract();
-    const req = this.viewContract[formatFunctionName(functionName)].call(paramsOption);
+    const req = await this.viewContract[handleFunctionName(functionName)].call(paramsOption);
     if (req?.error) throw req.error;
-    if (req?.result || req?.result === null) return req.result;
-    return req;
+    if (req?.result || req?.result === null) return { data: req.result };
+    return { data: req };
   }
   public async callSendMethod<T = any>(
     functionName: string,
@@ -118,7 +110,7 @@ export class AELFContract extends BaseContract implements IContract {
   }
 }
 
-export class WEB3Contract extends BaseContract implements IContract {
+export class WEB3Contract extends BaseProviderContract implements IContract {
   public callViewMethod<T = any>(
     _functionName: string,
     _paramsOption?: any,

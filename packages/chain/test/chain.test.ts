@@ -21,8 +21,8 @@ describe('chain describe', () => {
       symbol: 'ELF',
       owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
     });
-    expect(info).toHaveProperty('symbol');
-    expect(info).toHaveProperty('balance');
-    expect(info).toHaveProperty('owner');
+    expect(info.data).toHaveProperty('symbol');
+    expect(info.data).toHaveProperty('balance');
+    expect(info.data).toHaveProperty('owner');
   }, 10000);
 });

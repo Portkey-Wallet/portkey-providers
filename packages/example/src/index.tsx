@@ -4,7 +4,6 @@ import {
   Accounts,
   ChainIds,
   IAElfChain,
-  IContract,
   IPortkeyProvider,
   MethodsBase,
   MethodsWallet,
@@ -13,6 +12,7 @@ import {
   ProviderErrorType,
 } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
+import { IContract } from '@portkey/contracts';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
 

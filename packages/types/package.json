@@ -40,6 +40,7 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@types/readable-stream": "^2.3.15"
+    "@types/readable-stream": "^2.3.15",
+    "@portkey/types": "1.0.0-alpha.4"
   }
 }

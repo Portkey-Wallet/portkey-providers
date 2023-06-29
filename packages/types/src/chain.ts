@@ -1,5 +1,4 @@
-import { IAElfRPCMethods, AElfWallet, ChainMethodResult } from './aelf';
-import { IContract } from './contract';
+import type { IAElfRPCMethods, AElfWallet, ChainMethodResult, IContract } from '@portkey/types';
 import { IProvider } from './provider';
 export type ChainId = 'AELF' | 'tDVV' | 'tDVW';
 export type ChainType = 'aelf' | 'ethereum';
