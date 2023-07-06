@@ -2659,26 +2659,34 @@
   resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.21.tgz"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
-"@portkey/contracts@^1.0.0-alpha.4":
-  version "1.0.0-alpha.4"
-  resolved "https://registry.npmjs.org/@portkey/contracts/-/contracts-1.0.0-alpha.4.tgz#eb69538b5188a578794090f2694a5ef3ba1a05bb"
-  integrity sha512-JkIbQwqFOOKMGBEKN9ax//9xJlzLVLvZchod5uhKO9tMQYCUmRS6ZLFUhlS0kwe0xyFoqk2CkPkDw+A8dWJ2xQ==
+"@portkey/contracts@1.0.0-alpha.7":
+  version "1.0.0-alpha.7"
+  resolved "https://registry.npmjs.org/@portkey/contracts/-/contracts-1.0.0-alpha.7.tgz#35a2b4742efa5d6792ffe8c3fa2b1ba07ba8e5d3"
+  integrity sha512-e3mKrImbaTe7wv+NVBB03Z4NuJP9HayfRsz8M04p+a9J/0VJ2ERf/oubs715v3tLMM37l/FyDPbzoCsn4kn1Jw==
   dependencies:
-    "@portkey/types" "^1.0.0-alpha.4"
-    "@portkey/utils" "^1.0.0-alpha.4"
+    "@portkey/provider-types" "^1.0.1-alpha.0"
+    "@portkey/types" "^1.0.0-alpha.7"
+    "@portkey/utils" "^1.0.0-alpha.7"
     aelf-sdk "^3.2.44"
 
-"@portkey/types@1.0.0-alpha.4", "@portkey/types@^1.0.0-alpha.4":
+"@portkey/types@1.0.0-alpha.4":
   version "1.0.0-alpha.4"
   resolved "https://registry.npmjs.org/@portkey/types/-/types-1.0.0-alpha.4.tgz#2f22a75a1af6df31db15fce1c473ca9e1f07f127"
   integrity sha512-mOSl89fN+hQ4zun6MF2uuQH5Bz8Owf6eA+N1HJ5fwKUMbQqr+7uI1HJZstoTSLFTLPjVSAIaIauXb2sfdRIm7A==
   dependencies:
     "@types/elliptic" "^6.4.14"
 
-"@portkey/utils@^1.0.0-alpha.4":
-  version "1.0.0-alpha.4"
-  resolved "https://registry.npmjs.org/@portkey/utils/-/utils-1.0.0-alpha.4.tgz#54565ff7018cdafb1604ad27ffc95e0a64bcf7fc"
-  integrity sha512-lw1mp6/U74fTHL8IQj9yn8orxDjsvkt1M9Klae0+eFnluudn78ELSP40HN96Ix2uFO5pEueJWIzpnYwCGUiJhA==
+"@portkey/types@^1.0.0-alpha.7":
+  version "1.0.0-alpha.7"
+  resolved "https://registry.npmjs.org/@portkey/types/-/types-1.0.0-alpha.7.tgz#4b8b1a8dc621f0e3df5043979b7f80f0de110cd4"
+  integrity sha512-n2U1GuqY3TSEajj8DMfnb0b50ROndItykBjU4SG02iaHc2eOqwDLXNo+kDYKVbpcI1LSx7JO6nuEjWVnJoFD5Q==
+  dependencies:
+    "@types/elliptic" "^6.4.14"
+
+"@portkey/utils@^1.0.0-alpha.7":
+  version "1.0.0-alpha.7"
+  resolved "https://registry.npmjs.org/@portkey/utils/-/utils-1.0.0-alpha.7.tgz#ad163d96100d16c34a4c5c20f2674cc0badc714e"
+  integrity sha512-SXWy/GeprarH8WnuK18HUG6hZowIyEh7pnWDClb+nncNFhOz5Xf9bEfpwsjIn/1Z7f2t+RPOeQyOHX7anzV45w==
   dependencies:
     aelf-sdk "^3.2.44"
 
@@ -10440,6 +10448,13 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
+
+lodash-webpack-plugin@^0.11.6:
+  version "0.11.6"
+  resolved "https://registry.npmjs.org/lodash-webpack-plugin/-/lodash-webpack-plugin-0.11.6.tgz#8204c6b78beb62ce5211217dfe783c21557ecd33"
+  integrity sha512-nsHN/+IxZK/C425vGC8pAxkKJ8KQH2+NJnhDul14zYNWr6HJcA95w+oRR7Cp0oZpOdMplDZXmjVROp8prPk7ig==
+  dependencies:
+    lodash "^4.17.20"
 
 lodash.camelcase@^4.3.0:
   version "4.3.0"

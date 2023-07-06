@@ -12,7 +12,7 @@ import {
   ProviderErrorType,
 } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
-import { IContract } from '@portkey/contracts';
+import { IContract } from '@portkey/types';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
 
