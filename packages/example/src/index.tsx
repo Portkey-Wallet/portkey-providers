@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Accounts,
@@ -15,6 +15,7 @@ import detectProvider from '@portkey/detect-provider';
 import { IContract } from '@portkey/types';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
+import { scheme } from '@portkey/utils';
 
 function App() {
   const [provider, setProvider] = useState<IPortkeyProvider>();
@@ -51,8 +52,11 @@ function App() {
     const _chain = await provider.getChain('AELF');
     setChain(_chain);
   };
-  const connected = (connectInfo: NetworkType) => {
-    console.log(connectInfo, '====connected');
+  const connected = async (connectInfo: NetworkType) => {
+    const result = await provider.request({
+      method: MethodsBase.ACCOUNTS,
+    });
+    setState({ accounts: result });
   };
   const disconnected = (error: ProviderErrorType) => {
     console.log(error, '=====disconnected');
@@ -273,6 +277,16 @@ function App() {
         GET_WALLET_NAME
       </button> */}
       <button onClick={removeListener}>removeListener</button>
+      <button
+        onClick={async () => {
+          window.location.href = scheme.formatScheme({
+            domain: window.location.host,
+            action: 'linkDapp',
+            custom: { url: window.location.href },
+          });
+        }}>
+        linkDapp
+      </button>
     </div>
   );
 }
