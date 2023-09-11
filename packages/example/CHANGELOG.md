@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.0](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.0.1...v1.1.0-alpha.0) (2023-09-11)
+
+### Features
+
+- 🎸 update aelf sdk ([a2fcff4](https://portkey/Portkey-Wallet/portkey-providers/commits/a2fcff43f5fb07ddf0a062bcb9c8adf069b3ddc1))
+- 🎸 update example ([40642dc](https://portkey/Portkey-Wallet/portkey-providers/commits/40642dc43c5acaa5cf5d9c47d10495ed7eb77bf1))
+
 ## [1.0.1](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.0.1-alpha.0...v1.0.1) (2023-08-03)
 
 ### Features
