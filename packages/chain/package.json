@@ -1,6 +1,6 @@
 {
   "name": "@portkey/chain",
-  "version": "1.1.0-alpha.0",
+  "version": "1.1.0-alpha.1",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -41,7 +41,8 @@
   },
   "dependencies": {
     "@portkey/contracts": "^1.4.3",
-    "@portkey/provider-types": "^1.1.0-alpha.0",
+    "@portkey/provider-types": "^1.1.0-alpha.1",
     "aelf-sdk": "^3.2.45-beta.0"
-  }
+  },
+  "gitHead": "510c8cfa672ef3a71d0facfcc310985087cf4bbf"
 }
