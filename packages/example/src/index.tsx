@@ -17,6 +17,11 @@ import { Actions, State, useExampleState } from './hooks';
 import './index.css';
 import { scheme } from '@portkey/utils';
 
+const TokenContractAddressMap = {
+  AELF: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
+  tDVV: '7RzVGiuVWkvL4VfVHdZfQF2Tri3sgLe9U991bohHFfSRZXuGX',
+};
+
 function App() {
   const [provider, setProvider] = useState<IPortkeyProvider>();
   const [state, dispatch] = useExampleState();
@@ -77,16 +82,6 @@ function App() {
     provider.removeListener(NotificationEvents.DISCONNECTED, disconnected);
   };
   useEffect(() => {
-    window.addEventListener(
-      'message',
-      event => {
-        console.log(event.data, '===event.data');
-      },
-      true,
-    );
-    initProvider();
-  }, []);
-  useEffect(() => {
     if (!provider) return;
     initListener();
     connectEagerly();
@@ -115,9 +110,10 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const _chain = await provider.getChain('AELF');
+            const _chainId = 'tDVV';
+            const _chain = await provider.getChain('tDVV');
             setChain(_chain);
-            setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
+            setTokenContract(_chain.getContract(TokenContractAddressMap[_chainId]));
           } catch (error) {
             console.log(error, '=====getChain');
           }
@@ -226,6 +222,26 @@ function App() {
       <button
         onClick={async () => {
           try {
+            const balance = await tokenContract.callSendMethod(
+              'Approve',
+              '',
+              {
+                symbol: 'ELF',
+                spender: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                amount: 1,
+              },
+              { onMethod: 'receipt' },
+            );
+            console.log(balance, '=====balance');
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        Approve receipt
+      </button>
+      <button
+        onClick={async () => {
+          try {
             const result = await provider.request({
               method: MethodsBase.REQUEST_ACCOUNTS,
             });
@@ -263,7 +279,7 @@ function App() {
         }}>
         CHAINS_INFO
       </button>
-      {/* <button
+      <button
         onClick={async () => {
           try {
             const walletName = await provider.request({
@@ -275,7 +291,7 @@ function App() {
           }
         }}>
         GET_WALLET_NAME
-      </button> */}
+      </button>
       <button onClick={removeListener}>removeListener</button>
       <button
         onClick={async () => {
