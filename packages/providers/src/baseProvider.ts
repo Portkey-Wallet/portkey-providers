@@ -191,8 +191,6 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }): Promise<Signature>;
   public async request(params: { method: typeof MethodsBase.NETWORK }): Promise<NetworkType>;
   public async request<T = any>(params: RequestOption): Promise<T> {
-    this._log.log(params, 'request,=======params');
-
     if (!params || typeof params !== 'object' || Array.isArray(params))
       throw new ProviderError('Expected a single, non-array, object argument.', ResponseCode.ERROR_IN_PARAMS);
 
