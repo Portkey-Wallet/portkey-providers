@@ -20,6 +20,7 @@ import { scheme } from '@portkey/utils';
 const TokenContractAddressMap = {
   AELF: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
   tDVV: '7RzVGiuVWkvL4VfVHdZfQF2Tri3sgLe9U991bohHFfSRZXuGX',
+  tDVW: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
 };
 
 function App() {
@@ -110,8 +111,8 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const _chainId = 'tDVV';
-            const _chain = await provider.getChain('tDVV');
+            const _chainId = 'tDVW';
+            const _chain = await provider.getChain(_chainId);
             setChain(_chain);
             setTokenContract(_chain.getContract(TokenContractAddressMap[_chainId]));
           } catch (error) {
@@ -222,7 +223,7 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const balance = await tokenContract.callSendMethod(
+            const approveReq = await tokenContract.callSendMethod(
               'Approve',
               '',
               {
@@ -232,8 +233,11 @@ function App() {
               },
               { onMethod: 'receipt' },
             );
-            console.log(balance, '=====balance');
+            console.log(approveReq, '=======approveReq');
+
+            alert(JSON.stringify(approveReq));
           } catch (error) {
+            console.log(error, '=====error');
             alert(error.message);
           }
         }}>
