@@ -160,10 +160,15 @@ describe('chain describe', () => {
 
   test('test tokenContract callSendMethod', async () => {
     const tokenContract = chain!.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE');
-    const req = await tokenContract.callSendMethod<{ transactionId: string }>('Transfer', '', {
-      symbol: 'ELF',
-      owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
-    });
+    const req = await tokenContract.callSendMethod<{ transactionId: string }>(
+      'Transfer',
+      '',
+      {
+        symbol: 'ELF',
+        owner: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+      },
+      { onMethod: 'transactionHash' },
+    );
     expect(req).toHaveProperty('transactionId');
   }, 10000);
 });
