@@ -469,7 +469,7 @@ provider.request({method:'sth'}).then((result)=>{
     const signature = await provider.request({
       method: 'wallet_getSignature',
       payload: {
-        message: '0x...',
+        data: '0x...',
      },
     });
     if (!signature) throw new Error('sign failed!');
