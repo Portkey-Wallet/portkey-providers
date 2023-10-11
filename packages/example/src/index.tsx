@@ -296,6 +296,33 @@ function App() {
         }}>
         GET_WALLET_NAME
       </button>
+      <button
+        onClick={async () => {
+          try {
+            const managerAddress = await provider.request({
+              method: MethodsWallet.GET_Wallet_CURRENT_MANAGER_ADDRESS,
+            });
+            setState({ managerAddress });
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_Wallet_CURRENT_MANAGER_ADDRESS
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            const syncStatus = await provider.request({
+              method: MethodsWallet.GET_Wallet_MANAGER_SYNC_STATUS,
+              payload: { chainId: 'AELF' },
+            });
+            alert(syncStatus);
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_Wallet_MANAGER_SYNC_STATUS
+      </button>
       <button onClick={removeListener}>removeListener</button>
       <button
         onClick={async () => {
