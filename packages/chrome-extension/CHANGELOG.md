@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.3](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.2...v1.1.0-alpha.3) (2023-10-11)
+
+**Note:** Version bump only for package web-extension-did
+
 # [1.1.0-alpha.2](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.1...v1.1.0-alpha.2) (2023-09-11)
 
 **Note:** Version bump only for package web-extension-did
