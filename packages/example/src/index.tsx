@@ -309,20 +309,29 @@ function App() {
         }}>
         GET_WALLET_CURRENT_MANAGER_ADDRESS
       </button>
-      <button
-        onClick={async () => {
+
+      <form
+        onSubmit={async e => {
+          // console.log(e.target[0].value, 'onSubmit==');
+          e.preventDefault();
+          var formData = new FormData(e.target as any);
           try {
             const syncStatus = await provider.request({
               method: MethodsWallet.GET_WALLET_MANAGER_SYNC_STATUS,
-              payload: { chainId: 'AELF' },
+              payload: { chainId: formData.get('chainId') || 'AELF' },
             });
             alert(syncStatus);
           } catch (error) {
             alert(error.message);
           }
         }}>
-        GET_WALLET_MANAGER_SYNC_STATUS
-      </button>
+        <label>
+          ChainId:
+          <input type="text" name="chainId" />
+        </label>
+        <button type="submit">GET_WALLET_MANAGER_SYNC_STATUS</button>
+      </form>
+
       <button onClick={removeListener}>removeListener</button>
       <button
         onClick={async () => {

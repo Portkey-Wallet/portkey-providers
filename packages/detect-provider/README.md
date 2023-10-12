@@ -481,9 +481,10 @@ provider.request({method:'sth'}).then((result)=>{
   ...
   }
   ```
+
 ## 10. {method:'wallet_getCurrentManagerAddress'}
 
-  Get a signature from the Portkey APP's wallet.  
+  Get the ManagementAccount Address of the current wallet user
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
   
   ```typescript
@@ -496,9 +497,10 @@ provider.request({method:'sth'}).then((result)=>{
   ...
   }
   ```
-## 10. {method:'wallet_getManagerSyncStatus', payload: GetManagerSyncStatusParams}
 
-  Get a signature from the Portkey APP's wallet.  
+## 11. {method:'wallet_getManagerSyncStatus', payload: GetManagerSyncStatusParams}
+
+  Get the current wallet user managementAccount synchronization status
   __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
   
   ```typescript
