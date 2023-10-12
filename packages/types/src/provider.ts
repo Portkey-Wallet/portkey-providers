@@ -123,9 +123,9 @@ export interface IProvider {
    * See its generic types for more details.
    */
   request<T extends MethodResponse = any>(params: RequestOption): Promise<T>;
-  request<T = string>(params: { method: typeof MethodsWallet.GET_Wallet_CURRENT_MANAGER_ADDRESS }): Promise<T>;
+  request<T = string>(params: { method: typeof MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS }): Promise<T>;
   request<T = boolean>(params: {
-    method: typeof MethodsWallet.GET_Wallet_MANAGER_SYNC_STATUS;
+    method: typeof MethodsWallet.GET_WALLET_MANAGER_SYNC_STATUS;
     payload: GetManagerSyncStatusParams;
   }): Promise<T>;
 }
