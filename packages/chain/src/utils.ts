@@ -1,4 +1,4 @@
-import { ProviderError, ResponseCode } from '@portkey/provider-types';
+import { getTxResult as defaultGetTxResult } from '@portkey/contracts';
 import AElf from 'aelf-sdk';
 
 const { wallet } = AElf;
@@ -12,53 +12,11 @@ export function getWallet(privateKey = COMMON_PRIVATE) {
   return wallet.getWalletByPrivateKey(privateKey);
 }
 
-export const sleep = (time: number) => {
-  return new Promise<void>(resolve => {
-    const timeout = setTimeout(() => {
-      clearTimeout(timeout);
-      resolve();
-    }, time);
-  });
-};
-
 export async function getTxResult(
   chain: any,
   TransactionId: string,
   reGetCount = 0,
   notExistedReGetCount = 0,
 ): Promise<any> {
-  const txResult = await chain.getTxResult(TransactionId);
-
-  if (txResult.error && txResult.errorMessage)
-    throw new ProviderError(
-      txResult.errorMessage.message || txResult.errorMessage.Message,
-      ResponseCode.ERROR_IN_PARAMS,
-    );
-
-  const result = txResult?.result || txResult;
-
-  if (!result) throw new ProviderError('Can not get transaction result.', ResponseCode.ERROR_IN_PARAMS);
-
-  const lowerCaseStatus = result.Status.toLowerCase();
-
-  if (lowerCaseStatus === 'notexisted') {
-    if (notExistedReGetCount > 5) return result;
-    await sleep(1000);
-    notExistedReGetCount++;
-    reGetCount++;
-    return getTxResult(chain, TransactionId, reGetCount, notExistedReGetCount);
-  }
-
-  if (lowerCaseStatus === 'pending' || lowerCaseStatus === 'pending_validation') {
-    if (reGetCount > 20) return result;
-    await sleep(1000);
-    reGetCount++;
-    return getTxResult(chain, TransactionId, reGetCount, notExistedReGetCount);
-  }
-
-  if (lowerCaseStatus === 'mined') {
-    return result;
-  }
-
-  throw new ProviderError(result.Error || `Transaction: ${result.Status}`, ResponseCode.ERROR_IN_PARAMS);
+  return defaultGetTxResult(chain, TransactionId, reGetCount, notExistedReGetCount);
 }

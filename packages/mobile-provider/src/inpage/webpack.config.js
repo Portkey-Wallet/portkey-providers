@@ -1,5 +1,7 @@
 const path = require('path');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+
 const config = {
   entry: './index.ts',
 
@@ -38,7 +40,7 @@ const config = {
       stream: false,
     },
   },
-  // plugins: [new BundleAnalyzerPlugin()],
+  plugins: [new LodashModuleReplacementPlugin],
 };
 
 module.exports = (_env, argv) => {

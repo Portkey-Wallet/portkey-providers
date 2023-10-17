@@ -1,6 +1,6 @@
 {
   "name": "@portkey/chain",
-  "version": "1.0.0",
+  "version": "1.1.0-alpha.5",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -40,8 +40,9 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/contracts": "^1.0.0-alpha.4",
-    "@portkey/provider-types": "^1.0.0",
-    "aelf-sdk": "^3.2.44"
-  }
+    "@portkey/contracts": "^1.4.3",
+    "@portkey/provider-types": "^1.1.0-alpha.5",
+    "aelf-sdk": "^3.2.45-beta.0"
+  },
+  "gitHead": "d3ff4a9f2630de38fbf503deaac1dfe0da1a1feb"
 }

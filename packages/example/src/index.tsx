@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Accounts,
@@ -12,9 +12,16 @@ import {
   ProviderErrorType,
 } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
-import { IContract } from '@portkey/contracts';
+import { IContract } from '@portkey/types';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
+import { scheme } from '@portkey/utils';
+
+const TokenContractAddressMap = {
+  AELF: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
+  tDVV: '7RzVGiuVWkvL4VfVHdZfQF2Tri3sgLe9U991bohHFfSRZXuGX',
+  tDVW: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+};
 
 function App() {
   const [provider, setProvider] = useState<IPortkeyProvider>();
@@ -51,8 +58,11 @@ function App() {
     const _chain = await provider.getChain('AELF');
     setChain(_chain);
   };
-  const connected = (connectInfo: NetworkType) => {
-    console.log(connectInfo, '====connected');
+  const connected = async (connectInfo: NetworkType) => {
+    const result = await provider.request({
+      method: MethodsBase.ACCOUNTS,
+    });
+    setState({ accounts: result });
   };
   const disconnected = (error: ProviderErrorType) => {
     console.log(error, '=====disconnected');
@@ -72,16 +82,6 @@ function App() {
     provider.removeListener(NotificationEvents.CONNECTED, connected);
     provider.removeListener(NotificationEvents.DISCONNECTED, disconnected);
   };
-  useEffect(() => {
-    window.addEventListener(
-      'message',
-      event => {
-        console.log(event.data, '===event.data');
-      },
-      true,
-    );
-    initProvider();
-  }, []);
   useEffect(() => {
     if (!provider) return;
     initListener();
@@ -111,9 +111,10 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const _chain = await provider.getChain('AELF');
+            const _chainId = 'tDVW';
+            const _chain = await provider.getChain(_chainId);
             setChain(_chain);
-            setTokenContract(_chain.getContract('JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE'));
+            setTokenContract(_chain.getContract(TokenContractAddressMap[_chainId]));
           } catch (error) {
             console.log(error, '=====getChain');
           }
@@ -222,6 +223,29 @@ function App() {
       <button
         onClick={async () => {
           try {
+            const approveReq = await tokenContract.callSendMethod(
+              'Approve',
+              '',
+              {
+                symbol: 'ELF',
+                spender: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                amount: 1,
+              },
+              { onMethod: 'receipt' },
+            );
+            console.log(approveReq, '=======approveReq');
+
+            alert(JSON.stringify(approveReq));
+          } catch (error) {
+            console.log(error, '=====error');
+            alert(error.message);
+          }
+        }}>
+        Approve receipt
+      </button>
+      <button
+        onClick={async () => {
+          try {
             const result = await provider.request({
               method: MethodsBase.REQUEST_ACCOUNTS,
             });
@@ -259,7 +283,7 @@ function App() {
         }}>
         CHAINS_INFO
       </button>
-      {/* <button
+      <button
         onClick={async () => {
           try {
             const walletName = await provider.request({
@@ -271,8 +295,54 @@ function App() {
           }
         }}>
         GET_WALLET_NAME
-      </button> */}
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            const managerAddress = await provider.request({
+              method: MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS,
+            });
+            setState({ managerAddress });
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_WALLET_CURRENT_MANAGER_ADDRESS
+      </button>
+
+      <form
+        onSubmit={async e => {
+          // console.log(e.target[0].value, 'onSubmit==');
+          e.preventDefault();
+          var formData = new FormData(e.target as any);
+          try {
+            const syncStatus = await provider.request({
+              method: MethodsWallet.GET_WALLET_MANAGER_SYNC_STATUS,
+              payload: { chainId: formData.get('chainId') || 'AELF' },
+            });
+            alert(syncStatus);
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        <label>
+          ChainId:
+          <input type="text" name="chainId" />
+        </label>
+        <button type="submit">GET_WALLET_MANAGER_SYNC_STATUS</button>
+      </form>
+
       <button onClick={removeListener}>removeListener</button>
+      <button
+        onClick={async () => {
+          window.location.href = scheme.formatScheme({
+            domain: window.location.host,
+            action: 'linkDapp',
+            custom: { url: window.location.href },
+          });
+        }}>
+        linkDapp
+      </button>
     </div>
   );
 }

@@ -40,6 +40,8 @@
   - [7. method:'wallet\_getWalletName'](#7-methodwallet_getwalletname)
   - [8. {method:'sendTransaction',payload:SendTransactionParams}](#8-methodsendtransactionpayloadsendtransactionparams)
   - [9. {method:'wallet\_getSignature',payload:GetSignatureParams}](#9-methodwallet_getsignaturepayloadgetsignatureparams)
+  - [10. {method:'wallet\_getCurrentManagerAddress'}](#10-methodwallet_getcurrentmanageraddress)
+  - [10. {method:'wallet\_getManagerSyncStatus', payload: GetManagerSyncStatusParams}](#10-methodwallet_getmanagersyncstatus-payload-getmanagersyncstatusparams)
 - [Error Code Enumeration](#error-code-enumeration)
   - [1. SUCCESS(0)](#1-success0)
   - [2. USER\_DENIED(4001)](#2-user_denied4001)
@@ -469,11 +471,51 @@ provider.request({method:'sth'}).then((result)=>{
     const signature = await provider.request({
       method: 'wallet_getSignature',
       payload: {
-        message: '0x...',
-     },
+        data: '0x...',
+      },
     });
     if (!signature) throw new Error('sign failed!');
     console.log('sign success! signature:', signature);
+  } catch (e) {
+  // An error will be thrown if the user denies the permission request, or other issues.
+  ...
+  }
+  ```
+
+## 10. {method:'wallet_getCurrentManagerAddress'}
+
+  Get the ManagementAccount Address of the current wallet user
+  __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
+  
+  ```typescript
+  try {
+    const managerAddress = await provider.request({
+      method: 'wallet_getCurrentManagerAddress',
+    });
+  } catch (e) {
+  // An error will be thrown if the user denies the permission request, or other issues.
+  ...
+  }
+  ```
+
+## 11. {method:'wallet_getManagerSyncStatus', payload: GetManagerSyncStatusParams}
+
+  Get the current wallet user managementAccount synchronization status
+  __NOTICE__: You should use `request({ method: 'requestAccounts' })` first for the permission to access.  
+  
+  ```typescript
+  try {
+    const status = await provider.request({
+      method: 'wallet_getManagerSyncStatus',
+      payload: {
+        chainId: chainId, // AELF, tDVV, tDVW
+      },
+    });
+    if(status){
+      // manager synchronization completed
+    } else {
+      // manager synchronizing
+    }
   } catch (e) {
   // An error will be thrown if the user denies the permission request, or other issues.
   ...
