@@ -1,6 +1,6 @@
 {
   "name": "@portkey/providers",
-  "version": "1.1.0-alpha.5",
+  "version": "1.1.0",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -40,9 +40,9 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/chain": "^1.1.0-alpha.5",
-    "@portkey/provider-types": "^1.1.0-alpha.5",
-    "@portkey/provider-utils": "^1.1.0-alpha.5",
+    "@portkey/chain": "^1.1.0",
+    "@portkey/provider-types": "^1.1.0",
+    "@portkey/provider-utils": "^1.1.0",
     "@types/readable-stream": "^2.3.15",
     "lodash": "^4.17.21",
     "readable-stream": "^4.4.0"
