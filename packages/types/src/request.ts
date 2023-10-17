@@ -72,6 +72,8 @@ export const MethodsWallet = {
   GET_WALLET_STATE: 'wallet_getWalletState',
   GET_WALLET_NAME: 'wallet_getWalletName',
   GET_WALLET_SIGNATURE: 'wallet_getSignature',
+  GET_WALLET_CURRENT_MANAGER_ADDRESS: 'wallet_getCurrentManagerAddress',
+  GET_WALLET_MANAGER_SYNC_STATUS: 'wallet_getManagerSyncStatus',
 } as const;
 
 export type MethodsWalletType = (typeof MethodsWallet)[keyof typeof MethodsWallet];

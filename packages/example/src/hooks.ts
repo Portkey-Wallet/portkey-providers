@@ -12,6 +12,7 @@ export type State = {
   accounts?: Accounts;
   chainsInfo?: ChainsInfo;
   network?: NetworkType;
+  managerAddress?: string;
 };
 
 //reducer

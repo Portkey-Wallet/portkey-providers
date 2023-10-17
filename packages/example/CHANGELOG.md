@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.5](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.4...v1.1.0-alpha.5) (2023-10-12)
+
+**Note:** Version bump only for package @portkey/example
+
+# [1.1.0-alpha.4](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.3...v1.1.0-alpha.4) (2023-10-12)
+
+### Features
+
+- 🎸 update example ([06eb017](https://portkey/Portkey-Wallet/portkey-providers/commits/06eb01753ceb12bd289bc667bb4193d70142b5b4))
+
+# [1.1.0-alpha.3](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.2...v1.1.0-alpha.3) (2023-10-11)
+
+**Note:** Version bump only for package @portkey/example
+
 # [1.1.0-alpha.2](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.1...v1.1.0-alpha.2) (2023-09-11)
 
 **Note:** Version bump only for package @portkey/example

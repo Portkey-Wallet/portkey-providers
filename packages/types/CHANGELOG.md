@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.5](https://github.com/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.4...v1.1.0-alpha.5) (2023-10-12)
+
+**Note:** Version bump only for package @portkey/provider-types
+
+# [1.1.0-alpha.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.3...v1.1.0-alpha.4) (2023-10-12)
+
+**Note:** Version bump only for package @portkey/provider-types
+
+# [1.1.0-alpha.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.2...v1.1.0-alpha.3) (2023-10-11)
+
+### Features
+
+- 🎸 manger info ([803bc28](https://github.com/Portkey-Wallet/portkey-providers/commit/803bc286b05f5f0ad5d1b71de9c619f8ecd003fb))
+
 # [1.1.0-alpha.2](https://github.com/Portkey-Wallet/portkey-providers/compare/v1.1.0-alpha.1...v1.1.0-alpha.2) (2023-09-11)
 
 **Note:** Version bump only for package @portkey/provider-types

@@ -27,6 +27,7 @@ import {
   Signature,
   GetSignatureParams,
   NetworkType,
+  GetManagerSyncStatusParams,
 } from '@portkey/provider-types';
 import { isNotificationEvents, isMethodsBase, isMethodsUnimplemented } from './utils';
 import isEqual from 'lodash/isEqual';
@@ -189,6 +190,11 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
   }): Promise<Signature>;
+  public async request(params: { method: typeof MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS }): Promise<string>;
+  public async request<T = boolean>(params: {
+    method: typeof MethodsWallet.GET_WALLET_MANAGER_SYNC_STATUS;
+    payload: GetManagerSyncStatusParams;
+  }): Promise<boolean>;
   public async request(params: { method: typeof MethodsBase.NETWORK }): Promise<NetworkType>;
   public async request<T = any>(params: RequestOption): Promise<T> {
     if (!params || typeof params !== 'object' || Array.isArray(params))
