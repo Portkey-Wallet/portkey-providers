@@ -1,0 +1,57 @@
+{
+  "name": "@portkey/providers",
+  "version": "1.1.0",
+  "description": "",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/commonjs/index.js"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "homepage": "https://portkey.finance/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Portkey-Wallet/portkey-providers.git",
+    "directory": "packages/providers"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "prebuild": "yarn clean",
+    "build": "yarn build:cjs & yarn build:esm & yarn build:types",
+    "build:cjs": "tsc && echo '{\"type\": \"commonjs\"}' > ./dist/commonjs/package.json",
+    "build:esm": "tsc --build tsconfig.esm.json && echo '{\"type\": \"module\"}' > ./dist/esm/package.json && yarn esm:fix",
+    "build:types": "tsc --build tsconfig.types.json",
+    "esm:fix": "fix-esm-import-path dist/esm/index.js",
+    "lint": "eslint --ext .js,.ts .",
+    "lint:fix": "eslint --fix --ext .js,.ts .",
+    "format": "prettier --write '**/*'",
+    "start": "tsc --watch"
+  },
+  "dependencies": {
+    "@portkey/chain": "^1.1.0",
+    "@portkey/provider-types": "^1.1.0",
+    "@portkey/provider-utils": "^1.1.0",
+    "@types/readable-stream": "^2.3.15",
+    "lodash": "^4.17.21",
+    "readable-stream": "^4.4.0"
+  },
+  "devDependencies": {
+    "@metamask/object-multiplex": "^1.1.0",
+    "@types/lodash": "^4.14.195",
+    "@types/pump": "^1.1.1",
+    "pump": "^3.0.0"
+  },
+  "gitHead": "d3ff4a9f2630de38fbf503deaac1dfe0da1a1feb"
+}
