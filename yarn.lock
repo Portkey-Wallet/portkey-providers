@@ -2702,14 +2702,6 @@
     "@portkey/utils" "^1.4.3"
     aelf-sdk "3.2.45-beta.0"
 
-"@portkey/provider-types@^1.0.1-alpha.0":
-  version "1.0.1"
-  resolved "https://registry.npmmirror.com/@portkey/provider-types/-/provider-types-1.0.1.tgz#a05e7f19a1b9eda37381dbf1c8ec4b6b7ea2c566"
-  integrity sha512-Lgqh0S5/Kz414cngCygUEr92csIe2hy4r+8OH5zzzDmSh9T1nIGCZ8fyHBR8UpTchKS093AlyXPSCpudihTjXg==
-  dependencies:
-    "@portkey/types" "1.0.0-alpha.4"
-    "@types/readable-stream" "^2.3.15"
-
 "@portkey/types@1.0.0-alpha.4":
   version "1.0.0-alpha.4"
   resolved "https://registry.npmjs.org/@portkey/types/-/types-1.0.0-alpha.4.tgz#2f22a75a1af6df31db15fce1c473ca9e1f07f127"
@@ -15178,9 +15170,9 @@ totalist@^1.0.0:
   integrity sha512-gduQwd1rOdDMGxFG1gEvhV88Oirdo2p+KjoYFU7k2g+i7n6AFFbDQ5kMPUsW0pNbfQsB/cwXvT1i4Bue0s9g5g==
 
 tough-cookie@^4.0.0, tough-cookie@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.npmjs.org/tough-cookie/-/tough-cookie-4.1.2.tgz"
-  integrity sha512-G9fqXWoYFZgTc2z8Q5zaHy/vJMjm+WV0AkAeHxVCQiEB1b+dGvWzFW6QV07cY5jQ5gRkeid2qIkzkxUnmoQZUQ==
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-4.1.3.tgz#97b9adb0728b42280aa3d814b6b999b2ff0318bf"
+  integrity sha512-aX/y5pVRkfRnfmuX+OdbSdXvPe6ieKX/G2s7e98f4poJHnqH3281gDPm/metm6E/WRamfx7WC4HUqkWHfQHprw==
   dependencies:
     psl "^1.1.33"
     punycode "^2.1.1"
