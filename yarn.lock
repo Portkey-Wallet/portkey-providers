@@ -2702,14 +2702,6 @@
     "@portkey/utils" "^1.4.3"
     aelf-sdk "3.2.45-beta.0"
 
-"@portkey/provider-types@^1.0.1-alpha.0":
-  version "1.0.1"
-  resolved "https://registry.npmmirror.com/@portkey/provider-types/-/provider-types-1.0.1.tgz#a05e7f19a1b9eda37381dbf1c8ec4b6b7ea2c566"
-  integrity sha512-Lgqh0S5/Kz414cngCygUEr92csIe2hy4r+8OH5zzzDmSh9T1nIGCZ8fyHBR8UpTchKS093AlyXPSCpudihTjXg==
-  dependencies:
-    "@portkey/types" "1.0.0-alpha.4"
-    "@types/readable-stream" "^2.3.15"
-
 "@portkey/types@1.0.0-alpha.4":
   version "1.0.0-alpha.4"
   resolved "https://registry.npmjs.org/@portkey/types/-/types-1.0.0-alpha.4.tgz#2f22a75a1af6df31db15fce1c473ca9e1f07f127"
@@ -4345,9 +4337,9 @@ axe-core@^4.6.2:
   integrity sha512-sCXXUhA+cljomZ3ZAwb8i1p3oOlkABzPy08ZDAoGcYuvtBPlQ1Ytde129ArXyHWDhfeewq7rlx9F+cUx2SSlkg==
 
 axios@^1.0.0:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.4.0.tgz"
-  integrity sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.1.tgz#76550d644bf0a2d469a01f9244db6753208397d7"
+  integrity sha512-vfBmhDpKafglh0EldBEbVuoe7DyAavGSLWhuSm5ZSEKQnHhBf0xAAwybbNH1IkrJNGnS/VG4I5yxig1pCEXE4g==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
