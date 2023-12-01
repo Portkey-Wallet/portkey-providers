@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.1-alpha.0 (2023-12-01)
+
+### Features
+
+- 🎸 release 1.1.0 ([42e6621](https://portkey/Portkey-Wallet/portkey-providers/commits/42e662119949c2010d0ee916b8c5ddd34b0164c8))
+
 # [1.1.0](https://portkey/Portkey-Wallet/portkey-providers/compare/v1.0.0...v1.1.0) (2023-10-17)
 
 ### Features

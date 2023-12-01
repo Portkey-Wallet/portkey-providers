@@ -1,6 +1,6 @@
 {
   "name": "@portkey/provider-types",
-  "version": "1.1.0",
+  "version": "1.1.1-alpha.0",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
