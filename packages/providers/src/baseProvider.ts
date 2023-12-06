@@ -278,7 +278,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * @param response - contains accounts address
    */
   protected handleAccountsChanged(response: Accounts) {
-    if (isEqual(this.state.accounts, response)) return;
+    // if (isEqual(this.state.accounts, response)) return;
     this.state.accounts = response;
 
     this.emit(NotificationEvents.ACCOUNTS_CHANGED, response);
