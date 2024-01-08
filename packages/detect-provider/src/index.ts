@@ -1,6 +1,6 @@
 import { IPortkeyProvider, portkeyInitEvent } from '@portkey/provider-types';
 
-export type DetectProviderOptions = { timeout?: number };
+export type DetectProviderOptions = { timeout?: number; providerName?: keyof typeof window };
 
 /**
  * This API provides a way to detect the provider object injected to the environment.
@@ -11,18 +11,18 @@ export type DetectProviderOptions = { timeout?: number };
 export default async function detectProvider<T extends IPortkeyProvider = IPortkeyProvider>(
   options?: DetectProviderOptions,
 ): Promise<T | null> {
-  const { timeout = 3000 } = options || {};
+  const { timeout = 3000, providerName = 'Portkey' } = options || {};
 
   // window.portkey already exists
-  if (window.portkey) return isPortkeyProvider<T>(window.portkey) ? window.portkey : null;
+  if (window[providerName]) return isPortkeyProvider<T>(window[providerName]) ? window[providerName] : null;
 
   return new Promise((resolve, reject) => {
     let timedOut = false;
     const handlePortkey = () => {
       clearTimeout(timerId);
       window.removeEventListener(portkeyInitEvent, handlePortkey);
-      if (isPortkeyProvider<T>(window.portkey)) {
-        resolve(window.portkey);
+      if (isPortkeyProvider<T>(window[providerName])) {
+        resolve(window[providerName]);
       } else {
         if (timedOut) {
           reject(new Error('Detect portkey provider timeout'));

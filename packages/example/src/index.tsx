@@ -41,7 +41,6 @@ function App() {
 
   const initProvider = useCallback(async () => {
     try {
-      console.log(window.portkey, '=window.portkey');
       setProvider(await detectProvider());
     } catch (error) {
       console.log(error, '=====error');

@@ -24,7 +24,7 @@ export class InitializeProvider {
  */
 export function setGlobalProvider(providerInstance: PortkeyProvider): void {
   console.log('dispatchEvent', portkeyInitEvent);
-  (window as Record<string, any>).portkey = providerInstance;
+  (window as Record<string, any>).Portkey = providerInstance;
   window.dispatchEvent(
     new CustomEvent(portkeyInitEvent, {
       detail: {

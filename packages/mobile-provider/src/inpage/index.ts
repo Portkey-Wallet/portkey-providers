@@ -34,7 +34,7 @@ function setupProviderStreams() {
     }),
   });
   // set portkey
-  Object.defineProperty(window, 'portkey', {
+  Object.defineProperty(window, 'Portkey', {
     value: portkey,
     configurable: false,
     enumerable: false,
