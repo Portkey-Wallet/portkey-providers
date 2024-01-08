@@ -343,6 +343,18 @@ function App() {
         }}>
         linkDapp
       </button>
+      <button
+        onClick={async () => {
+          try {
+            console.log(window.pt, '====window.pt');
+
+            const req = await window.pt.showShareMenu({ message: '123' });
+          } catch (error) {
+            console.log(error, '====error');
+          }
+        }}>
+        pt
+      </button>
     </div>
   );
 }
