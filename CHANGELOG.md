@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0-alpha.2](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) (2024-01-17)
+
+### Bug Fixes
+
+- 🐛 event name ([42479b4](https://github.com/Portkey-Wallet/portkey-providers/commit/42479b405717f0402b63e936fd5c612e22b58034))
+
 ## [2.0.0-alpha.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2024-01-15)
 
 ### Features
