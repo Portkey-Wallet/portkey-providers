@@ -3,7 +3,7 @@ import { shouldInjectProvider } from '@portkey/provider-utils';
 
 // The filename of the injected communication script.
 const INJECTION_SCRIPT_FILENAME = 'js/inject.js';
-const CONTENT_SCRIPT = 'portkey-contentscript';
+const CONTENT_SCRIPT = 'Portkey-contentScript';
 
 let pageStream: ContentPostStream;
 

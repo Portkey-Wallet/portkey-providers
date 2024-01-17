@@ -17,8 +17,8 @@ export class InpagePostStream extends DappInteractionStream {
   constructor({
     targetWindow,
     name,
-    listenerEventName = 'portkey-message-from-content',
-    dispatchEventName = 'portkey-message-from-inpage',
+    listenerEventName = 'portkey-message-from-content-v2',
+    dispatchEventName = 'portkey-message-from-inpage-v2',
   }: PortkeyDocumentPostOptions) {
     super();
     this._name = name;
