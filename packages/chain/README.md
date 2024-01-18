@@ -8,4 +8,4 @@
 
 This package provides a set of tools for Portkey DAPPs to interact with Portkey Chain.
 
-See [@portkey/detect-provider](../detect-provider/README.md)'s README file for more information.
+See [@portkey-v1/detect-provider](../detect-provider/README.md)'s README file for more information.

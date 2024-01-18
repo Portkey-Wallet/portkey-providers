@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center">@portkey/detect-provider</h1>
+<h1 align="center">@portkey-v1/detect-provider</h1>
 
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
@@ -57,16 +57,16 @@
 
 ```bash
 # for npm user
-npm install @portkey/detect-provider
+npm install @portkey-v1/detect-provider
 
 #for yarn user
-yarn add @portkey/detect-provider
+yarn add @portkey-v1/detect-provider
 ```
 
 # Basic Usage
 
 ```typescript
-import detectProvider, {isPortkeyProvider} from '@portkey/detect-provider';
+import detectProvider, {isPortkeyProvider} from '@portkey-v1/detect-provider';
 // ES6 Async/Await syntax
 const provider:IPortkeyProvider = await detectProvider();
 // ES6 Promise syntax

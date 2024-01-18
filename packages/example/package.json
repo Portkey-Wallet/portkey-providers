@@ -7,7 +7,7 @@
     "pin": "sh -c '{ for X in {core,empty}; do lerna add @web3-react/$X --exact --no-bootstrap --scope=example-cra; done }'"
   },
   "dependencies": {
-    "@portkey/detect-provider": "^1.1.1",
+    "@portkey-v1/detect-provider": "^1.1.1",
     "@portkey/utils": "^1.4.3",
     "@types/react-dom": "^18.0.0",
     "aelf-sdk": "^3.2.45-beta.0",

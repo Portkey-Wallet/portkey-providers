@@ -6,7 +6,7 @@
 
 | Package                                                   | Version                                                                                                                                       |
 |-----------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@portkey/detect-provider`](packages/detect-provider)                     | [![npm](https://img.shields.io/npm/v/@portkey/detect-provider)](https://www.npmjs.com/package/@portkey/detect-provider) |
+| [`@portkey-v1/detect-provider`](packages/detect-provider)                     | [![npm](https://img.shields.io/npm/v/@portkey-v1/detect-provider)](https://www.npmjs.com/package/@portkey-v1/detect-provider) |
 | [`@portkey/mobile-provider`](packages/mobile-provider)                     | [![npm](https://img.shields.io/npm/v/@portkey/mobile-provider)](https://www.npmjs.com/package/@portkey/mobile-provider) |
 | [`@portkey/extension-provider`](packages/extension-provider)                     | [![npm](https://img.shields.io/npm/v/@portkey/extension-provider)](https://www.npmjs.com/package/@portkey/extension-provider) |
 | [`@portkey/providers`](packages/providers)                     | [![npm](https://img.shields.io/npm/v/@portkey/providers)](https://www.npmjs.com/package/@portkey/providers) |

@@ -15,7 +15,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.1.1-alpha.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v1.1.1-alpha.0...v1.1.1-alpha.1) (2023-12-01)
 
-**Note:** Version bump only for package @portkey/detect-provider
+**Note:** Version bump only for package @portkey-v1/detect-provider
 
 ## 1.1.1-alpha.0 (2023-12-01)
 

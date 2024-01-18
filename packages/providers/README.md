@@ -6,5 +6,5 @@
 
 <h1 align="center">@portkey/providers</h1>
 
-This package contains functional code for [@portkey/detect-provider](../detect-provider/README.md), [@portkey/mobile-provider](../mobile-provider/README.md), [@portkey/extension-provider](../extension-provider/README.md) and [@portkey/chain](../chain/README.md) packages.  
+This package contains functional code for [@portkey-v1/detect-provider](../detect-provider/README.md), [@portkey/mobile-provider](../mobile-provider/README.md), [@portkey/extension-provider](../extension-provider/README.md) and [@portkey/chain](../chain/README.md) packages.  
 Click the above packages link to learn more.

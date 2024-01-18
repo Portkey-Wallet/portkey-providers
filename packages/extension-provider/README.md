@@ -6,16 +6,16 @@
 <h1 align="center">@portkey/mobile-provider</h1>
 
 - [__Usage__](#usage)
-  - [1. Use @portkey/detect-provider](#1-use-portkeydetect-provider)
+  - [1. Use @portkey-v1/detect-provider](#1-use-portkeydetect-provider)
   - [2. Detect provider by your own code (not recommended)](#2-detect-provider-by-your-own-code-not-recommended)
 
 This project creates javascript code that will be injected into Portkey APP's WebView environment, for providing basic functions for DApp developers.
 
 # __Usage__
 
-## 1. Use @portkey/detect-provider
+## 1. Use @portkey-v1/detect-provider
 
-We recommend to use the __[@portkey/detect-provider](../detect-provider/README.md)__ package to detect if Portkey is injected.  
+We recommend to use the __[@portkey-v1/detect-provider](../detect-provider/README.md)__ package to detect if Portkey is injected.  
 Click the link above to learn more.  
 
 ## 2. Detect provider by your own code (not recommended)
@@ -35,4 +35,4 @@ if(!detectedProvider){
   }
 ```
 
-You can find more details and examples in __[@portkey/detect-provider](../detect-provider/README.md)__ 's README doc.
+You can find more details and examples in __[@portkey-v1/detect-provider](../detect-provider/README.md)__ 's README doc.

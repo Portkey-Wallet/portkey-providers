@@ -11,7 +11,7 @@ import {
   NotificationEvents,
   ProviderErrorType,
 } from '@portkey/provider-types';
-import detectProvider from '@portkey/detect-provider';
+import detectProvider from '@portkey-v1/detect-provider';
 import { IContract } from '@portkey/types';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
