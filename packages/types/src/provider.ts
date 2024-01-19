@@ -199,4 +199,5 @@ export type BaseProviderOptions = {
   maxEventListeners?: number;
 };
 
-export const portkeyInitEvent = 'portkeyInitEvent';
+export const portkeyInitEventV1 = 'portkeyInitEvent';
+export const portkeyInitEvent = 'portkeyInitEventV2';

@@ -1,6 +1,8 @@
-import { IPortkeyProvider, portkeyInitEvent } from '@portkey/provider-types';
+import { IPortkeyProvider, portkeyInitEvent, portkeyInitEventV1 } from '@portkey/provider-types';
 
-export type DetectProviderOptions = { timeout?: number; providerName?: keyof typeof window };
+export type TProviderName = 'Portkey' | 'portkey';
+
+export type DetectProviderOptions = { timeout?: number; providerName?: TProviderName };
 
 /**
  * This API provides a way to detect the provider object injected to the environment.
@@ -16,11 +18,13 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
   // window.portkey already exists
   if (window[providerName]) return isPortkeyProvider<T>(window[providerName]) ? window[providerName] : null;
 
+  const eventName = isPortkeyV1(providerName) ? portkeyInitEventV1 : portkeyInitEvent;
+
   return new Promise((resolve, reject) => {
     let timedOut = false;
     const handlePortkey = () => {
       clearTimeout(timerId);
-      window.removeEventListener(portkeyInitEvent, handlePortkey);
+      window.removeEventListener(eventName, handlePortkey);
       if (isPortkeyProvider<T>(window[providerName])) {
         resolve(window[providerName]);
       } else {
@@ -35,7 +39,7 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
       timedOut = true;
       handlePortkey();
     }, timeout);
-    window.addEventListener(portkeyInitEvent, handlePortkey);
+    window.addEventListener(eventName, handlePortkey);
   });
 }
 
@@ -52,4 +56,8 @@ export function isPortkeyProvider<T extends IPortkeyProvider = IPortkeyProvider>
     'isPortkey' in provider &&
     provider.isPortkey
   );
+}
+
+export function isPortkeyV1(name: TProviderName) {
+  return name === 'portkey';
 }
