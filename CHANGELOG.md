@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0-alpha.5](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2024-01-24)
+
+### Bug Fixes
+
+- 🐛 network type ([9926d51](https://github.com/Portkey-Wallet/portkey-providers/commit/9926d5193046dfac3546d284a956000e653428dd))
+
 ## [2.0.0-alpha.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2024-01-19)
 
 **Note:** Version bump only for package root
