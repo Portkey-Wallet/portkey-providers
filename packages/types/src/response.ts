@@ -18,7 +18,7 @@ export type ChainsInfo = {
   [key in ChainId]?: ChainItemType[];
 };
 
-export type NetworkType = 'MAIN' | 'TESTNET';
+export type NetworkType = 'MAINNET' | 'TESTNET';
 
 export type ConnectInfo = {
   chainIds: ChainIds;

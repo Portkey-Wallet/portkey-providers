@@ -386,7 +386,7 @@ provider.request({method:'sth'}).then((result)=>{
 ## 3. method:'network'
 
   Returns the current network type of the Portkey APP's wallet.  
-  For now it's either `'MAIN'` or `'TESTNET'` .
+  For now it's either `'MAINNET'` or `'TESTNET'` .
 
   ```typescript
   const networkType = await provider.request({ method: 'network' });

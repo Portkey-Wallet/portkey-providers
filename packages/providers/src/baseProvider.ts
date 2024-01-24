@@ -285,7 +285,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   }
   /**
    * When the network switches, updates internal state and emits required events.
-   * @param response - contains network type like 'MAIN'
+   * @param response - contains network type like 'MAINNET'
    */
   protected handleNetworkChanged(response: string) {
     if (isEqual(this.state.networkType, response)) return;
