@@ -249,7 +249,7 @@ ${Date.now()}`;
             alert(error.message);
           }
         }}>
-        NETWORK
+        CA_HASH
       </button>
       <button
         onClick={async () => {
