@@ -9,6 +9,7 @@
   "dependencies": {
     "@portkey/detect-provider": "^2.0.0-alpha.5",
     "@portkey/utils": "^2.0.0-alpha.0",
+    "@portkey/contracts": "^2.0.0-alpha.0",
     "@types/react-dom": "^18.0.0",
     "aelf-sdk": "^3.2.45-beta.0",
     "react": "^18.0.0",

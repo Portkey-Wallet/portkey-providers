@@ -15,7 +15,12 @@ import detectProvider from '@portkey/detect-provider';
 import { IContract } from '@portkey/types';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
-import { scheme } from '@portkey/utils';
+// import { scheme } from '@portkey/utils';
+
+import { Buffer } from 'buffer';
+import AElf from 'aelf-sdk';
+import elliptic from 'elliptic';
+const ec = new elliptic.ec('secp256k1');
 
 const TokenContractAddressMap = {
   AELF: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
@@ -188,11 +193,58 @@ function App() {
       </button>
       <button
         onClick={async () => {
+          const data = `Welcome to provider example!
+Please make sure you understand the effect of this signature.
+
+timestamp:
+${Date.now()}`;
+
+          const hexData = Buffer.from(data).toString('hex');
+          try {
+            const sin = await provider.request({
+              method: MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE,
+              payload: { data: hexData },
+            });
+            const publicKey = ec.recoverPubKey(Buffer.from(AElf.utils.sha256(hexData), 'hex'), sin, sin.recoveryParam);
+            const pubKey = ec.keyFromPublic(publicKey).getPublic('hex');
+            const recoverManagerAddress = AElf.wallet.getAddressFromPubKey(publicKey);
+
+            const managerAddress = await provider.request({
+              method: MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS,
+            });
+            console.log(
+              pubKey,
+              recoverManagerAddress,
+              managerAddress,
+              managerAddress === recoverManagerAddress,
+              '======pubKey',
+            );
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_WALLET_TRANSACTION_SIGNATURE
+      </button>
+      <button
+        onClick={async () => {
           try {
             const network = await provider.request({
               method: MethodsBase.NETWORK,
             });
             setState({ network });
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        NETWORK
+      </button>
+      <button
+        onClick={async () => {
+          try {
+            const caHash = await provider.request({
+              method: MethodsBase.CA_HASH,
+            });
+            console.log(caHash, '=======caHash');
           } catch (error) {
             alert(error.message);
           }
@@ -332,7 +384,7 @@ function App() {
       </form>
 
       <button onClick={removeListener}>removeListener</button>
-      <button
+      {/* <button
         onClick={async () => {
           window.location.href = scheme.formatScheme({
             domain: window.location.host,
@@ -341,7 +393,7 @@ function App() {
           });
         }}>
         linkDapp
-      </button>
+      </button> */}
     </div>
   );
 }

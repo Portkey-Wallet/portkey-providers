@@ -60,6 +60,7 @@ export const MethodsBase = {
   CHAIN_ID: 'chainId',
   ACCOUNTS: 'accounts',
   CHAIN_IDS: 'chainIds',
+  CA_HASH: 'caHash',
   CHAINS_INFO: 'chainsInfo',
   NETWORK: 'network',
   SEND_TRANSACTION: 'sendTransaction',
@@ -72,6 +73,7 @@ export const MethodsWallet = {
   GET_WALLET_STATE: 'wallet_getWalletState',
   GET_WALLET_NAME: 'wallet_getWalletName',
   GET_WALLET_SIGNATURE: 'wallet_getSignature',
+  GET_WALLET_TRANSACTION_SIGNATURE: 'wallet_getTransactionSignature',
   GET_WALLET_CURRENT_MANAGER_ADDRESS: 'wallet_getCurrentManagerAddress',
   GET_WALLET_MANAGER_SYNC_STATUS: 'wallet_getManagerSyncStatus',
 } as const;
