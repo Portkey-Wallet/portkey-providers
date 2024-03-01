@@ -15,9 +15,8 @@ import detectProvider from '@portkey/detect-provider';
 import { IContract } from '@portkey/types';
 import { Actions, State, useExampleState } from './hooks';
 import './index.css';
-// import { scheme } from '@portkey/utils';
-
-import { Buffer } from 'buffer';
+import { scheme, sigObjToStr, aelf } from '@portkey/utils';
+import { createManagerForwardCall, getTxResult } from '@portkey/contracts';
 import AElf from 'aelf-sdk';
 import elliptic from 'elliptic';
 const ec = new elliptic.ec('secp256k1');
@@ -203,9 +202,13 @@ ${Date.now()}`;
           try {
             const sin = await provider.request({
               method: MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE,
-              payload: { data: hexData },
+              payload: { hexData },
             });
-            const publicKey = ec.recoverPubKey(Buffer.from(AElf.utils.sha256(hexData), 'hex'), sin, sin.recoveryParam);
+            const publicKey = ec.recoverPubKey(
+              Buffer.from(AElf.utils.sha256(Buffer.from(hexData, 'hex')), 'hex'),
+              sin,
+              sin.recoveryParam,
+            );
             const pubKey = ec.keyFromPublic(publicKey).getPublic('hex');
             const recoverManagerAddress = AElf.wallet.getAddressFromPubKey(publicKey);
 
@@ -228,6 +231,66 @@ ${Date.now()}`;
       <button
         onClick={async () => {
           try {
+            const ManagerForwardCall = 'ManagerForwardCall';
+            const CAContractAddress = '238X6iw1j8YKcHvkDYVtYVbuYk2gJnK8UoNpVCtssynSpVC8hb';
+            const rpcUrl = 'https://aelf-test-node.aelf.io';
+            const instance = aelf.getAelfInstance(rpcUrl);
+            const [managerForwardCall, managerAddress] = await Promise.all([
+              createManagerForwardCall({
+                instance,
+                paramsOption: {
+                  contractAddress: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
+                  methodName: 'Transfer',
+                  args: {
+                    to: 'ELF_6Lr5NR3s1AtXTNzh7CVmBJbWLKCVHnWeHeKRYbfQBCYXeWqSf_AELF',
+                    symbol: 'ELF',
+                    amount: '1',
+                  },
+                  caHash: '09018c2fbd3ea94c99054cda666d23f1b1f6c90802a8b41c34a275a452f75c44',
+                },
+                caContractAddress: CAContractAddress,
+              }),
+              provider.request({
+                method: MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS,
+              }),
+            ]);
+
+            const { BestChainHeight, BestChainHash } = await instance.chain.getChainStatus();
+
+            // Create transaction
+            const rawTx = aelf.getRawTx({
+              blockHeightInput: BestChainHeight,
+              blockHashInput: BestChainHash,
+              packedInput: managerForwardCall,
+              address: managerAddress,
+              contractAddress: CAContractAddress,
+              functionName: ManagerForwardCall,
+            });
+            rawTx.params = Buffer.from(rawTx.params, 'hex');
+
+            const sin = await provider.request({
+              method: MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE,
+              payload: { data: aelf.encodeTransaction(rawTx) },
+            });
+
+            const transaction = aelf.encodeTransaction({
+              ...rawTx,
+              signature: Buffer.from(sigObjToStr(sin), 'hex'),
+            });
+
+            const send = await instance.chain.sendTransaction(transaction);
+            const txResult = await getTxResult(instance, send.TransactionId, -20);
+            console.log(txResult, '=====txResult');
+          } catch (error) {
+            alert(error.message);
+            console.log(error, '=====error');
+          }
+        }}>
+        GET_WALLET_TRANSACTION_SIGNATURE Transfer
+      </button>
+      <button
+        onClick={async () => {
+          try {
             const network = await provider.request({
               method: MethodsBase.NETWORK,
             });
@@ -237,19 +300,6 @@ ${Date.now()}`;
           }
         }}>
         NETWORK
-      </button>
-      <button
-        onClick={async () => {
-          try {
-            const caHash = await provider.request({
-              method: MethodsBase.CA_HASH,
-            });
-            console.log(caHash, '=======caHash');
-          } catch (error) {
-            alert(error.message);
-          }
-        }}>
-        CA_HASH
       </button>
       <button
         onClick={async () => {
@@ -384,7 +434,7 @@ ${Date.now()}`;
       </form>
 
       <button onClick={removeListener}>removeListener</button>
-      {/* <button
+      <button
         onClick={async () => {
           window.location.href = scheme.formatScheme({
             domain: window.location.host,
@@ -393,7 +443,7 @@ ${Date.now()}`;
           });
         }}>
         linkDapp
-      </button> */}
+      </button>
     </div>
   );
 }

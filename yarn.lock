@@ -2692,20 +2692,20 @@
   resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.21.tgz"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
-"@portkey/contracts@^2.0.0-alpha.0":
-  version "2.0.0-alpha.0"
-  resolved "https://registry.npmmirror.com/@portkey/contracts/-/contracts-2.0.0-alpha.0.tgz#c7d29815ceaf78bac2b14d6e9debd672d7ae3520"
-  integrity sha512-16tfyG1oVs7XYknj8W8edS4l5CuBHSr9tuyFQfuvD1s29P1NOP5MgixVLegUDKQRy6JynCb+QJHMcC5FJrg3PA==
+"@portkey/contracts@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/@portkey/contracts/-/contracts-2.0.4.tgz#8dc6758dcd59bab496eb428964baf8adafed44ed"
+  integrity sha512-8cWejiX2shyHkAlX6hwvabk4tgAL+zAKsZY+u/E+HYG8kCOu+9tWrnrrCt8DpOOc3yjoOBogrH0MlXI019I6hQ==
 
 "@portkey/types@^2.0.0-alpha.0":
   version "2.0.0-alpha.0"
   resolved "https://registry.npmmirror.com/@portkey/types/-/types-2.0.0-alpha.0.tgz#d019cf9e1285bb887cf605428f981cc10eb4201e"
   integrity sha512-r0s3h+9R0rqhEF4gd1LsEobRDe3K92kgNI/z1qwoelLGYKAdv/yeQcwu2FQIJ6flwcMrc1vuVYVoFc9opNcXfQ==
 
-"@portkey/utils@^2.0.0-alpha.0":
-  version "2.0.0-alpha.0"
-  resolved "https://registry.npmmirror.com/@portkey/utils/-/utils-2.0.0-alpha.0.tgz#c7d5ea1555342691fc5f5d66afc13ba95e9beaa5"
-  integrity sha512-/QnBIhRMrL+M7Ph7mOfxBfKS8F0RSgJpQAdhSlNHun/7+PzXephSUr160N4BmDbNhXCKRquhZ+6Lrwr3DxKCzA==
+"@portkey/utils@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/@portkey/utils/-/utils-2.0.4.tgz#a1980d592ab2543824da85561aa4e0710a78f677"
+  integrity sha512-YMrUjzzf3T0Hbdlktu1hewb2x77vRxgqU70Eg6EJLmX9NzZE0P5xAIhhrvCDCPfwEed2HQiPRnVXmeB2eUK8ng==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
