@@ -65,6 +65,7 @@ export const MethodsBase = {
   NETWORK: 'network',
   SEND_TRANSACTION: 'sendTransaction',
   REQUEST_ACCOUNTS: 'requestAccounts',
+  SET_WALLET_CONFIG_OPTIONS: 'setWalletConfigOptions',
 } as const;
 
 export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
