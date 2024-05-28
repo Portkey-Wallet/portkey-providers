@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.0...v2.2.1) (2024-05-28)
+
+### Bug Fixes
+
+- 🐛 change batch approve token ([24c1fe7](https://github.com/Portkey-Wallet/portkey-providers/commit/24c1fe7d17837fd1cc3d72181df93b7170659d83))
+
 ## [2.2.0](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.1.0...v2.2.0) (2024-05-10)
 
 **Note:** Version bump only for package @portkey/example
