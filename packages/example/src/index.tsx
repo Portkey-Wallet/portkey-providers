@@ -114,7 +114,7 @@ function App() {
       <button
         onClick={async () => {
           try {
-            const _chainId = 'AELF';
+            const _chainId = 'tDVW';
             const _chain = await provider.getChain(_chainId);
             setChain(_chain);
             setTokenContract(_chain.getContract(TokenContractAddressMap[_chainId]));
@@ -324,11 +324,24 @@ ${Date.now()}`;
       <button
         onClick={async () => {
           try {
+            const allowanceRes1 = (
+              await Promise.all(
+                ['ELF', 'ETH', 'SGRTEST-1', '*', 'SGRTEST-23', 'SGRTEST-0'].map(item =>
+                  tokenContract.callViewMethod('GetAvailableAllowance', {
+                    symbol: item,
+                    owner: 'ELF_2LxtGrAkbzAgcBEqfPUuNNxeKsy5hmKFuySshoWwDBhb4iAZ6n_AELF',
+                    spender: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                  }),
+                ),
+              )
+            ).map(res => res.data || res.error);
+            console.log(allowanceRes1, 'allowanceRes===start');
+
             const approveReq = await tokenContract.callSendMethod(
               'Approve',
               '',
               {
-                symbol: 'ELF',
+                symbol: 'SGRTEST-20',
                 spender: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
                 amount: 10000 * 10 ** 8,
               },
@@ -336,7 +349,19 @@ ${Date.now()}`;
             );
             console.log(approveReq, '=======approveReq');
 
-            alert(JSON.stringify(approveReq));
+            // alert(JSON.stringify(approveReq));
+            const allowanceRes = (
+              await Promise.all(
+                ['ELF', 'ETH', 'SGRTEST-1', '*', 'SGRTEST-23', 'SGRTEST-0'].map(item =>
+                  tokenContract.callViewMethod('GetAvailableAllowance', {
+                    symbol: item,
+                    owner: 'ELF_2LxtGrAkbzAgcBEqfPUuNNxeKsy5hmKFuySshoWwDBhb4iAZ6n_AELF',
+                    spender: 'LSWoBaeoXRp9QW75mCVJgNP4YurGi2oEJDYu3iAxtDH8R6UGy',
+                  }),
+                ),
+              )
+            ).map(res => res.data || res.error);
+            console.log(allowanceRes, 'allowanceRes===');
           } catch (error) {
             console.log(error, '=====error');
             alert(error.message);
@@ -449,14 +474,14 @@ ${Date.now()}`;
           try {
             const result = await provider.request({
               method: MethodsBase.SET_WALLET_CONFIG_OPTIONS,
-              payload: { showBatchApproveToken: true },
+              payload: { batchApproveNFT: true },
             });
-            console.log('showBatchApproveToken', result);
+            console.log('batchApproveNFT', result);
           } catch (error) {
             alert(error.message);
           }
         }}>
-        setAllowBatchApprove
+        batchApproveNFT
       </button>
     </div>
   );
