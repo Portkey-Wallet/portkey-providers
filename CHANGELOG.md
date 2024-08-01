@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.2](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.1...v2.2.2) (2024-08-01)
+
+### Bug Fixes
+
+- 🐛 requestAccounts set state accounts ([f87ffb9](https://github.com/Portkey-Wallet/portkey-providers/commit/f87ffb9347db5c8556e2a47aa0b6abf6015a92dd))
+
 ## [2.2.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.0...v2.2.1) (2024-05-28)
 
 ### Bug Fixes
