@@ -224,7 +224,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
         const { code, data } = response;
         if (code == ResponseCode.SUCCESS) {
           resolve(data);
-          if (method === MethodsBase.REQUEST_ACCOUNTS) {
+          if (method === MethodsBase.REQUEST_ACCOUNTS || method === MethodsBase.ACCOUNTS) {
             this.state.accounts = data;
           }
         } else {
