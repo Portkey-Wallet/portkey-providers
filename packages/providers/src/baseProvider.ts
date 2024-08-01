@@ -224,6 +224,9 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
         const { code, data } = response;
         if (code == ResponseCode.SUCCESS) {
           resolve(data);
+          if (method === MethodsBase.REQUEST_ACCOUNTS) {
+            this.state.accounts = data;
+          }
         } else {
           reject(new ProviderError(`${response.msg}`, code));
         }
@@ -284,6 +287,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
    * @param response - contains accounts address
    */
   protected handleAccountsChanged(response: Accounts) {
+    this._log.log('handleAccountsChanged', response, this.state.accounts);
     if (isEqual(this.state.accounts, response)) return;
     this.state.accounts = response;
 
