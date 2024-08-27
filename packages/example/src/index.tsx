@@ -19,6 +19,7 @@ import { scheme, sigObjToStr, aelf } from '@portkey/utils';
 import { createManagerForwardCall, getTxResult } from '@portkey/contracts';
 import AElf from 'aelf-sdk';
 import elliptic from 'elliptic';
+import { getRawParams } from './decodeTx';
 const ec = new elliptic.ec('secp256k1');
 
 const TokenContractAddressMap = {
@@ -266,7 +267,17 @@ ${Date.now()}`;
               contractAddress: CAContractAddress,
               functionName: ManagerForwardCall,
             });
-            rawTx.params = Buffer.from(rawTx.params, 'hex');
+            // console.log(rawTx, 'rawTx===');
+            // rawTx.params = Buffer.from(rawTx.params, 'hex');
+
+            // const signData = aelf.encodeTransaction(rawTx);
+
+            // console.log(signData, 'signData===');
+
+            // const instance1 = new AElf(new AElf.providers.HttpProvider(rpcUrl));
+
+            // const p = await getRawParams(instance1, signData);
+            // console.log(p, '===getRawParams');
 
             const sin = await provider.request({
               method: MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE,
