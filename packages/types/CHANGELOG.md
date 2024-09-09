@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.3...v2.2.4) (2024-09-09)
+
+### Features
+
+- 🎸 add manager signature ([d779c9d](https://github.com/Portkey-Wallet/portkey-providers/commit/d779c9da712777a79fd4df6d3635c1bae4557a9d))
+
 ## [2.2.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.2...v2.2.3) (2024-08-01)
 
 **Note:** Version bump only for package @portkey/provider-types

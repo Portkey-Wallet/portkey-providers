@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.3...v2.2.4) (2024-09-09)
+
+### Features
+
+- 🎸 add decode transaction ([9b67f30](https://github.com/Portkey-Wallet/portkey-providers/commit/9b67f30cd04d4173c94f683c13420b06f277db1e))
+
 ## [2.2.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.2...v2.2.3) (2024-08-01)
 
 **Note:** Version bump only for package @portkey/example
