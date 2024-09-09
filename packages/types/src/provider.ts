@@ -117,6 +117,17 @@ export interface IProvider {
     method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
   }): Promise<Signature>;
+
+  request<T = Signature>(params: {
+    method: typeof MethodsWallet.GET_WALLET_MANAGER_SIGNATURE;
+    payload: GetSignatureParams;
+  }): Promise<Signature>;
+
+  request<T = Signature>(params: {
+    method: typeof MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE;
+    payload: GetSignatureParams;
+  }): Promise<Signature>;
+
   /**
    * Request(params) is used to call DAPP service, returns a promise that will be fulfilled later.
    *
