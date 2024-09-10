@@ -229,6 +229,47 @@ ${Date.now()}`;
         }}>
         GET_WALLET_TRANSACTION_SIGNATURE
       </button>
+
+      <button
+        onClick={async () => {
+          const data = `Welcome to provider example!
+Please make sure you understand the effect of this signature.
+
+timestamp:
+${Date.now()}`;
+
+          const hexData = Buffer.from(data).toString('hex');
+          try {
+            const sin = await provider.request({
+              method: 'wallet_getManagerSignature',
+              payload: { hexData },
+            });
+
+            console.log(sin, 'sin===');
+            const publicKey = ec.recoverPubKey(
+              Buffer.from(AElf.utils.sha256(Buffer.from(hexData, 'hex')), 'hex'),
+              sin,
+              sin.recoveryParam,
+            );
+            const pubKey = ec.keyFromPublic(publicKey).getPublic('hex');
+            const recoverManagerAddress = AElf.wallet.getAddressFromPubKey(publicKey);
+
+            const managerAddress = await provider.request({
+              method: MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS,
+            });
+            console.log(
+              pubKey,
+              recoverManagerAddress,
+              managerAddress,
+              managerAddress === recoverManagerAddress,
+              '======pubKey',
+            );
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        GET_WALLET_MANAGER_SIGNATURE
+      </button>
       <button
         onClick={async () => {
           try {
@@ -286,7 +327,7 @@ ${Date.now()}`;
 
             const transaction = aelf.encodeTransaction({
               ...rawTx,
-              signature: Buffer.from(sigObjToStr(sin), 'hex'),
+              signature: Buffer.from(sigObjToStr(sin as any), 'hex'),
             });
 
             const send = await instance.chain.sendTransaction(transaction);
