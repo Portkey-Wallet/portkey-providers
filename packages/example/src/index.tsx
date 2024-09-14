@@ -246,11 +246,7 @@ ${Date.now()}`;
             });
 
             console.log(sin, 'sin===');
-            const publicKey = ec.recoverPubKey(
-              Buffer.from(AElf.utils.sha256(Buffer.from(hexData, 'hex')), 'hex'),
-              sin,
-              sin.recoveryParam,
-            );
+            const publicKey = ec.recoverPubKey(Buffer.from(AElf.utils.sha256(hexData), 'hex'), sin, sin.recoveryParam);
             const pubKey = ec.keyFromPublic(publicKey).getPublic('hex');
             const recoverManagerAddress = AElf.wallet.getAddressFromPubKey(publicKey);
 
@@ -277,6 +273,9 @@ ${Date.now()}`;
             const CAContractAddress = '238X6iw1j8YKcHvkDYVtYVbuYk2gJnK8UoNpVCtssynSpVC8hb';
             const rpcUrl = 'https://aelf-test-node.aelf.io';
             const instance = aelf.getAelfInstance(rpcUrl);
+            const caHash = await provider.request({
+              method: 'caHash',
+            });
             const [managerForwardCall, managerAddress] = await Promise.all([
               createManagerForwardCall({
                 instance,
@@ -308,17 +307,17 @@ ${Date.now()}`;
               contractAddress: CAContractAddress,
               functionName: ManagerForwardCall,
             });
-            // console.log(rawTx, 'rawTx===');
-            // rawTx.params = Buffer.from(rawTx.params, 'hex');
+            console.log(rawTx, 'rawTx===');
+            rawTx.params = Buffer.from(rawTx.params, 'hex');
 
-            // const signData = aelf.encodeTransaction(rawTx);
+            const signData = aelf.encodeTransaction(rawTx);
 
-            // console.log(signData, 'signData===');
+            console.log(signData, 'signData===');
 
-            // const instance1 = new AElf(new AElf.providers.HttpProvider(rpcUrl));
+            const instance1 = new AElf(new AElf.providers.HttpProvider(rpcUrl));
 
-            // const p = await getRawParams(instance1, signData);
-            // console.log(p, '===getRawParams');
+            const p = await getRawParams(instance1, signData);
+            console.log(p, '===getRawParams');
 
             const sin = await provider.request({
               method: MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE,
