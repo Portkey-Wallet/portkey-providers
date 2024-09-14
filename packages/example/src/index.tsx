@@ -287,7 +287,7 @@ ${Date.now()}`;
                     symbol: 'ELF',
                     amount: '1',
                   },
-                  caHash: '09018c2fbd3ea94c99054cda666d23f1b1f6c90802a8b41c34a275a452f75c44',
+                  caHash: caHash,
                 },
                 caContractAddress: CAContractAddress,
               }),
