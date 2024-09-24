@@ -128,6 +128,11 @@ export interface IProvider {
     payload: GetSignatureParams;
   }): Promise<Signature>;
 
+  request<T = Signature>(params: {
+    method: typeof MethodsWallet.GET_WALLET_MULTI_TRANSACTION_SIGNATURE;
+    payload: GetMultiSignatureParams;
+  }): Promise<Signature[]>;
+
   /**
    * Request(params) is used to call DAPP service, returns a promise that will be fulfilled later.
    *
@@ -182,6 +187,10 @@ export interface SendTransactionParams {
 
 export interface GetSignatureParams {
   data: string;
+}
+
+export interface GetMultiSignatureParams {
+  data: string[];
 }
 
 export interface GetManagerSyncStatusParams {

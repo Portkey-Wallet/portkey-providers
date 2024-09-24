@@ -26,6 +26,7 @@ import {
   IResponseType,
   Signature,
   GetSignatureParams,
+  GetMultiSignatureParams,
   NetworkType,
   GetManagerSyncStatusParams,
   TSetWalletConfigOptionsParams,
@@ -203,6 +204,10 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   public async request(params: {
     method: typeof MethodsWallet.GET_WALLET_TRANSACTION_SIGNATURE;
     payload: GetSignatureParams;
+  }): Promise<Signature>;
+  public async request(params: {
+    method: typeof MethodsWallet.GET_WALLET_MULTI_TRANSACTION_SIGNATURE;
+    payload: GetMultiSignatureParams;
   }): Promise<Signature>;
   public async request(params: { method: typeof MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS }): Promise<string>;
   public async request<T = boolean>(params: {
