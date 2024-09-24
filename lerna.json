@@ -1,15 +1,19 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "useWorkspaces": true,
-  "version": "2.2.4",
-  "packages": ["packages/*"],
+  "version": "2.3.0",
+  "packages": [
+    "packages/*"
+  ],
   "npmClient": "yarn",
   "changelogPreset": {
     "name": "conventionalcommits",
     "commitUrlFormat": "https://github.com/{{owner}}/{{repository}}/commit/{{hash}}",
     "compareUrlFormat": "https://github.com/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
     "issueUrlFormat": "https://github.com/{{owner}}/{{repository}}/issues/{{id}}",
-    "issuePrefixes": ["#"],
+    "issuePrefixes": [
+      "#"
+    ],
     "types": [
       {
         "type": "feat",

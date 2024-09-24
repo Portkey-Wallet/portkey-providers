@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.0](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.4...v2.3.0) (2024-09-24)
+
+
+### Features
+
+* 🎸 add multi transaction sign ([2cc13ed](https://github.com/Portkey-Wallet/portkey-providers/commit/2cc13edddad8b2696f6aec1210bac0bcf6100b87))
+* 🎸 change recoverPubKey ([bdf0a3f](https://github.com/Portkey-Wallet/portkey-providers/commit/bdf0a3f062f9499e634f99c0d5f8a270e2ec132f))
+
+
+### Bug Fixes
+
+* 🐛 get  chaHash by request ([d63c278](https://github.com/Portkey-Wallet/portkey-providers/commit/d63c2785a0b0d5bc9e3e104e009015304d6f396d))
+
+
+
 ## [2.2.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.3...v2.2.4) (2024-09-09)
 
 ### Features

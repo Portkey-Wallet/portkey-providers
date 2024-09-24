@@ -208,7 +208,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   public async request(params: {
     method: typeof MethodsWallet.GET_WALLET_MULTI_TRANSACTION_SIGNATURE;
     payload: GetMultiSignatureParams;
-  }): Promise<Signature>;
+  }): Promise<Signature[]>;
   public async request(params: { method: typeof MethodsWallet.GET_WALLET_CURRENT_MANAGER_ADDRESS }): Promise<string>;
   public async request<T = boolean>(params: {
     method: typeof MethodsWallet.GET_WALLET_MANAGER_SYNC_STATUS;
