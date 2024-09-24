@@ -3,13 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.4...v2.3.1) (2024-09-24)
+
+### Features
+
+- 🎸 publish ([78c5d71](https://github.com/Portkey-Wallet/portkey-providers/commit/78c5d71690c03b56afcab010638c20e72da1ad71))
+
 ## [2.3.0](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.4...v2.3.0) (2024-09-24)
 
 **Note:** Version bump only for package web-extension-did
-
-
-
-
 
 ## [2.2.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.2.3...v2.2.4) (2024-09-09)
 
