@@ -64,6 +64,7 @@ export const MethodsBase = {
   CHAINS_INFO: 'chainsInfo',
   NETWORK: 'network',
   SEND_TRANSACTION: 'sendTransaction',
+  SEND_MULTI_TRANSACTION: 'sendMultiTransaction',
   REQUEST_ACCOUNTS: 'requestAccounts',
   SET_WALLET_CONFIG_OPTIONS: 'setWalletConfigOptions',
 } as const;

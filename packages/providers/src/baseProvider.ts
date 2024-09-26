@@ -15,9 +15,11 @@ import {
   RequestOption,
   Accounts,
   SendTransactionParams,
+  SendMultiTransactionParams,
   MethodsBase,
   WalletState,
   Transaction,
+  MultiTransaction,
   ChainIds,
   ChainsInfo,
   ConnectInfo,
@@ -193,6 +195,10 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
   }): Promise<Transaction>;
+  public async request(params: {
+    method: typeof MethodsBase.SEND_MULTI_TRANSACTION;
+    payload: SendMultiTransactionParams;
+  }): Promise<MultiTransaction>;
   public async request(params: {
     method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;

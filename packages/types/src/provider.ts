@@ -1,7 +1,7 @@
 import { DappEvents, EventId, NotificationEvents } from './event';
 import { IResponseInfo, MethodsBase, MethodsWallet, RequestOption } from './request';
 import type { IDappInteractionStream } from './stream';
-import { ChainId, IAElfChain, IChain } from './chain';
+import { ChainId, IAElfChain, IChain, MultiChainInfo, MultiTransactionParamInfo } from './chain';
 import {
   Accounts,
   ChainIds,
@@ -11,6 +11,7 @@ import {
   ProviderErrorType,
   Signature,
   Transaction,
+  MultiTransaction,
   WalletName,
   WalletState,
 } from './response';
@@ -113,6 +114,10 @@ export interface IProvider {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
   }): Promise<T>;
+  request<T = MultiTransaction>(params: {
+    method: typeof MethodsBase.SEND_MULTI_TRANSACTION;
+    payload: SendMultiTransactionParams;
+  }): Promise<T>;
   request<T = Signature>(params: {
     method: typeof MethodsWallet.GET_WALLET_SIGNATURE;
     payload: GetSignatureParams;
@@ -183,6 +188,14 @@ export interface SendTransactionParams {
   contractAddress: string;
   method: string;
   params?: readonly unknown[] | object;
+}
+
+export interface SendMultiTransactionParams {
+  rpcUrl: string;
+  tokenAddress: string;
+  multiChainInfo: MultiChainInfo;
+  gatewayUrl: string;
+  params: MultiTransactionParamInfo;
 }
 
 export interface GetSignatureParams {

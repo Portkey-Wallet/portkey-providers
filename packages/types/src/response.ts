@@ -50,6 +50,10 @@ export type Transaction = {
   transactionId: string;
 };
 
+export type MultiTransaction = {
+  [x in ChainId]: string[];
+};
+
 export type Signature = ec.Signature;
 
 export type WalletName = string;
