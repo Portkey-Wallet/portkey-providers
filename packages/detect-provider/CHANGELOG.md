@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.3.3...v2.3.4) (2024-09-26)
+
+**Note:** Version bump only for package @portkey/detect-provider
+
 ## [2.3.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.3.2...v2.3.3) (2024-09-25)
 
 **Note:** Version bump only for package @portkey/detect-provider
