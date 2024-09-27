@@ -192,7 +192,7 @@ export interface SendTransactionParams {
 
 export interface SendMultiTransactionParams {
   rpcUrl: string;
-  tokenContractAddress: string;
+  contractAddress: string;
   method: string;
   multiChainInfo: MultiChainInfo;
   gatewayUrl: string;
