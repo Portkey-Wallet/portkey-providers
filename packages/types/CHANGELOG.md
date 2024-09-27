@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5-alpha.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.3.4...v2.3.5-alpha.1) (2024-09-27)
+
+### Features
+
+- 🎸 multi transaction fix params ([ef85f10](https://github.com/Portkey-Wallet/portkey-providers/commit/ef85f10372518d412fcdaa7072585cdd665f9ca7))
+
 ## [2.3.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.3.3...v2.3.4) (2024-09-26)
 
 ### Features
