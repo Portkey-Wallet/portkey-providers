@@ -79,7 +79,9 @@ export class AELFContract extends BaseProviderContract implements IContract {
     sendOptions?: SendOptions | undefined,
   ): Promise<SendResult<T>> {
     await this.checkContract();
-    if (!this.viewContract[functionName])
+    // adjust some function, just like .CrossChainTransfer
+    const _methodName = functionName.replace('.', '');
+    if (!this.viewContract[_methodName])
       throw new ProviderError(`Contract ${this.address} does not exist ${functionName}`, ResponseCode.CONTRACT_ERROR);
     // if (this.viewContract[functionName].call)
     //   throw new ProviderError(`The method is the view method ${functionName}`, ResponseCode.ERROR_IN_PARAMS);
