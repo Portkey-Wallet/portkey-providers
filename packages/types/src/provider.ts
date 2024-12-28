@@ -239,3 +239,4 @@ export type BaseProviderOptions = {
 
 export const portkeyInitEventV1 = 'portkeyInitEvent';
 export const portkeyInitEvent = 'portkeyInitEventV2';
+export const portkeyWebWalletInitEvent = 'portkeyWebWalletInitEvent';

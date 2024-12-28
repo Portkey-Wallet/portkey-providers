@@ -1,4 +1,4 @@
-import { BaseProviderOptions, portkeyInitEvent } from '@portkey/provider-types';
+import { BaseProviderOptions, portkeyWebWalletInitEvent } from '@portkey/provider-types';
 import PortkeyProvider from './InpagePortkeyProvider';
 
 export class InitializeProvider {
@@ -23,10 +23,10 @@ export class InitializeProvider {
  * ${portkeyInitEvent} event on window.
  */
 export function setGlobalProvider(providerInstance: PortkeyProvider): void {
-  console.log('dispatchEvent', portkeyInitEvent);
+  console.log('dispatchEvent', portkeyWebWalletInitEvent);
   (window as Record<string, any>).PortkeyWebWallet = providerInstance;
   window.dispatchEvent(
-    new CustomEvent(portkeyInitEvent, {
+    new CustomEvent(portkeyWebWalletInitEvent, {
       detail: {
         error: 0,
         message: 'Portkey is ready.',
