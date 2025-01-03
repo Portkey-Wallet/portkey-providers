@@ -7,6 +7,7 @@ declare module MyGlobalThis {
     window: {
       Portkey?: any;
       portkey?: any;
+      PortkeyWebWallet?: any;
     };
   }
 }

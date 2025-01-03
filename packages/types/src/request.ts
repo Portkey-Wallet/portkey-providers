@@ -67,10 +67,6 @@ export const MethodsBase = {
   SEND_MULTI_TRANSACTION: 'sendMultiTransaction',
   REQUEST_ACCOUNTS: 'requestAccounts',
   SET_WALLET_CONFIG_OPTIONS: 'setWalletConfigOptions',
-  /**
-   * @remark only use iframe provider
-   */
-  WALLET_DISCONNECT: 'disconnect',
 } as const;
 
 export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
@@ -84,6 +80,10 @@ export const MethodsWallet = {
   GET_WALLET_MANAGER_SIGNATURE: 'wallet_getManagerSignature',
   GET_WALLET_CURRENT_MANAGER_ADDRESS: 'wallet_getCurrentManagerAddress',
   GET_WALLET_MANAGER_SYNC_STATUS: 'wallet_getManagerSyncStatus',
+  /**
+   * @remark only use iframe provider
+   */
+  WALLET_DISCONNECT: 'wallet_disconnect',
 } as const;
 
 export type MethodsWalletType = (typeof MethodsWallet)[keyof typeof MethodsWallet];
