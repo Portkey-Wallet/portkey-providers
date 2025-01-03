@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.0-alpha.2](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.1...v2.4.0-alpha.2) (2025-01-03)
+
+### Features
+
+- 🎸 add disconnect request method ([ee594fa](https://github.com/Portkey-Wallet/portkey-providers/commit/ee594fa122b0b39bc74ae456cb952bbde7277279))
+
 ## [2.4.0-alpha.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.0...v2.4.0-alpha.1) (2024-12-28)
 
 ### Bug Fixes
