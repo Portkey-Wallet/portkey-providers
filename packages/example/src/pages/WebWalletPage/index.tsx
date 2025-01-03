@@ -129,6 +129,19 @@ export default function WebWalletPage() {
       <button
         onClick={async () => {
           try {
+            const result = await provider.request({
+              method: MethodsBase.REQUEST_ACCOUNTS,
+            });
+            setState({ accounts: result });
+          } catch (error) {
+            alert(error.message);
+          }
+        }}>
+        onConnect
+      </button>
+      <button
+        onClick={async () => {
+          try {
             const _chainId = 'tDVW';
             const _chain = await provider.getChain(_chainId);
             console.log(_chain, '_chain==');
@@ -435,19 +448,7 @@ ${Date.now()}`;
         }}>
         Approve receipt
       </button>
-      <button
-        onClick={async () => {
-          try {
-            const result = await provider.request({
-              method: MethodsBase.REQUEST_ACCOUNTS,
-            });
-            setState({ accounts: result });
-          } catch (error) {
-            alert(error.message);
-          }
-        }}>
-        onConnect
-      </button>
+
       <button
         onClick={async () => {
           const result = await provider.request({

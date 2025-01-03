@@ -67,6 +67,10 @@ export const MethodsBase = {
   SEND_MULTI_TRANSACTION: 'sendMultiTransaction',
   REQUEST_ACCOUNTS: 'requestAccounts',
   SET_WALLET_CONFIG_OPTIONS: 'setWalletConfigOptions',
+  /**
+   * @remark only use iframe provider
+   */
+  WALLET_DISCONNECT: 'disconnect',
 } as const;
 
 export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
