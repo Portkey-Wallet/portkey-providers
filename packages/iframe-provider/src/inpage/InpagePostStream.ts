@@ -9,7 +9,7 @@ const noop = () => undefined;
 
 export class InpagePostStream extends DappInteractionStream {
   private _name: string;
-  private _origin: string;
+  private _targetOrigin: string;
   private _listenerEventName: string;
   private _dispatchEventName: string;
   private targetWindow: Window;
@@ -17,13 +17,14 @@ export class InpagePostStream extends DappInteractionStream {
   _read = noop;
   constructor({
     targetWindow,
+    targetOrigin,
     name,
     listenerEventName = 'portkey-message-from-content-iframe',
     dispatchEventName = 'portkey-message-from-inpage-iframe',
   }: PortkeyDocumentPostOptions) {
     super();
     this._name = name;
-    this._origin = targetWindow ? '*' : window.location.origin;
+    this._targetOrigin = targetOrigin ?? '*';
     this.targetWindow = targetWindow;
     this._listenerEventName = listenerEventName;
     this._dispatchEventName = dispatchEventName;
@@ -32,10 +33,13 @@ export class InpagePostStream extends DappInteractionStream {
   }
   _write = (chunk: any, _encoding?: string, cb?: (error?: Error | null | undefined) => void) => {
     try {
-      this.targetWindow.postMessage({
-        eventName: this._dispatchEventName,
-        detail: JSON.stringify({ ...JSON.parse(chunk), origin: window.location.origin }),
-      });
+      this.targetWindow.postMessage(
+        {
+          eventName: this._dispatchEventName,
+          detail: JSON.stringify({ ...JSON.parse(chunk), origin: window.location.origin }),
+        },
+        this._targetOrigin,
+      );
     } catch (err) {
       console.log(err, 'InpagePostStream send error');
       return cb?.(new Error('InpagePostStream - disconnected'));
@@ -52,7 +56,7 @@ export class InpagePostStream extends DappInteractionStream {
       // validate message
       if (!data || typeof data !== 'object') return;
 
-      if (this._origin !== '*' && data.origin && data.origin !== this._origin) return;
+      if (this._targetOrigin !== '*' && data.origin && data.origin !== this._targetOrigin) return;
 
       // mark stream push message
       if (data.target && data.target !== this._name) return;

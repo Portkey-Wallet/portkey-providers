@@ -9,13 +9,13 @@ const noop = () => undefined;
 
 export class ContentPostStream extends DappInteractionStream {
   private _name: string;
-  private _origin: string;
+  private _targetOrigin: string;
   private _listenerEventName: string;
   private _dispatchEventName: string;
 
   _read = noop;
   constructor({
-    targetWindow,
+    targetOrigin,
     name,
     listenerEventName = 'portkey-message-from-inpage-iframe',
     dispatchEventName = 'portkey-message-from-content-iframe',
@@ -24,20 +24,22 @@ export class ContentPostStream extends DappInteractionStream {
     this._name = name;
     this._listenerEventName = listenerEventName;
     this._dispatchEventName = dispatchEventName;
-    this._origin = targetWindow ? '*' : location.origin;
+    this._targetOrigin = targetOrigin ?? '*';
     console.log(this._listenerEventName, '_listenerEventName');
 
     window.addEventListener<any>('message', this._onMessage.bind(this), false);
   }
   _write = (chunk: any, _encoding?: string, cb?: (error?: Error | null | undefined) => void) => {
     try {
-      console.log('PortkeyPostStream send', chunk);
-      window.parent.postMessage({
-        eventName: this._dispatchEventName,
-        detail: JSON.stringify({ ...JSON.parse(chunk), origin: window.location.origin }),
-      });
+      window.parent.postMessage(
+        {
+          eventName: this._dispatchEventName,
+          detail: JSON.stringify({ ...JSON.parse(chunk), origin: window.location.origin }),
+        },
+        this._targetOrigin,
+      );
     } catch (err) {
-      return cb?.(new Error('PortkeyPostStream - disconnected'));
+      return cb?.(new Error('ContentPostStream - disconnected'));
     }
     return cb?.();
   };
@@ -49,7 +51,7 @@ export class ContentPostStream extends DappInteractionStream {
   _onMessage(event: any): void {
     try {
       const msg = event.data?.detail;
-      console.log(this._name, this._origin, 'ContentPostStream===_name, _origin');
+      console.log(this._name, this._targetOrigin, 'ContentPostStream===_name, _origin');
 
       if (typeof msg !== 'string') return;
       const data = JSON.parse(msg);

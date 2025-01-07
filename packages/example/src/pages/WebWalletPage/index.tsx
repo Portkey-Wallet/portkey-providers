@@ -108,7 +108,7 @@ export default function WebWalletPage() {
 
   return (
     <div>
-      <iframe src="http://localhost:3001/iframe" ref={iframeRef} />
+      <iframe src="http://192.168.1.6:3001/iframe" ref={iframeRef} />
 
       {Object.entries(state).map(([key, value]) => {
         return (
