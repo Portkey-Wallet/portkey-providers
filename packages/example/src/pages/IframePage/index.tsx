@@ -25,7 +25,7 @@ export default function IframePage() {
 
   return (
     <div>
-      <button onClick={onSend}>send</button>
+      <button onClick={() => onSend()}>send</button>
     </div>
   );
 }

@@ -6,6 +6,7 @@ export const NotificationEvents = {
   NETWORK_CHANGED: 'networkChanged',
   CHAIN_CHANGED: 'chainChanged',
   ERROR: 'error',
+  WALLET_VISIBLE: 'webWalletVisible',
 } as const;
 
 export interface EventResponse<T = any> {
