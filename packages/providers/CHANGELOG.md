@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.0-alpha.6](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.5...v2.4.0-alpha.6) (2025-01-14)
+
+### Features
+
+- 🎸 add method ([c3bee66](https://github.com/Portkey-Wallet/portkey-providers/commit/c3bee6664757cd286894f18a6de20a798e881aff))
+
 ## [2.4.0-alpha.5](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.4...v2.4.0-alpha.5) (2025-01-08)
 
 **Note:** Version bump only for package @portkey/providers
