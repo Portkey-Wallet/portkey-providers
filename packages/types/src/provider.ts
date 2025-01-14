@@ -105,6 +105,7 @@ export interface IProvider {
   request<T = Accounts>(params: { method: typeof MethodsBase.ACCOUNTS }): Promise<T>;
   request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_ID }): Promise<T>;
   request<T = ChainIds>(params: { method: typeof MethodsBase.CHAIN_IDS }): Promise<T>;
+  request<T = null | undefined>(params: { method: typeof MethodsWallet.WALLET_SHOW_ASSETS }): Promise<T>;
   request<T = ChainsInfo>(params: { method: typeof MethodsBase.CHAINS_INFO }): Promise<T>;
   request<T = Accounts>(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<T>;
   request<T = WalletState>(params: { method: typeof MethodsWallet.GET_WALLET_STATE }): Promise<T>;

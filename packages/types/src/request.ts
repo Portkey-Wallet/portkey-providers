@@ -85,6 +85,7 @@ export const MethodsWallet = {
    * @remark only use iframe provider
    */
   WALLET_DISCONNECT: 'wallet_disconnect',
+  WALLET_SHOW_ASSETS: 'wallet_showAssets',
 } as const;
 
 export type MethodsWalletType = (typeof MethodsWallet)[keyof typeof MethodsWallet];

@@ -191,6 +191,7 @@ export default abstract class BaseProvider extends EventEmitter implements IInte
   public async request(params: { method: typeof MethodsBase.REQUEST_ACCOUNTS }): Promise<Accounts>;
   public async request(params: { method: typeof MethodsWallet.GET_WALLET_STATE }): Promise<WalletState>;
   public async request(params: { method: typeof MethodsWallet.GET_WALLET_NAME }): Promise<WalletName>;
+  public async request(params: { method: typeof MethodsWallet.WALLET_SHOW_ASSETS }): Promise<null | undefined>;
   public async request(params: {
     method: typeof MethodsBase.SEND_TRANSACTION;
     payload: SendTransactionParams;
