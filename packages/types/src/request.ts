@@ -84,6 +84,7 @@ export const MethodsWallet = {
   /**
    * @remark only use iframe provider
    */
+  WALLET_LOCK: 'wallet_lock',
   WALLET_DISCONNECT: 'wallet_disconnect',
   WALLET_SHOW_ASSETS: 'wallet_showAssets',
 } as const;
