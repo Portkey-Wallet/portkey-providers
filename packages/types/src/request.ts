@@ -75,6 +75,7 @@ export type MethodsBaseType = (typeof MethodsBase)[keyof typeof MethodsBase];
 export const MethodsWallet = {
   GET_WALLET_STATE: 'wallet_getWalletState',
   GET_WALLET_NAME: 'wallet_getWalletName',
+  GET_WALLET_AVATAR: 'wallet_getWalletAvatar',
   GET_WALLET_SIGNATURE: 'wallet_getSignature',
   GET_WALLET_TRANSACTION_SIGNATURE: 'wallet_getTransactionSignature',
   GET_WALLET_MULTI_TRANSACTION_SIGNATURE: 'wallet_getMultiTransactionSignature',
