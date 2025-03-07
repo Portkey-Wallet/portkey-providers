@@ -1,11 +1,11 @@
 {
   "name": "web-extension-did",
-  "version": "2.4.0-alpha.9",
+  "version": "2.4.0-alpha.10",
   "description": "web-extension-did",
   "private": true,
   "dependencies": {
-    "@portkey/extension-provider": "^2.4.0-alpha.9",
-    "@portkey/provider-utils": "^2.4.0-alpha.9",
+    "@portkey/extension-provider": "^2.4.0-alpha.10",
+    "@portkey/provider-utils": "^2.4.0-alpha.10",
     "extension-streams": "^1.0.7",
     "i18next": "^21.9.2",
     "intl": "^1.2.5",
