@@ -35,7 +35,11 @@ function setupProviderStreams() {
   });
   // set portkey
   Object.defineProperty(window, 'Portkey', {
-    value: portkey,
+    value: {
+      ...portkey,
+      eoa: true,
+      eoaWalletName: 'FairyVault',
+    },
     configurable: false,
     enumerable: false,
     writable: false,
