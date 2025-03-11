@@ -1,14 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const distPath = path.join(__dirname, '..', '..', '/', 'dist');
+const distPath = path.join(__dirname, '..', '..', 'dist');
 
-const inpageContent = fs
-  .readFileSync(path.join(distPath, 'inpage-content.js'))
-  .toString();
+const files = fs.readdirSync(distPath);
 
-// wrap the inpage content in a variable declaration
-const code = `const inpageBundle = ${JSON.stringify(inpageContent)}`;
+const inpageFiles = files.filter(file => file.endsWith('inpage-content.js'));
 
-fs.writeFileSync(path.join(distPath, 'inpage-bundle.js'), code, 'ascii');
-console.log('content-script.js generated succesfully');
+inpageFiles.forEach(file => {
+  const inpageContent = fs.readFileSync(path.join(distPath, file)).toString();
+
+  const bundleFileName = file.replace('inpage-content.js', 'inpage-bundle.js');
+
+  const code = `const inpageBundle = ${JSON.stringify(inpageContent)}`;
+  fs.writeFileSync(path.join(distPath, bundleFileName), code, 'ascii');
+  console.log(`${bundleFileName} generated successfully`);
+});

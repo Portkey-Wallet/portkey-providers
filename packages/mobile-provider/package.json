@@ -32,7 +32,7 @@
     "build:prep": "mkdir -p dist && rm -rf dist/*",
     "build:inpage": "cd src/inpage && webpack --config webpack.config.js",
     "build:contentscript": "node src/content-script/build.js",
-    "build:concat": "concat-cli -f dist/inpage-bundle.js src/content-script/index.js -o dist/index-raw.js",
+    "build:concat": "node src/content-script/concat.js",
     "build:bundle": "webpack --config webpack.config.js",
     "build:dev": "yarn build:prep && yarn build:dev:inpage && yarn build:contentscript && yarn build:concat && yarn build:dev:bundle",
     "build:dev:inpage": "cd src/inpage && webpack --mode=development --config webpack.config.js",

@@ -3,11 +3,14 @@ const path = require('path');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const config = {
-  entry: './index.ts',
+  entry: {
+    portkey: './portkey.ts',
+    fairyVault: './fairyVault.ts',
+  },
 
   output: {
     path: path.resolve(__dirname, '..', '..', 'dist'),
-    filename: 'inpage-content.js',
+    filename: '[name]-inpage-content.js',
   },
 
   mode: 'production',
@@ -40,7 +43,7 @@ const config = {
       stream: false,
     },
   },
-  plugins: [new LodashModuleReplacementPlugin],
+  plugins: [new LodashModuleReplacementPlugin()],
 };
 
 module.exports = (_env, argv) => {

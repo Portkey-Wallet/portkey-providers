@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -7,12 +8,22 @@ const ROOT = path.resolve(__dirname, '.');
 const { version, name } = require(path.resolve(ROOT, './package.json'));
 const banner = `${name} v${version}\n(c) 2023-${new Date().getFullYear()} Portkey\nReleased under ISC License`;
 
+const distPath = path.resolve(__dirname, 'dist');
+const files = fs.readdirSync(distPath);
+const entryFiles = files.filter(file => file.startsWith('raw-index-') && file.endsWith('-bundle.js'));
+
+const entry = {};
+entryFiles.forEach(file => {
+  const outputFileName = file.replace('raw-index-', '').replace('inpage-bundle.js', '');
+  entry[outputFileName] = path.join(distPath, file);
+});
+
 const config = {
-  entry: './dist/index-raw.js',
+  entry: entry,
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
+    path: distPath,
+    filename: 'mini-[name].js',
   },
 
   mode: 'production',
