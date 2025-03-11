@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.0-alpha.11](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.10...v2.4.0-alpha.11) (2025-03-11)
+
+**Note:** Version bump only for package @portkey/extension-provider
+
 ## [2.4.0-alpha.10](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.9...v2.4.0-alpha.10) (2025-03-07)
 
 **Note:** Version bump only for package @portkey/extension-provider
