@@ -12,7 +12,7 @@ Object.defineProperty(window, '_portkeySetupProvider', {
       new CustomEvent(portkeyInitEvent, {
         detail: {
           error: 0,
-          message: 'Portkey is ready.',
+          message: 'FairyVault is ready.',
         },
       }),
     );
@@ -26,16 +26,16 @@ const isApple = () => {
   return navigator.userAgent.toLowerCase().match(/\(ip.*applewebkit(?!.*(version|crios))/);
 };
 function setupProviderStreams() {
-  const portkey = new MobileProvider({
+  const fairyVault = new MobileProvider({
     connectionStream: new PortkeyPostStream({
       name: CONTENT_SCRIPT,
       postWindow: window.ReactNativeWebView,
       originWindow: isApple() ? window : document,
     }),
   });
-  // set portkey
-  Object.defineProperty(window, 'Portkey', {
-    value: portkey,
+  // set fairyVault
+  Object.defineProperty(window, 'FairyVault', {
+    value: fairyVault,
     configurable: false,
     enumerable: false,
     writable: false,

@@ -1,6 +1,6 @@
 import { IPortkeyProvider, portkeyInitEvent, portkeyInitEventV1 } from '@portkey/provider-types';
 
-export type TProviderName = 'Portkey' | 'portkey' | 'PortkeyWebWallet';
+export type TProviderName = 'Portkey' | 'portkey' | 'PortkeyWebWallet' | 'FairyVault';
 
 export type DetectProviderOptions = { timeout?: number; providerName?: TProviderName };
 

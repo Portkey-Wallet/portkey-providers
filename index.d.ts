@@ -4,5 +4,6 @@ interface Window {
   portkey: any;
   Portkey: any;
   PortkeyWebWallet?: any;
+  FairyVault?: any;
   ReactNativeWebView: any;
 }
