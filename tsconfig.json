@@ -17,7 +17,8 @@
     "declarationMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["jest", "node"]
   },
-  "include": ["index.d.ts"],
+  "include": ["index.d.ts", "jest-setup/**/*"],
 }
