@@ -1,6 +1,10 @@
-const path = require('path');
+import path from 'path';
+import { fileURLToPath } from 'url';
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config = {
   entry: {
@@ -39,14 +43,30 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      '@portkey/providers': path.resolve(__dirname, '../../../providers/dist/esm/index.js'),
+      '@portkey/provider-types': path.resolve(__dirname, '../../../types/dist/esm/index.js'),
+      '@portkey/chain': path.resolve(__dirname, '../../../chain/dist/esm/index.js'),
+    },
     fallback: {
       stream: false,
+      buffer: false,
+      crypto: false,
+      path: false,
+      os: false,
+      url: false,
+      http: false,
+      https: false,
+      zlib: false,
+      fs: false,
+      child_process: false,
     },
   },
   plugins: [new LodashModuleReplacementPlugin()],
 };
 
-module.exports = (_env, argv) => {
+// module.exports = (_env, argv) => {
+export default (_env, argv) => {
   if (argv.mode === 'development') {
     config.mode = 'development';
   }

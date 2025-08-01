@@ -2,15 +2,18 @@
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
+// TODO: jest.config.ts also config testEnvironment: 'jsdom', and many window.xxx in code.
+// Maybe we just need test the UTs in env browser only.
 
 const path = require('path');
 const { lstatSync, readdirSync } = require('fs');
 // get listing of packages in the mono repo
 const basePath = path.resolve(__dirname, 'packages');
-const packages = readdirSync(basePath).filter(name => lstatSync(path.join(basePath, name)).isDirectory());
+const packages = readdirSync(basePath).filter((name: string) => lstatSync(path.join(basePath, name)).isDirectory());
 
 const moduleNameMapper: any = {};
-packages.forEach(key => {
+packages.forEach((key: string) => {
+  moduleNameMapper[`@portkey/${key}/test/(.+)$`] = `<rootDir>/packages/${key}/test/$1`;
   moduleNameMapper[`@portkey/${key}`] = `<rootDir>/packages/${key}/src`;
 });
 
@@ -147,6 +150,7 @@ export default {
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: [],
+  setupFiles: ['./jest-setup/setup.browser.ts'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],

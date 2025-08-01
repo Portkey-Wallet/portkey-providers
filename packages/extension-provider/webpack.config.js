@@ -1,14 +1,20 @@
 /* eslint-disable */
-const webpack = require('webpack');
-const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+import webpack from 'webpack';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const projectRoot = __dirname;
 const ROOT = path.resolve(__dirname, '.');
-const { version, name } = require(path.resolve(ROOT, './package.json'));
+// const { version, name } = require(path.resolve(ROOT, './package.json'));
+const packageJson = JSON.parse(fs.readFileSync(path.resolve(ROOT, './package.json'), 'utf-8'));
+const { version, name } = packageJson;
 const banner = `${name} v${version}\n(c) 2023-${new Date().getFullYear()} Portkey\nReleased under ISC License`;
-
 
 const outputDir = 'dist';
 // module.exports =
@@ -28,9 +34,25 @@ let config = {
 
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.json'],
+    alias: {
+      // 优先使用ESM版本的依赖包
+      '@portkey/providers': path.resolve(__dirname, '../providers/dist/esm/index.js'),
+      '@portkey/provider-types': path.resolve(__dirname, '../types/dist/esm/index.js'),
+      '@portkey/chain': path.resolve(__dirname, '../chain/dist/esm/index.js'),
+    },
     fallback: {
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer'),
+      // Node.js polyfills for browser environment
+      stream: false,
+      buffer: false,
+      crypto: false,
+      path: false,
+      os: false,
+      url: false,
+      http: false,
+      https: false,
+      zlib: false,
+      fs: false,
+      child_process: false,
     },
   },
   module: {
@@ -76,9 +98,6 @@ let config = {
       // remove files that are not created directly by Webpack.
       // cleanAfterEveryBuildPatterns
     }),
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-    }),
     new webpack.BannerPlugin({
       banner,
       entryOnly: true,
@@ -86,7 +105,8 @@ let config = {
   ],
 };
 
-module.exports = (env, argv) => {
+// module.exports = (env, argv) => {
+export default (env, argv) => {
   if (argv.mode === 'production') {
     config.plugins.push(
       new TerserPlugin({
