@@ -69,5 +69,8 @@
       "pre-commit": "yarn run test && istanbul-badges-readme && git add 'README.md'"
     }
   },
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "dependencies": {
+    "@portkey/request": "^2.21.0-alpha.2"
+  }
 }
