@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1-alpha.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.12...v2.4.1-alpha.3) (2025-08-01)
+
+**Note:** Version bump only for package @portkey/provider-types
+
+## [2.4.1-alpha.2](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.12...v2.4.1-alpha.2) (2025-08-01)
+
+**Note:** Version bump only for package @portkey/provider-types
+
+## [2.4.1-alpha.1](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.12...v2.4.1-alpha.1) (2025-08-01)
+
+**Note:** Version bump only for package @portkey/provider-types
+
 ## [2.4.0-alpha.12](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.0-alpha.11...v2.4.0-alpha.12) (2025-03-11)
 
 **Note:** Version bump only for package @portkey/provider-types
