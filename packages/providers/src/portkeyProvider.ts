@@ -4,7 +4,8 @@ import { Web3Provider } from './web3Provider';
 
 export class PortkeyProvider extends Web3Provider implements IPortkeyProvider {
   public readonly isPortkey: true = true;
-  public readonly providerVersion: string = '2.3.6';
+  // TODO: match the version in the package.json.
+  public readonly providerVersion: string = '2.4.6';
   constructor(props: BaseProviderOptions) {
     super(props);
   }

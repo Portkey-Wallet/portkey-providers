@@ -14,22 +14,30 @@ export class InitializeProvider {
     const proxyProvider = new Proxy(provider, {
       deleteProperty: () => true,
     });
-    setGlobalProvider(proxyProvider);
+    setGlobalProvider(proxyProvider, {
+      key: props.options?.initKey,
+      message: props.options?.initMessage,
+    });
   }
 }
 
+type TOptions = {
+  key?: string;
+  message?: string;
+};
 /**
  * Sets the given provider instance as window.Portkey and dispatches the
  * ${portkeyInitEvent} event on window.
  */
-export function setGlobalProvider(providerInstance: PortkeyProvider): void {
+export function setGlobalProvider(providerInstance: PortkeyProvider, options?: TOptions): void {
+  const { key, message } = options || {};
   console.log('dispatchEvent', portkeyInitEvent);
-  (window as Record<string, any>).Portkey = providerInstance;
+  (window as Record<string, any>)[key ? key : 'Portkey'] = providerInstance;
   window.dispatchEvent(
     new CustomEvent(portkeyInitEvent, {
       detail: {
         error: 0,
-        message: 'Portkey is ready.',
+        message: message || 'Portkey is ready.',
       },
     }),
   );

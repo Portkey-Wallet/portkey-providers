@@ -16,7 +16,9 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
   const { timeout = 3000, providerName = 'Portkey' } = options || {};
 
   // window.portkey already exists
-  if (window[providerName]) return isPortkeyProvider<T>(window[providerName]) ? window[providerName] : null;
+  if (window[providerName]) {
+    return isPortkeyProvider<T>(window[providerName]) ? window[providerName] : null;
+  }
 
   const eventName = isPortkeyV1(providerName) ? portkeyInitEventV1 : portkeyInitEvent;
 
