@@ -1,4 +1,4 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, vi, test } from 'vitest';
 import {
   ITestPlatform,
   ProducerTestBehaviour,
@@ -64,14 +64,9 @@ testPlatform.registerCustomer(customer);
 testPlatform.registerProducer(producer);
 
 describe('system describe', () => {
-  test('normal test goes well', done => {
-    customer
-      .request({ method: MethodsBase.CHAIN_ID })
-      .then(res => {
-        console.log('request=====res:', res);
-        done();
-      })
-      .catch(e => done(e));
+  test('normal test goes well', async () => {
+    const res = await customer.request({ method: MethodsBase.CHAIN_ID });
+    console.log('request=====res:', res);
   });
 
   test('test invalid params ', async () => {
@@ -125,71 +120,89 @@ describe('system describe', () => {
     }
   });
 
-  test('provider::emit goes well', done => {
-    const mockEventName = 'mock';
-    const onMessage = () => {
-      done();
-      customer.removeListener(mockEventName, onMessage);
-    };
-    customer.on(mockEventName, onMessage);
-    customer.emit(mockEventName, {});
+  test('provider::emit goes well', () => {
+    return new Promise<void>(resolve => {
+      const mockEventName = 'mock';
+      const onMessage = () => {
+        resolve();
+        customer.removeListener(mockEventName, onMessage);
+      };
+      customer.on(mockEventName, onMessage);
+      customer.emit(mockEventName, {});
+    });
   });
 
-  test('handle message event', done => {
-    const expectMessage = 'ok';
-    customer.addListener(NotificationEvents.MESSAGE, data => {
-      console.log('handle message event:', data);
-      if (data !== expectMessage) return;
-      done();
+  test('handle message event', () => {
+    return new Promise<void>(resolve => {
+      const expectMessage = 'ok';
+      customer.addListener(NotificationEvents.MESSAGE, data => {
+        console.log('handle message event:', data);
+        if (data !== expectMessage) return;
+        resolve();
+      });
+      providerStream.createMessageEvent(expectMessage);
     });
-    providerStream.createMessageEvent(expectMessage);
   });
 
-  test('handle NotificationEvents.CONNECTED', done => {
-    customer.once(NotificationEvents.CONNECTED, () => {
-      done();
+  test('handle NotificationEvents.CONNECTED', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.CONNECTED, () => {
+        resolve();
+      });
+      producer.publishEvent(generateNormalResponse({ eventName: NotificationEvents.CONNECTED }));
     });
-    producer.publishEvent(generateNormalResponse({ eventName: NotificationEvents.CONNECTED }));
   });
 
-  test('handle NotificationEvents.ACCOUNTS_CHANGED', done => {
-    customer.once(NotificationEvents.ACCOUNTS_CHANGED, () => {
-      done();
+  test('handle NotificationEvents.ACCOUNTS_CHANGED', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.ACCOUNTS_CHANGED, () => {
+        resolve();
+      });
+      providerStream.injectData(
+        generateNormalResponse({ eventName: NotificationEvents.ACCOUNTS_CHANGED, data: '0x123' }),
+      );
     });
-    providerStream.injectData(
-      generateNormalResponse({ eventName: NotificationEvents.ACCOUNTS_CHANGED, data: '0x123' }),
-    );
   });
 
-  test('handle NotificationEvents.NETWORK_CHANGED', done => {
-    customer.once(NotificationEvents.NETWORK_CHANGED, () => {
-      done();
+  test('handle NotificationEvents.NETWORK_CHANGED', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.NETWORK_CHANGED, () => {
+        resolve();
+      });
+      providerStream.injectData(
+        generateNormalResponse({ eventName: NotificationEvents.NETWORK_CHANGED, data: '0x456' }),
+      );
     });
-    providerStream.injectData(generateNormalResponse({ eventName: NotificationEvents.NETWORK_CHANGED, data: '0x456' }));
   });
 
-  test('handle NotificationEvents.CHAIN_CHANGED', done => {
-    customer.once(NotificationEvents.CHAIN_CHANGED, () => {
-      done();
+  test('handle NotificationEvents.CHAIN_CHANGED', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.CHAIN_CHANGED, () => {
+        resolve();
+      });
+      providerStream.injectData(
+        generateNormalResponse({ eventName: NotificationEvents.CHAIN_CHANGED, data: ['mockChainId'] }),
+      );
     });
-    providerStream.injectData(
-      generateNormalResponse({ eventName: NotificationEvents.CHAIN_CHANGED, data: ['mockChainId'] }),
-    );
   });
 
-  test('handle NotificationEvents.DISCONNECTED', done => {
-    customer.once(NotificationEvents.DISCONNECTED, () => {
-      done();
+  test('handle NotificationEvents.DISCONNECTED', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.DISCONNECTED, () => {
+        resolve();
+      });
+      providerStream.injectData(generateNormalResponse({ eventName: NotificationEvents.DISCONNECTED }));
     });
-    providerStream.injectData(generateNormalResponse({ eventName: NotificationEvents.DISCONNECTED }));
   });
 
-  test('handle null request', done => {
-    customer.once(NotificationEvents.MESSAGE, (info: string) => {
-      expect(info).toEqual('invalid message');
-      done();
+  test('handle null request', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.MESSAGE, (info: string) => {
+        expect(info).toEqual('invalid message');
+        resolve();
+      });
+      producer.handleRequestMessage('');
     });
-    producer.handleRequestMessage('');
   });
 
   test('handle error response', () => {
@@ -203,21 +216,25 @@ describe('system describe', () => {
     expect(customer.exposeMethodCheck(MethodsWallet.GET_WALLET_NAME)).toBeTruthy();
   });
 
-  test('handle uncovered notification', done => {
-    customer.once(NotificationEvents.ERROR, () => {
-      done();
+  test('handle uncovered notification', () => {
+    return new Promise<void>(resolve => {
+      customer.once(NotificationEvents.ERROR, () => {
+        resolve();
+      });
+      providerStream.injectData(
+        generateNormalResponse({ eventName: NotificationEvents.ERROR, code: ResponseCode.SUCCESS, data: '0x789' }),
+      );
     });
-    providerStream.injectData(
-      generateNormalResponse({ eventName: NotificationEvents.ERROR, code: ResponseCode.SUCCESS, data: '0x789' }),
-    );
   });
 
-  test('handle unknown eventName', done => {
-    const name = 'unknown';
-    customer.once(name, () => {
-      done();
+  test('handle unknown eventName', () => {
+    return new Promise<void>(resolve => {
+      const name = 'unknown';
+      customer.once(name, () => {
+        resolve();
+      });
+      providerStream.injectData(generateNormalResponse({ eventName: name, code: ResponseCode.SUCCESS }));
     });
-    providerStream.injectData(generateNormalResponse({ eventName: name, code: ResponseCode.SUCCESS }));
   });
 
   test('operator handles wrong data', () => {
@@ -231,8 +248,8 @@ describe('PortkeyProvider test', () => {
     portkeyProvider = new PortkeyProvider({
       connectionStream: new PortkeyPostStream({
         name: 'test stream',
-        postWindow: { postMessage: jest.fn() },
-        originWindow: { addEventListener: jest.fn() },
+        postWindow: { postMessage: vi.fn() },
+        originWindow: { addEventListener: vi.fn() },
       }),
     });
     expect(portkeyProvider).toBeTruthy();

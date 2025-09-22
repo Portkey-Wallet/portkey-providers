@@ -1,6 +1,4 @@
-import { test } from '@jest/globals';
-import { expect } from '@jest/globals';
-import { describe } from 'node:test';
+import { test, expect, describe } from 'vitest';
 import { generateErrorResponse, generateNormalResponse } from '../src/response';
 import { IResponseType, ResponseCode, ResponseMessagePreset } from '@portkey/provider-types';
 describe('generate response quick function', () => {

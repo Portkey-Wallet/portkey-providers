@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { NotificationEvents, MethodsBase, MethodsWallet } from '@portkey/provider-types';
 import { isMethodsBase, isMethodsUnimplemented } from '../src/utils';
 import { getHostName, isNotificationEvents } from '../src/utils';

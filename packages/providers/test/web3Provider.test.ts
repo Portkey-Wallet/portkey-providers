@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { Web3Provider, DappInteractionStream } from '../src';
-import { EventEmitter } from 'stream';
+import { EventEmitter } from 'events';
 import { IResponseInfo, MethodsBase } from '@portkey/provider-types';
 import { AElfChain } from '@portkey/chain';
 const noop = () => undefined;

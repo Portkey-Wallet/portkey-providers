@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { IResponseType, IRequestParams, MethodsBase, ResponseCode } from '@portkey/provider-types';
 import {
   CustomerTestBehaviour,
@@ -90,18 +90,15 @@ const testWrapper = ({ name, targetWindow }: Partial<PortkeyPostOptions>) => {
     connectionStream: testStream,
   });
   mTestPlatform.registerCustomer(customer);
-  test('system check well', done => {
-    customer
-      .request({ method: MethodsBase.CHAIN_ID })
-      .then(res => {
-        console.log('request=====res:', res);
-        done();
-      })
-      .catch(e => done(e));
+  test('system check well', async () => {
+    const res = await customer.request({ method: MethodsBase.CHAIN_ID });
+    console.log('request=====res:', res);
   });
-  test('exception will throw', done => {
-    testStream._write(JSON.stringify({ data: rejectMark }), 'utf8', _e => {
-      done();
+  test('exception will throw', () => {
+    return new Promise<void>(resolve => {
+      testStream._write(JSON.stringify({ data: rejectMark }), 'utf8', _e => {
+        resolve();
+      });
     });
   });
   test('exception created by error message will be caught and not be thrown', () => {
@@ -109,36 +106,34 @@ const testWrapper = ({ name, targetWindow }: Partial<PortkeyPostOptions>) => {
       expect(() => fakeWindow.emit('message', errorMsg)).not.toThrow();
     });
   });
-  test('unexpected message will not be received', done => {
+  test('unexpected message will not be received', async () => {
     const expectedToReceive = testStream.getOrigin() === anyOriginMark || testStream.getName() === unknownOrigin;
-    doNotHappen(reject => {
+    await doNotHappen(reject => {
       customer.addListener(unknownMethod, () => {
-        !expectedToReceive ? reject('should not be called') : done();
+        if (!expectedToReceive) {
+          reject('should not be called');
+        }
       });
-    })
-      .then(() => done())
-      .catch(e => done(e));
+    });
     producer.publishEvent({ eventName: unknownMethod, info: { code: ResponseCode.SUCCESS }, origin: unknownOrigin });
   });
-  test('targetName message will only be received by targetName stream', done => {
+  test('targetName message will only be received by targetName stream', async () => {
     const expectedToReceive = testStream.getName() === targetName;
-    doNotHappen(reject => {
+    await doNotHappen(reject => {
       customer.addListener(unknownMethod, () => {
-        !expectedToReceive ? reject('should not be called') : done();
+        if (!expectedToReceive) {
+          reject('should not be called');
+        }
       });
-    })
-      .then(() => done())
-      .catch(e => done(e));
+    });
     producer.publishEvent({ eventName: unknownMethod, info: { code: ResponseCode.SUCCESS }, target: targetName });
   });
-  test('non-complete message will not be received', done => {
-    doNotHappen(reject => {
+  test('non-complete message will not be received', async () => {
+    await doNotHappen(reject => {
       customer.addListener(unknownMethod, () => {
         reject('should not be called');
       });
-    })
-      .then(() => done())
-      .catch(e => done(e));
+    });
     producer.publishEvent({ eventName: unknownMethod, info: undefined as any, target: targetName });
   });
 };

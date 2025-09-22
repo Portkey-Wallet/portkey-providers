@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { AElfChain } from '../src/chain';
 describe('contract describe', () => {
   const chainOptions = {

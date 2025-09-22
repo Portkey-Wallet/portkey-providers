@@ -1,4 +1,4 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, vi, test } from 'vitest';
 import detectProvider, { isPortkeyV1 } from '../src/index';
 import { portkeyInitEvent } from '@portkey/provider-types';
 
@@ -24,9 +24,11 @@ describe('test detect-provider', () => {
 
       const rejects = [undefined, null, 0, 'undefined', 'null', {}];
       for (const provider of rejects) {
-        globalThis.window.Portkey = provider;
-        globalThis.window.portkey = provider;
-        if (globalThis.window.Portkey) {
+        if (globalThis.window) {
+          globalThis.window.Portkey = provider;
+          globalThis.window.portkey = provider;
+        }
+        if (globalThis.window && globalThis.window.Portkey) {
           const result = await detectProvider({ timeout: testTimeOut });
           const resultV1 = await detectProvider({ timeout: testTimeOut, providerName: 'portkey' });
           const resultV2 = await detectProvider({ timeout: testTimeOut, providerName: 'Portkey' });
@@ -36,31 +38,43 @@ describe('test detect-provider', () => {
         } else {
           await expect(detectProvider({ timeout: testTimeOut })).rejects.toBeTruthy();
         }
-        globalThis.window.Portkey = undefined;
+        if (globalThis.window) {
+          globalThis.window.Portkey = undefined;
+        }
       }
 
       const provider = {
         isPortkey: true,
-        request: jest.fn(),
+        request: vi.fn(),
       };
 
-      globalThis.window.Portkey = provider;
-      expect(await detectProvider({ timeout: testTimeOut })).toBe(provider);
-      globalThis.window.Portkey = undefined;
+      if (globalThis.window) {
+        globalThis.window.Portkey = provider;
+        expect(await detectProvider({ timeout: testTimeOut })).toBe(provider);
+        globalThis.window.Portkey = undefined;
+      }
 
       setTimeout(() => {
-        globalThis.window.Portkey = provider;
-        window.dispatchEvent(new Event(portkeyInitEvent));
+        if (globalThis.window) {
+          globalThis.window.Portkey = provider;
+          window.dispatchEvent(new Event(portkeyInitEvent));
+        }
       }, testTimeOut / 2);
       expect(await detectProvider({ timeout: testTimeOut })).toBe(provider);
-      globalThis.window.Portkey = undefined;
+      if (globalThis.window) {
+        globalThis.window.Portkey = undefined;
+      }
 
       setTimeout(() => {
-        globalThis.window.Portkey = { name: 'fake' };
-        window.dispatchEvent(new Event(portkeyInitEvent));
+        if (globalThis.window) {
+          globalThis.window.Portkey = { name: 'fake' };
+          window.dispatchEvent(new Event(portkeyInitEvent));
+        }
       }, testTimeOut / 2);
       await expect(detectProvider({ timeout: testTimeOut })).resolves.toBeFalsy();
-      globalThis.window.Portkey = undefined;
+      if (globalThis.window) {
+        globalThis.window.Portkey = undefined;
+      }
     },
     15 * 1000,
   );

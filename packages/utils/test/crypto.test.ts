@@ -1,11 +1,15 @@
-import { test } from '@jest/globals';
-import { expect } from '@jest/globals';
-import { describe } from 'node:test';
+import { test, expect, describe } from 'vitest';
+import { CryptoManager } from '../src';
 import { webcrypto } from 'crypto';
-import { CryptoManager } from '../src/crypto';
 
 describe('CryptoManager', () => {
-  const cryptoManager = new CryptoManager(webcrypto.subtle);
+  console.log(
+    'globalThis.webcrypto',
+    !!(webcrypto && webcrypto.subtle),
+    ' |true use webcrypto.subtle, false use window.crypto.subtle| ',
+    webcrypto ? webcrypto.subtle : window.crypto.subtle,
+  );
+  const cryptoManager = new CryptoManager(webcrypto ? webcrypto.subtle : window.crypto.subtle);
   test('should get keypair', callback => {
     cryptoManager
       .generateKeyPair()
