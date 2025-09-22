@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import { describe, expect, test } from 'vitest';
 import { Web3Provider, DappInteractionStream } from '../src';
 import { EventEmitter } from 'events';

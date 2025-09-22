@@ -1,36 +1,17 @@
 process.env.RUNTIME_ENV = 'browser';
-// import { TextEncoder, TextDecoder } from 'util';
 import { vi } from 'vitest';
 import { Buffer } from 'buffer';
 import { EventEmitter } from 'events';
-// import { webcrypto } from '@peculiar/webcrypto';
 
 // Browser environment setup - polyfills for browser compatibility
 global.Buffer = Buffer;
-// global.TextEncoder = TextEncoder;
-// global.TextDecoder = TextDecoder;
 global.EventEmitter = EventEmitter;
-// global.webcrypto = webcrypto;
 
 // Also set on globalThis for compatibility
 if (typeof globalThis !== 'undefined') {
   globalThis.Buffer = Buffer;
-  // globalThis.TextEncoder = TextEncoder;
-  // globalThis.TextDecoder = TextDecoder;
   globalThis.EventEmitter = EventEmitter;
-  // globalThis.webcrypto = webcrypto;
 }
-
-// Mock crypto module to provide webcrypto
-// const crypto = { webcrypto };
-(global as any).require =
-  (global as any).require ||
-  ((id: string) => {
-    if (id === 'crypto') {
-      return crypto;
-    }
-    throw new Error(`Module ${id} not found`);
-  });
 
 // Additional polyfills for aelf-sdk
 global.process =

@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import { describe, expect, test } from 'vitest';
 import { AElfChain } from '../src/chain';
 describe('chain describe', () => {
