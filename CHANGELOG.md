@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0-alpha.0](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.2-alpha.3...v2.5.0-alpha.0) (2025-09-22)
+
+### Features
+
+- 🎸 new example create by next ([f6e13b9](https://github.com/Portkey-Wallet/portkey-providers/commit/f6e13b9d13002943a0de8549ce6a855f204420a0))
+- 🎸 update aelf-sdk -> 3.5.x ([f11f803](https://github.com/Portkey-Wallet/portkey-providers/commit/f11f8037204735717dea19d10c541485b0f5fdec))
+- 🎸 update aelf-sdk; change jest to vitest ([9984033](https://github.com/Portkey-Wallet/portkey-providers/commit/9984033a181edc53fc305045f118f790a8011418))
+
 ## [2.4.2-alpha.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.2-alpha.2...v2.4.2-alpha.3) (2025-08-13)
 
 **Note:** Version bump only for package root

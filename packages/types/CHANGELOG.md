@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0-alpha.0](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.2-alpha.3...v2.5.0-alpha.0) (2025-09-22)
+
+### Features
+
+- 🎸 update aelf-sdk -> 3.5.x ([f11f803](https://github.com/Portkey-Wallet/portkey-providers/commit/f11f8037204735717dea19d10c541485b0f5fdec))
+
 ## [2.4.2-alpha.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.4.2-alpha.2...v2.4.2-alpha.3) (2025-08-13)
 
 **Note:** Version bump only for package @portkey/provider-types
