@@ -16,13 +16,17 @@ packages.forEach((key: string) => {
 export default defineConfig({
   define: {
     global: 'globalThis',
-    'process.env': '{}',
+    'process.env': '{ RUNTIME_ENV: "browser" }',
   },
   test: {
-    environment: 'jsdom',
+    globals: true,
+    env: {
+      RUNTIME_ENV: 'browser',
+    },
+    environment: 'happy-dom',
     setupFiles: ['./vitest-setup/setup.browser.ts'],
-    pool: 'forks',
-    testTimeout: 5000,
+    // pool: 'forks',
+    testTimeout: 30000,
     coverage: {
       provider: 'v8',
       reporter: ['json-summary', 'text'],
@@ -56,7 +60,6 @@ export default defineConfig({
       },
       reportOnFailure: true,
     },
-    globals: true,
   },
   resolve: {
     alias: {
