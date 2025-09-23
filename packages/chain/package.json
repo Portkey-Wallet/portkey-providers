@@ -42,7 +42,7 @@
   "dependencies": {
     "@portkey/contracts": "^2.21.0-alpha.2",
     "@portkey/provider-types": "^2.5.0-alpha.0",
-    "aelf-sdk": "3.5.0-beta.10"
+    "aelf-sdk": "3.5.0-beta.11"
   },
   "gitHead": "d3ff4a9f2630de38fbf503deaac1dfe0da1a1feb"
 }

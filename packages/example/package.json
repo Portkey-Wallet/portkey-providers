@@ -12,7 +12,7 @@
     "@portkey/iframe-provider": "^2.5.0-alpha.0",
     "@portkey/utils": "^2.21.0-alpha.2",
     "@types/react-dom": "^18.0.0",
-    "aelf-sdk": "3.5.0-beta.10",
+    "aelf-sdk": "3.5.0-beta.11",
     "browserify-zlib": "0.2.0",
     "buffer": "^6.0.3",
     "https-browserify": "1.0.0",
