@@ -4623,10 +4623,10 @@ adjust-sourcemap-loader@^4.0.0:
     loader-utils "^2.0.0"
     regex-parser "^2.2.11"
 
-aelf-sdk@3.5.0-beta.10:
-  version "3.5.0-beta.10"
-  resolved "https://registry.npmjs.org/aelf-sdk/-/aelf-sdk-3.5.0-beta.10.tgz#d1b26b66ff28a820627860c9209909ed92501137"
-  integrity sha512-rSre+pr+Sn55tLMoBDgoSBa6Iqeu9MxxdihGDpVXhpo9ZRnB4BYW2sc/2fwm5bXv5MwhGiuZ4ic203XfyH6vgQ==
+aelf-sdk@^3.5.1-beta.0:
+  version "3.5.1-beta.0"
+  resolved "https://registry.npmjs.org/aelf-sdk/-/aelf-sdk-3.5.1-beta.0.tgz#fa5c49a838e33f0a276fdea70b0df23b31cd7f22"
+  integrity sha512-/I0d4R7KAs0AWIZOk+sjIcrkMSKN0sRTjsNYjUy0ge0iUHGLj1lHpdJJOgBqIpZQiLO1DGvQTAtOJFk3QsOu8w==
   dependencies:
     "@aelfqueen/protobufjs" "^6.8.11"
     "@aws-crypto/sha256-js" "^5.0.0"
