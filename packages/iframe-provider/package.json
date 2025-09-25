@@ -27,10 +27,10 @@
     "lint": "eslint --ext .js,.ts .",
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier --write '**/*'",
-    "dev": "webpack --mode development",
-    "dev:watch": "webpack watch --mode development",
-    "build": "webpack --mode production",
-    "build:watch": "webpack watch --mode production"
+    "dev": "vite build --mode development",
+    "dev:watch": "vite build --watch --mode development",
+    "build": "vite build --mode production",
+    "build:watch": "vite build --watch --mode production"
   },
   "dependencies": {
     "@portkey/provider-types": "^2.5.0-alpha.2",
@@ -39,14 +39,9 @@
     "readable-stream": "^4.4.0"
   },
   "devDependencies": {
-    "babel-loader": "^8.2.5",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^11.0.0",
-    "webpack": "^5.74.0",
-    "webpack-bundle-analyzer": "^4.6.1",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.0",
-    "webpack-livereload-plugin": "^3.0.2"
+    "stream-browserify": "3.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^4.0.0"
   },
   "gitHead": "d3ff4a9f2630de38fbf503deaac1dfe0da1a1feb"
 }

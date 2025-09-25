@@ -19,7 +19,7 @@ import { createManagerForwardCall, getTxResult } from '@portkey/contracts';
 import AElf from 'aelf-sdk';
 import elliptic from 'elliptic';
 import { getRawParams } from '../decodeTx';
-import { InitializeProvider, InpagePostStream } from '@portkey/iframe-provider';
+// import { InitializeProvider, InpagePostStream } from '@portkey/iframe-provider';
 const ec = new elliptic.ec('secp256k1');
 
 const TokenContractAddressMap = {
@@ -27,6 +27,9 @@ const TokenContractAddressMap = {
   tDVV: '7RzVGiuVWkvL4VfVHdZfQF2Tri3sgLe9U991bohHFfSRZXuGX',
   tDVW: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
 };
+
+const chainId = 'tDVW'; // 'AELF' | 'tDVV' | 'tDVW';
+const detectProviderName = 'FairyVault'; // 'Portkey' | 'FairyWallet' | 'FairyVault';
 
 export default function HomePage() {
   const [provider, setProvider] = useState<IPortkeyProvider>();
@@ -46,7 +49,11 @@ export default function HomePage() {
 
   const initProvider = useCallback(async () => {
     try {
-      setProvider(await detectProvider());
+      setProvider(
+        await detectProvider({
+          providerName: detectProviderName,
+        }),
+      );
     } catch (error) {
       console.log(error, '=====error');
     }
@@ -95,14 +102,14 @@ export default function HomePage() {
     };
   }, [provider]);
 
-  useEffect(() => {
-    const portkeyStream = new InpagePostStream({
-      name: 'IFRAME_POST_NAME',
-    });
-    new InitializeProvider({
-      connectionStream: portkeyStream,
-    });
-  }, []);
+  // useEffect(() => {
+  //   const portkeyStream = new InpagePostStream({
+  //     name: 'IFRAME_POST_NAME',
+  //   });
+  //   new InitializeProvider({
+  //     connectionStream: portkeyStream,
+  //   });
+  // }, []);
 
   return (
     <div>
@@ -125,7 +132,8 @@ export default function HomePage() {
       <button
         onClick={async () => {
           try {
-            const _chainId = 'tDVW';
+            console.log('======getChain: ', chainId);
+            const _chainId = chainId;
             const _chain = await provider.getChain(_chainId);
             setChain(_chain);
             setTokenContract(_chain.getContract(TokenContractAddressMap[_chainId]));
