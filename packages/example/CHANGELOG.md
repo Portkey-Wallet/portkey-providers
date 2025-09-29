@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0-alpha.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.5.0-alpha.3...v2.5.0-alpha.4) (2025-09-29)
+
+### Features
+
+- 🎸 update @portkey/xxx (-web) sdk's version ([5bdfe7a](https://github.com/Portkey-Wallet/portkey-providers/commit/5bdfe7a8d9f523a5c73859013ebb037637a64c11))
+
 ## [2.5.0-alpha.3](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.5.0-alpha.2...v2.5.0-alpha.3) (2025-09-25)
 
 **Note:** Version bump only for package @portkey/example
