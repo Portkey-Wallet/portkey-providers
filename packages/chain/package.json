@@ -40,7 +40,7 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/contracts": "^2.23.0-alpha.1",
+    "@portkey/contracts": "^2.23.0-alpha.6",
     "@portkey/provider-types": "^2.5.0-alpha.3",
     "aelf-sdk": "^3.5.1-beta.0"
   },
