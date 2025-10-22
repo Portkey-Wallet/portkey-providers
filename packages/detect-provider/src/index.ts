@@ -3,7 +3,7 @@ import { IPortkeyProvider, portkeyInitEvent, portkeyInitEventV1 } from '@portkey
 export type TProviderName = 'Portkey' | 'portkey' | 'PortkeyWebWallet' | 'FairyVault';
 
 export type DetectProviderOptions = { timeout?: number; providerName?: TProviderName; eventName?: string };
-
+const CHECK_INTERVAL = 100;
 /**
  * This API provides a way to detect the provider object injected to the environment.
  * @param options - determine the timeout of the detection.
@@ -24,25 +24,31 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
   const _eventName = eventName ? eventName : _portkeyEventName;
 
   return new Promise((resolve, reject) => {
-    let timedOut = false;
-    const handlePortkey = () => {
-      clearTimeout(timerId);
-      window.removeEventListener(_eventName, handlePortkey);
+    let timeUsedCount = 0;
+    let pollingId: ReturnType<typeof setTimeout> | null = null;
+    const cleanUp = () => {
+      if (pollingId !== null) {
+        clearTimeout(pollingId);
+        pollingId = null;
+      }
+      window.removeEventListener(_eventName, checkProvider);
+    };
+    const checkProvider = () => {
       if (isPortkeyProvider<T>(window[providerName])) {
+        cleanUp();
         resolve(window[providerName]);
+      } else if (timeUsedCount >= timeout) {
+        cleanUp();
+        reject(new Error(`Detect ${providerName} provider timeout, ${timeout}ms`));
       } else {
-        if (timedOut) {
-          reject(new Error('Detect portkey provider timeout'));
-        } else {
-          resolve(null);
-        }
+        pollingId = setTimeout(() => {
+          timeUsedCount += CHECK_INTERVAL;
+          checkProvider();
+        }, CHECK_INTERVAL);
       }
     };
-    const timerId = setTimeout(() => {
-      timedOut = true;
-      handlePortkey();
-    }, timeout);
-    window.addEventListener(_eventName, handlePortkey);
+    setTimeout(checkProvider, CHECK_INTERVAL);
+    window.addEventListener(_eventName, checkProvider);
   });
 }
 
