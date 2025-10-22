@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0-alpha.5](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.5.0-alpha.4...v2.5.0-alpha.5) (2025-10-22)
+
+### Features
+
+- 🎸 detectProvider, support custom eventName ([3a88a88](https://github.com/Portkey-Wallet/portkey-providers/commit/3a88a880a4d79f48775825a16f3ecd170d6d1226))
+
 ## [2.5.0-alpha.4](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.5.0-alpha.3...v2.5.0-alpha.4) (2025-09-29)
 
 ### Features
