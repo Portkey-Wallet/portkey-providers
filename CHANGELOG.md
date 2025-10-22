@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.0-alpha.6](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.5.0-alpha.5...v2.5.0-alpha.6) (2025-10-22)
+
+### Features
+
+- 🎸 detect provider,timeout check->loop check util timeout ([14f1fb7](https://github.com/Portkey-Wallet/portkey-providers/commit/14f1fb7f4043c634b27716f24a4e7a03861e0887))
+
 ## [2.5.0-alpha.5](https://github.com/Portkey-Wallet/portkey-providers/compare/v2.5.0-alpha.4...v2.5.0-alpha.5) (2025-10-22)
 
 ### Features
