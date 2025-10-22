@@ -2,7 +2,7 @@ import { IPortkeyProvider, portkeyInitEvent, portkeyInitEventV1 } from '@portkey
 
 export type TProviderName = 'Portkey' | 'portkey' | 'PortkeyWebWallet' | 'FairyVault';
 
-export type DetectProviderOptions = { timeout?: number; providerName?: TProviderName };
+export type DetectProviderOptions = { timeout?: number; providerName?: TProviderName; eventName?: string };
 
 /**
  * This API provides a way to detect the provider object injected to the environment.
@@ -13,20 +13,21 @@ export type DetectProviderOptions = { timeout?: number; providerName?: TProvider
 export default async function detectProvider<T extends IPortkeyProvider = IPortkeyProvider>(
   options?: DetectProviderOptions,
 ): Promise<T | null> {
-  const { timeout = 3000, providerName = 'Portkey' } = options || {};
+  const { timeout = 3000, providerName = 'Portkey', eventName } = options || {};
 
   // window.portkey already exists
   if (window[providerName]) {
     return isPortkeyProvider<T>(window[providerName]) ? window[providerName] : null;
   }
 
-  const eventName = isPortkeyV1(providerName) ? portkeyInitEventV1 : portkeyInitEvent;
+  const _portkeyEventName = isPortkeyV1(providerName) ? portkeyInitEventV1 : portkeyInitEvent;
+  const _eventName = eventName ? eventName : _portkeyEventName;
 
   return new Promise((resolve, reject) => {
     let timedOut = false;
     const handlePortkey = () => {
       clearTimeout(timerId);
-      window.removeEventListener(eventName, handlePortkey);
+      window.removeEventListener(_eventName, handlePortkey);
       if (isPortkeyProvider<T>(window[providerName])) {
         resolve(window[providerName]);
       } else {
@@ -41,7 +42,7 @@ export default async function detectProvider<T extends IPortkeyProvider = IPortk
       timedOut = true;
       handlePortkey();
     }, timeout);
-    window.addEventListener(eventName, handlePortkey);
+    window.addEventListener(_eventName, handlePortkey);
   });
 }
 
