@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "app/web",
+
+    "allowJs": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "esnext",
+    "isolatedModules": true,
+    "noEmit": true,
+    "outDir": "./dist",
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "allowUnreachableCode": false,
+    "experimentalDecorators": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["app/web", "react-app-env.d.ts"]
+}
